@@ -1,0 +1,2 @@
+npm start server starts our json service
+npm start runs the react service
