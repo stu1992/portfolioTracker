@@ -25,6 +25,7 @@ function App() {
     }
     getStocks()
     getDates()
+    getPortfolio()
   }, [])
 
   const fetchStocks = async() => {
@@ -58,6 +59,7 @@ const [portfolio, setPortfolio] = useState([
   return (
     <div className="App">
             <Chart stocks={stocks} dates={dates}/>
+              <Stocks stocks={stocks} portfolio={portfolio} />
     </div>
   );
 }

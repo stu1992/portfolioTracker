@@ -1,8 +1,8 @@
-const Stock = ({stock}) => {
+const Stock = ({stock, owned}) => {
   return (
   <div className='stock'>
   <h3>{stock.name}</h3>
-  <p>{stock.data[0]}</p>
+  <p>I currently own {owned}</p>
   </div>
   )
 }
