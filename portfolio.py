@@ -3,6 +3,7 @@ import json
 import datetime
 import requests
 from yahoofinancials import YahooFinancials
+from pymongo import MongoClient
 
 class assetAPIFactory:
     def getPriceUSD(self, ticker):
@@ -25,13 +26,11 @@ class assetAPIFactory:
 
     def getExchangeRate(self):
         if not hasattr(self, 'exchangeRate'):
-            print("exchange not set")
             API = 'http://api.exchangeratesapi.io/latest?access_key=c65663c506bc6d16fe81766cadde9918'
             response = requests.get(API)
             response_json = response.json()
             aud = response_json["rates"]['AUD']
             usd = response_json["rates"]['USD']
-            print("USD exchange: " + str(aud / usd))
             self.exchangeRate = float(aud / usd)
 
         return self.exchangeRate
@@ -50,10 +49,34 @@ class asset:
         dict['data'] = self.History
         return dict
 
-file = 'db.json'
-# ensure file creation
-f = open(file)
-obj = json.load(f)
+def MongoGetDocument(user = 'Stu'):
+    key = "'_id': {}".format(user)
+    client = MongoClient("localhost")
+    db = client.portfolio
+    return db.portfolio.find_one({'_id': user})
+
+def MongoPersistDocument(data, user = 'Stu'):
+    key = {'_id': user}
+    client = MongoClient("localhost")
+    db = client.portfolio
+    result=db.portfolio.replace_one(key, data)
+    fivestar = db.portfolio.find_one({})
+    print("from db\n\n\n")
+    print(fivestar)
+
+def FileGetDocument():
+    file = 'db.json'
+    f = open(file)
+    obj = json.load(f)
+    f.close()
+    return jsonObj
+
+def FilePersistDocument(document):
+    with open(file, 'w') as f:
+        json.dump(document, f)
+    f.close()
+# obj = FileGetDocument()
+obj = MongoGetDocument('Stu')
 assets = []
 for struct in obj['seriesdataset']:
     assets.append(asset(struct))
@@ -71,17 +94,16 @@ for asset in assets:
     localPrice = round(assetFactory.getPriceUSD(asset.Name) * myPortfolio[asset.Name] * exchange, 2)
     print(asset.Name + " " + str(localPrice))
     asset.latest(localPrice)
-f.close()
 serialisableAssets = []
 for asset in assets:
     serialisableAssets.append(asset.export())
 date_object = datetime.date.today()
 dates.append(str(date_object))
-replacementObj = {'portfolio' : myPortfolio,
+replacementObj = {'_id': 'Stu',
+'portfolio' : myPortfolio,
 'seriesdataset' : serialisableAssets,
 'dates' : dates
 }
 print(replacementObj)
-with open(file, 'w') as f:
-    json.dump(replacementObj, f)
-f.close()
+MongoPersistDocument(replacementObj)
+#FilePersistDocument(replacementObj)
