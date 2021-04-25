@@ -52,30 +52,34 @@ class asset:
 def MongoGetDocument(user = 'Stu'):
     key = "'_id': {}".format(user)
     client = MongoClient("localhost")
-    db = client.portfolio
+    db = client.portfolioTracker
+    print(db.portfolio.find_one({'_id': user}))
     return db.portfolio.find_one({'_id': user})
 
 def MongoPersistDocument(data, user = 'Stu'):
     key = {'_id': user}
     client = MongoClient("localhost")
-    db = client.portfolio
-    result=db.portfolio.replace_one(key, data)
-    fivestar = db.portfolio.find_one({})
+    db = client.portfolioTracker
+    if db.portfolio.find_one({}) == None:
+        db.portfolio.insert_one(data)
+    else:
+        result=db.portfolio.replace_one(key, data)
+    confirmEntry = db.portfolio.find_one({})
     print("from db\n\n\n")
-    print(fivestar)
+    print(confirmEntry)
 
 def FileGetDocument():
     file = 'db.json'
     f = open(file)
     obj = json.load(f)
     f.close()
-    return jsonObj
+    return obj
 
 def FilePersistDocument(document):
     with open(file, 'w') as f:
         json.dump(document, f)
     f.close()
-# obj = FileGetDocument()
+#obj = FileGetDocument()
 obj = MongoGetDocument('Stu')
 assets = []
 for struct in obj['seriesdataset']:
