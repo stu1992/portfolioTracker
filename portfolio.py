@@ -34,12 +34,10 @@ class assetAPIFactory:
             self.exchangeRate = float(aud / usd)
 
         return self.exchangeRate
-class asset:
+class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
         self.History = jsonObj['data']
-        print(self.Name)
-        print(self.History)
 
     def latest(self, value):
         self.History.append(value)
@@ -55,6 +53,7 @@ def MongoGetDocument(user = 'Stu'):
     db = client.portfolioTracker
     print(db.portfolio.find_one({'_id': user}))
     return db.portfolio.find_one({'_id': user})
+    client.close()
 
 def MongoPersistDocument(data, user = 'Stu'):
     key = {'_id': user}
@@ -64,50 +63,35 @@ def MongoPersistDocument(data, user = 'Stu'):
         db.portfolio.insert_one(data)
     else:
         result=db.portfolio.replace_one(key, data)
-    confirmEntry = db.portfolio.find_one({})
-    print("from db\n\n\n")
-    print(confirmEntry)
+    confirmEntry = db.portfolio.find_one({'_id': user})
+    client.close()
 
-def FileGetDocument():
-    file = 'db.json'
-    f = open(file)
-    obj = json.load(f)
-    f.close()
-    return obj
+userList = ['Stu', 'Kiana']
+for user in userList:
+    print("updating for "+ user)
+    obj = MongoGetDocument(user)
+    assets = []
+    for struct in obj['seriesdataset']:
+        assets.append(Asset(struct))
+    myPortfolio = obj['portfolio']
+    dates = obj['dates']
 
-def FilePersistDocument(document):
-    with open(file, 'w') as f:
-        json.dump(document, f)
-    f.close()
-#obj = FileGetDocument()
-obj = MongoGetDocument('Stu')
-assets = []
-for struct in obj['seriesdataset']:
-    assets.append(asset(struct))
-myPortfolio = obj['portfolio']
-print(myPortfolio.keys())
-dates = obj['dates']
-print(dates)
-
-assetFactory = assetAPIFactory()
-for asset in assets:
-    exchange = 1.0
-    if assetFactory.USCurrency(asset.Name):
-        exchange = assetFactory.getExchangeRate()
-    print(exchange)
-    localPrice = round(assetFactory.getPriceUSD(asset.Name) * myPortfolio[asset.Name] * exchange, 2)
-    print(asset.Name + " " + str(localPrice))
-    asset.latest(localPrice)
-serialisableAssets = []
-for asset in assets:
-    serialisableAssets.append(asset.export())
-date_object = datetime.date.today()
-dates.append(str(date_object))
-replacementObj = {'_id': 'Stu',
-'portfolio' : myPortfolio,
-'seriesdataset' : serialisableAssets,
-'dates' : dates
-}
-print(replacementObj)
-MongoPersistDocument(replacementObj)
-#FilePersistDocument(replacementObj)
+    assetFactory = assetAPIFactory()
+    for asset in assets:
+        exchange = 1.0
+        if assetFactory.USCurrency(asset.Name):
+            exchange = assetFactory.getExchangeRate()
+        localPrice = round(assetFactory.getPriceUSD(asset.Name) * myPortfolio[asset.Name] * exchange, 2)
+        print(asset.Name + " " + str(localPrice))
+        asset.latest(localPrice)
+    serialisableAssets = []
+    for asset in assets:
+        serialisableAssets.append(asset.export())
+    date_object = datetime.date.today()
+    dates.append(str(date_object))
+    replacementObj = {'_id': user,
+    'portfolio' : myPortfolio,
+    'seriesdataset' : serialisableAssets,
+    'dates' : dates
+    }
+    MongoPersistDocument(replacementObj, user)
