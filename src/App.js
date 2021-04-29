@@ -4,45 +4,27 @@ import Header from './components/Header'
 import Stocks from './components/Stocks'
 import Chart from './components/Chart'
 import { useState , useEffect } from 'react'
-
 import { render } from 'react-dom'
-
 
 function App() {
 
-  useEffect(() =>{
+  function fetchUser(){
     const getStocks = async () => {
-      const StocksFromServer = await fetchStocks()
-      setStocks(StocksFromServer)
-    }
-    const getDates = async () => {
-      const DatesFromServer = await fetchDates()
-      setDates(DatesFromServer)
-    }
-    const getPortfolio = async () => {
-      const portfolioFromServer = await fetchPortfolio()
-      setPortfolio(portfolioFromServer)
+      const JsonFromServer = await fetchStocks()
+      setStocks(JsonFromServer.seriesdataset)
+      setDates(JsonFromServer.dates)
+      setPortfolio(JsonFromServer.portfolio)
     }
     getStocks()
-    getDates()
-    getPortfolio()
-  }, [])
+  }
+  useEffect(() =>{fetchUser()}, [])
+
+  var portfolioURI = 'http://192.168.0.17:7000/Portfolio/'
 
   const fetchStocks = async() => {
-    const res = await fetch ('http://localhost:3000/seriesdataset')
+    const res = await fetch (portfolioURI)
     const data = await res.json()
-    return data
-  }
-
-  const fetchDates = async() => {
-    const res = await fetch ('http://localhost:3000/dates')
-    const data = await res.json()
-    return data
-  }
-
-  const fetchPortfolio = async() => {
-    const res = await fetch ('http://localhost:3000/portfolio')
-    const data = await res.json()
+    console.log(data)
     return data
   }
 
@@ -55,10 +37,21 @@ const [dates, setDates] = useState([
 const [portfolio, setPortfolio] = useState([
 ]);
 
-  const name = "stu"
+  function StuPortfolio(){
+    portfolioURI = portfolioURI+'Stu'
+    fetchUser()
+  }
+
+  function KianasPortfolio(){
+    portfolioURI = portfolioURI+'Kiana'
+    fetchUser()
+  }
+
   return (
     <div className="App">
             <Chart stocks={stocks} dates={dates}/>
+              <button onClick={StuPortfolio}>  Stu's portfolio</button>
+              <button onClick={KianasPortfolio}>  Kiana's portfolio</button>
               <Stocks stocks={stocks} portfolio={portfolio} />
     </div>
   );

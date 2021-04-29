@@ -51,19 +51,19 @@ def MongoGetDocument(user = 'Stu'):
     key = "'_id': {}".format(user)
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    print(db.portfolio.find_one({'_id': user}))
-    return db.portfolio.find_one({'_id': user})
+    print(db.portfolios.find_one({'_id': user}))
+    return db.portfolios.find_one({'_id': user})
     client.close()
 
 def MongoPersistDocument(data, user = 'Stu'):
     key = {'_id': user}
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    if db.portfolio.find_one({}) == None:
-        db.portfolio.insert_one(data)
+    if db.portfolios.find_one({}) == None:
+        db.portfolios.insert_one(data)
     else:
-        result=db.portfolio.replace_one(key, data)
-    confirmEntry = db.portfolio.find_one({'_id': user})
+        result=db.portfolios.replace_one(key, data)
+    confirmEntry = db.portfolios.find_one({'_id': user})
     client.close()
 
 userList = ['Stu', 'Kiana']
