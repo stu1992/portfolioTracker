@@ -19,7 +19,7 @@ function App() {
   }
   useEffect(() =>{fetchUser()}, [])
 
-  const basePortfolioURI = 'http://192.168.0.17:7000/Portfolio/'
+  const basePortfolioURI = 'http://124.148.150.181:7000/Portfolio/'
   var portfolioURI = basePortfolioURI
 
   const fetchStocks = async() => {
