@@ -19,7 +19,8 @@ function App() {
   }
   useEffect(() =>{fetchUser()}, [])
 
-  var portfolioURI = 'http://192.168.0.17:7000/Portfolio/'
+  const basePortfolioURI = 'http://192.168.0.17:7000/Portfolio/'
+  var portfolioURI = basePortfolioURI
 
   const fetchStocks = async() => {
     const res = await fetch (portfolioURI)
@@ -38,20 +39,26 @@ const [portfolio, setPortfolio] = useState([
 ]);
 
   function StuPortfolio(){
-    portfolioURI = portfolioURI+'Stu'
+    portfolioURI = basePortfolioURI+'Stu'
     fetchUser()
   }
 
   function KianasPortfolio(){
-    portfolioURI = portfolioURI+'Kiana'
+    portfolioURI = basePortfolioURI+'Kiana'
     fetchUser()
   }
+
+const search = window.location.search;
+const params = new URLSearchParams(search);
+const user = params.get('user');
+
+if (user != null){
+  portfolioURI = basePortfolioURI+user;
+}
 
   return (
     <div className="App">
             <Chart stocks={stocks} dates={dates}/>
-              <button onClick={StuPortfolio}>  Stu's portfolio</button>
-              <button onClick={KianasPortfolio}>  Kiana's portfolio</button>
               <Stocks stocks={stocks} portfolio={portfolio} />
     </div>
   );
