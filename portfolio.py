@@ -51,7 +51,6 @@ def MongoGetDocument(user = 'Stu'):
     key = "'_id': {}".format(user)
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    print(db.portfolios.find_one({'_id': user}))
     return db.portfolios.find_one({'_id': user})
     client.close()
 
@@ -144,7 +143,7 @@ else:
             asset.latest(totalValue)
         elif asset.Name == 'Average':
             latest = asset.History[-1]
-            asset.latest(round(latest* 1.000019178, 6)) #the idea here is to get a 7% return in a year
+            asset.latest(round(latest* (1.07/365), 6)) #the idea here is to get a 7% return in a year
 # persist data
 serialisableAssets = []
 for asset in assets:
