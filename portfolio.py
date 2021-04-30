@@ -7,7 +7,7 @@ from pymongo import MongoClient
 
 class assetAPIFactory:
     def getPriceUSD(self, ticker):
-        if ticker == "AAPL" or ticker == "VUG" or ticker == "GME":
+        if ticker == "AAPL" or ticker == "VUG" or ticker == "GME" or ticker == "VOO":
             yahoo_financials = YahooFinancials(ticker)
             return YahooFinancials([ticker]).get_current_price()[ticker]
         elif ticker == "BIQ":
@@ -66,6 +66,7 @@ def MongoPersistDocument(data, user = 'Stu'):
     confirmEntry = db.portfolios.find_one({'_id': user})
     client.close()
 
+totalValue = 0
 userList = ['Stu', 'Kiana']
 for user in userList:
     print("updating for "+ user)
@@ -82,6 +83,7 @@ for user in userList:
         if assetFactory.USCurrency(asset.Name):
             exchange = assetFactory.getExchangeRate()
         localPrice = round(assetFactory.getPriceUSD(asset.Name) * myPortfolio[asset.Name] * exchange, 2)
+        totalValue = totalValue + localPrice
         print(asset.Name + " " + str(localPrice))
         asset.latest(localPrice)
     serialisableAssets = []
@@ -95,3 +97,63 @@ for user in userList:
     'dates' : dates
     }
     MongoPersistDocument(replacementObj, user)
+
+assetFactory = assetAPIFactory()
+# poplulate market object
+
+print("comparing to the \'Market\'")
+obj = MongoGetDocument('Market')
+assets = []
+for struct in obj['seriesdataset']:
+    assets.append(Asset(struct))
+myPortfolio = obj['portfolio']
+dates = obj['dates']
+# get the day
+date_object = datetime.date.today()
+if date_object.day == 1: # I want to rebalance the portfolio on a monthly bases so I don't gete wrecked my the market out performing me.
+    print("first of the month.. Rebalance")
+    # my 'Market' portfolio is going to just buy all the S&P shares I could afford
+    exchange = assetFactory.getExchangeRate()
+    localPrice = round(assetFactory.getPriceUSD('VOO') * exchange , 2)
+    print("VOO price: " + str(localPrice))
+    shares = round((totalValue / localPrice), 0)
+    print("\'buying\' " + str(shares) + " VOO shares")
+    myPortfolio['VOO'] = shares
+    # buy the shares
+    for asset in assets:
+        if asset.Name == 'VOO':
+            localPrice = round(assetFactory.getPriceUSD('VOO') * myPortfolio['VOO'] * exchange , 2)
+            asset.latest(totalValue)
+    print("s&p rebalanced")
+    # I'm going to 'create' an asset that perfectly grows by long term market average
+    for asset in assets:
+        if asset.Name == 'Average':
+            asset.latest(totalValue)
+    # update my 'total assets under management' price
+    for asset in assets:
+        if asset.Name == 'Managed Assets':
+            print("total managed assets are " + str(totalValue))
+            asset.latest(totalValue)
+else:
+    for asset in assets:
+        if asset.Name == 'VOO':
+            exchange = assetFactory.getExchangeRate()
+            localPrice = round(assetFactory.getPriceUSD('VOO') * myPortfolio['VOO'] * exchange , 2)
+            asset.latest(localPrice)
+        elif asset.Name == 'Managed Assets':
+            asset.latest(totalValue)
+        elif asset.Name == 'Average':
+            latest = asset.History[-1]
+            asset.latest(round(latest* 1.000019178, 6)) #the idea here is to get a 7% return in a year
+# persist data
+serialisableAssets = []
+for asset in assets:
+    serialisableAssets.append(asset.export())
+date_object = datetime.date.today()
+dates.append(str(date_object))
+replacementObj = {'_id': 'Market',
+'portfolio' : myPortfolio,
+'seriesdataset' : serialisableAssets,
+'dates' : dates
+}
+MongoPersistDocument(replacementObj, 'Market')
