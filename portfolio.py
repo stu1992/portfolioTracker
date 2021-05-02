@@ -6,17 +6,25 @@ from yahoofinancials import YahooFinancials
 from pymongo import MongoClient
 
 class assetAPIFactory:
+    cachedPrices = {}
     def getPriceUSD(self, ticker):
-        if ticker == "AAPL" or ticker == "VUG" or ticker == "GME" or ticker == "VOO":
+        if ticker in self.cachedPrices:
+            print("using cache for " + ticker)
+            return self.cachedPrices[ticker]
+
+        elif ticker == "AAPL" or ticker == "VUG" or ticker == "GME" or ticker == "VOO":
             yahoo_financials = YahooFinancials(ticker)
-            return YahooFinancials([ticker]).get_current_price()[ticker]
+            self.cachedPrices[ticker] = YahooFinancials([ticker]).get_current_price()[ticker]
+            return self.cachedPrices[ticker]
         elif ticker == "BIQ":
-            return YahooFinancials([ticker+ ".AX"]).get_current_price()[ticker+ ".AX"]
+            self.cachedPrices[ticker] = YahooFinancials([ticker+ ".AX"]).get_current_price()[ticker+ ".AX"]
+            return self.cachedPrices[ticker]
         elif ticker == "BTC" or  ticker == "ETH":
             TICKER_API_URL = 'https://www.bitstamp.net/api/v2/ticker/' + ticker.lower() + "usd/"
             response = requests.get(TICKER_API_URL)
             response_json = response.json()
-            return float(response_json['last'])
+            self.cachedPrices[ticker] = float(response_json['last'])
+            return self.cachedPrices[ticker]
 
     def USCurrency(self, ticker):
         if ticker == "BIQ":
@@ -65,6 +73,7 @@ def MongoPersistDocument(data, user = 'Stu'):
     confirmEntry = db.portfolios.find_one({'_id': user})
     client.close()
 
+assetFactory = assetAPIFactory()
 totalValue = 0
 userList = ['Stu', 'Kiana']
 for user in userList:
@@ -76,7 +85,6 @@ for user in userList:
     myPortfolio = obj['portfolio']
     dates = obj['dates']
 
-    assetFactory = assetAPIFactory()
     for asset in assets:
         exchange = 1.0
         if assetFactory.USCurrency(asset.Name):
@@ -96,8 +104,6 @@ for user in userList:
     'dates' : dates
     }
     MongoPersistDocument(replacementObj, user)
-
-assetFactory = assetAPIFactory()
 # poplulate market object
 
 print("comparing to the \'Market\'")
@@ -122,7 +128,7 @@ if date_object.day == 1: # I want to rebalance the portfolio on a monthly bases 
     for asset in assets:
         if asset.Name == 'VOO':
             localPrice = round(assetFactory.getPriceUSD('VOO') * myPortfolio['VOO'] * exchange , 2)
-            asset.latest(totalValue)
+            asset.latest(localPrice * myPortfolio['VOO'])
     print("s&p rebalanced")
     # I'm going to 'create' an asset that perfectly grows by long term market average
     for asset in assets:
@@ -143,7 +149,10 @@ else:
             asset.latest(totalValue)
         elif asset.Name == 'Average':
             latest = asset.History[-1]
-            asset.latest(round(latest* (1.07/365), 6)) #the idea here is to get a 7% return in a year
+            print("yesterday was " + str(latest))
+            asset.latest(round(latest* 1.002931507, 6)) #the idea here is to get a 7% return in a year
+            latest = asset.History[-1]
+            print("today is " + str(latest))
 # persist data
 serialisableAssets = []
 for asset in assets:
