@@ -3,6 +3,7 @@ import './App.css';
 import Header from './components/Header'
 import Stocks from './components/Stocks'
 import Chart from './components/Chart'
+import LandingPage from './components/LandingPage'
 import { useState , useEffect } from 'react'
 import { render } from 'react-dom'
 
@@ -19,7 +20,7 @@ function App() {
   }
   useEffect(() =>{fetchUser()}, [])
 
-  const basePortfolioURI = 'http://124.148.150.181:7000/Portfolio/'
+  const basePortfolioURI = 'http://localhost:7000/Portfolio/'
   var portfolioURI = basePortfolioURI
 
   const fetchStocks = async() => {
@@ -54,14 +55,26 @@ const user = params.get('user');
 
 if (user != null){
   portfolioURI = basePortfolioURI+user;
-}
-
   return (
     <div className="App">
             <Chart stocks={stocks} dates={dates}/>
               <Stocks stocks={stocks} portfolio={portfolio} />
     </div>
   );
+}else{
+  return (
+    <div className="App">
+      <ul>
+  <li>Want to be rich</li>
+  <li>Invest. Dont speculate</li>
+  <li>Gamify</li>
+  <li>The system isn't rigged, your psychology is</li>
+</ul>
+
+      <LandingPage />
+    </div>
+  );
+}
 }
 
 export default App;

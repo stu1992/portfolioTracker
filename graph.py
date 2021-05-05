@@ -29,7 +29,6 @@ for struct in obj['seriesdataset']:
 myPortfolio = obj['portfolio']
 dates = obj['dates']
 
-
 t = dates
 a = assets[0].History
 b = assets[1].History
@@ -40,9 +39,8 @@ voo = plt.plot(t, b)
 managed = plt.plot(t, c)
 plt.setp(average, 'color', 'r', 'linewidth', 0.5, label='7% per annum')
 plt.setp(voo, 'color', 'b', 'linewidth', 0.5, label='Everything in S&P 500')
-plt.setp(managed, 'color', 'black', 'linewidth', 1.5, label='Assets under management')
+plt.setp(managed, 'color', 'black', 'linewidth', 2, label='Assets under management')
 plt.title('How we compare to market trends')
 plt.legend(title='rebalanced every month')
 plt.grid(False)
-plt.savefig("market.png")
-plt.show()
+plt.savefig("./src/market.png")
