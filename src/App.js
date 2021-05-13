@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Home from './components/Home';
 import About from './components/About';
 import Contact from './components/Contact';
-import Header from './components/Header'
+import Chart from './components/Chart'
 class App extends Component {
   render() {
     return (
@@ -23,7 +23,7 @@ class App extends Component {
           <Switch>
               <Route exact path='/' component={Home} />
               <Route path='/contact' component={Contact} />
-              <Route path='/about' component={Header} />
+              <Route path='/about' component={Chart} />
           </Switch>
         </div>
       </Router>
