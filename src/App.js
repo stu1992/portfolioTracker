@@ -6,6 +6,7 @@ import Home from './components/Home';
 import About from './components/About';
 import Contact from './components/Contact';
 import Chart from './components/Chart'
+import LandingPage from './components/LandingPage';
 class App extends Component {
   render() {
     return (
@@ -22,7 +23,7 @@ class App extends Component {
           <hr />
           <Switch>
               <Route exact path='/' component={Home} />
-              <Route path='/contact' component={Contact} />
+              <Route path='/contact' component={LandingPage} />
               <Route path='/about' component={Chart} />
           </Switch>
         </div>

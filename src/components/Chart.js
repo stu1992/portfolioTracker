@@ -76,6 +76,11 @@ const options = {
                 lineWidth: 1,
                 lineColor: '#666666'
             }
+        },
+        series: {
+            marker: {
+                enabled: false
+            }
         }
     }
 }

@@ -43,4 +43,4 @@ plt.setp(managed, 'color', 'black', 'linewidth', 2, label='Assets under manageme
 plt.title('How we compare to market trends')
 plt.legend(title='rebalanced every month')
 plt.grid(False)
-plt.savefig("./src/market.png")
+plt.savefig("/home/stu/Documents/portfolioTracker/src/market.png")
