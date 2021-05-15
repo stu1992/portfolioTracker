@@ -28,8 +28,10 @@ for struct in obj['seriesdataset']:
     assets.append(Asset(struct))
 myPortfolio = obj['portfolio']
 dates = obj['dates']
-
-t = dates
+newDates = []
+for i in range(len(dates)):
+    newDates.append(str(i))
+t = newDates
 a = assets[0].History
 b = assets[1].History
 c = assets[2].History

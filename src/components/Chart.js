@@ -13,11 +13,12 @@ const [dates, setDates] = useState([
 const [portfolio, setPortfolio] = useState([
 ]);
 
-const basePortfolioURI = 'http://localhost:7000/Portfolio/Stu'
+const basePortfolioURI = 'http://m3r:7000/Portfolio/Stu'
 var portfolioURI = basePortfolioURI
 
 const fetchStocks = async() => {
-  const res = await fetch (portfolioURI)
+  const res = await fetch (portfolioURI, {method: 'GET',
+  credentials: 'include'});
   const data = await res.json()
   console.log(data)
   return data

@@ -1,13 +1,15 @@
 // App.js
 
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Home from './components/Home';
 import About from './components/About';
 import Contact from './components/Contact';
 import Chart from './components/Chart'
 import LandingPage from './components/LandingPage';
+import Login from './components/Login';
 class App extends Component {
+
   render() {
     return (
     <Router>
@@ -22,7 +24,7 @@ class App extends Component {
           </nav>
           <hr />
           <Switch>
-              <Route exact path='/' component={Home} />
+              <Route exact path='/' component={Login} />
               <Route path='/contact' component={LandingPage} />
               <Route path='/about' component={Chart} />
           </Switch>
