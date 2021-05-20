@@ -18,7 +18,7 @@ export default class Login extends Component {
   onSubmit = (event) => {
   event.preventDefault();
   console.log("pressing");
-  fetch('http://192.168.0.11:3000/api/user/login', {
+  fetch('http://localhost:3000/api/user/login', {
     method: 'POST',
     body: JSON.stringify(this.state),
     credentials: 'include',

@@ -19,10 +19,7 @@ var portfolioURI = basePortfolioURI
 const fetchStocks = async() => {
   const res = await fetch (portfolioURI, {
     method: 'GET',
-    credentials: 'include',
-    headers: {
-        'Content-Type': 'application/json',
-      }
+    credentials: "same-origin"
     });
   const data = await res.json()
   console.log(data)

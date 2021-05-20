@@ -75,7 +75,7 @@ def MongoPersistDocument(data, user = 'Stu'):
 
 assetFactory = assetAPIFactory()
 totalValue = 0
-userList = ['Stu', 'Kiana']
+userList = ['Stumay1992@gmail.com', 'Kiana@gmail.com']
 for user in userList:
     print("updating for "+ user)
     obj = MongoGetDocument(user)

@@ -8,8 +8,8 @@ import Contact from './components/Contact';
 import Chart from './components/Chart'
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
-class App extends Component {
 
+class App extends Component {
   render() {
     return (
     <Router>
