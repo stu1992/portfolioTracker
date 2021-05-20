@@ -17,6 +17,7 @@ router.route('/login').post((req, res) => {
           error: 'Internal error please try again'
         });
       } else if (!user) {
+        console.log("no user");
         res.status(401)
           .json({
           error: 'Incorrect email or password'
@@ -24,16 +25,19 @@ router.route('/login').post((req, res) => {
       } else {
         user.isCorrectPassword(password, function(err, same) {
           if (err) {
+            console.log("password");
             res.status(500)
               .json({
               error: 'Internal error please try again'
             });
           } else if (!same) {
+            console.log("either");
             res.status(401)
               .json({
               error: 'Incorrect email or password'
             });
           } else {
+            console.log("loggin in");
             // Issue token
             const payload = { email };
             const token = Jwt.sign(payload, secret, {
@@ -44,6 +48,7 @@ router.route('/login').post((req, res) => {
         });
       }
     });
+    console.log("done");
     });
 
 

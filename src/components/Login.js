@@ -18,15 +18,19 @@ export default class Login extends Component {
   onSubmit = (event) => {
   event.preventDefault();
   console.log("pressing");
-  fetch('http://m3r:7000/user/login', {
+  fetch('http://192.168.0.11:3000/api/user/login', {
     method: 'POST',
     body: JSON.stringify(this.state),
+    credentials: 'include',
+    mode: "cors",
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+       'Access-Control-Allow-Origin': '*'
     }
   })
   .then(res => {
     if (res.status === 200) {
+      console.log("client loging success!");
       this.props.history.push('/');
     } else {
       const error = new Error(res.error);

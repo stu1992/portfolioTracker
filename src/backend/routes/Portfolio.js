@@ -7,25 +7,43 @@ const secret = 'mysecretsshhh';
 
 const withAuth = require('../Middleware');
 router.route('/:id', withAuth).get((req, res) => {
-  const token = req.cookies.token;  if (!token) {
-    console.log("noo token");
+  //const token = req.cookies.token;  if (!token) {
+    //console.log("noo token");
     Portfolio.findById(req.params.id)
   .then(portfolio => res.json(portfolio));
     //res.status(401).send('Unauthorized: No token provided');
-  } else {
-    Jwt.verify(token, secret, function(err, decoded) {
-      if (err) {
-        console.log("invalid token");
-        res.status(401).send('Unauthorized: Invalid token');
-      } else {
-        console.log("valid tttttttttttttttttttken");
-          Portfolio.findById(req.params.id)
-        .then(portfolio => res.json(portfolio));
-      }
-    })
-  }
+  //} else {
+    //Jwt.verify(token, secret, function(err, decoded) {
+      //if (err) {
+      //  console.log("invalid token");
+    //    res.status(401).send('Unauthorized: Invalid token');
+    //  } else {
+      //  console.log("valid tttttttttttttttttttken");
+      //    Portfolio.findById(req.params.id)
+    //    .then(portfolio => res.json(portfolio));
+  //    }
+  //  })
+//  }ttttttt
 });
 
+router.route('/test').get((req, res) => {
+  //const token = req.cookies.token;  if (!token) {
+    //console.log("noo token");
+
+    res.status(200).send('yes');
+  //} else {
+    //Jwt.verify(token, secret, function(err, decoded) {
+      //if (err) {
+      //  console.log("invalid token");
+    //    res.status(401).send('Unauthorized: Invalid token');
+    //  } else {
+      //  console.log("valid tttttttttttttttttttken");
+      //    Portfolio.findById(req.params.id)
+    //    .then(portfolio => res.json(portfolio));
+  //    }
+  //  })
+//  }
+});
 
 /*
 router.route('/register').post((req, res) => {
