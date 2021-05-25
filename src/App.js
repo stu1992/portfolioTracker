@@ -8,6 +8,7 @@ import Contact from './components/Contact';
 import Chart from './components/Chart'
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
+import Profile from './components/Profile';
 
 class App extends Component {
   render() {
@@ -20,6 +21,7 @@ class App extends Component {
             <li><Link to={'/'} className="nav-link"> Home </Link></li>
             <li><Link to={'/contact'} className="nav-link">Contact</Link></li>
             <li><Link to={'/about'} className="nav-link">About</Link></li>
+            <li><Link to={'/Profile'} className="nav-link">Profile</Link></li>
           </ul>
           </nav>
           <hr />
@@ -27,6 +29,7 @@ class App extends Component {
               <Route exact path='/' component={Login} />
               <Route path='/contact' component={LandingPage} />
               <Route path='/about' component={Chart} />
+              <Route path='/Profile' component={Profile} />
           </Switch>
         </div>
       </Router>

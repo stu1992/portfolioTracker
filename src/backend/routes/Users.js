@@ -52,7 +52,8 @@ router.route('/login').post((req, res) => {
     });
 
     router.route('/get/').get((req, res) => {
-    //  const token = req.cookies.token;  if (!token) {
+      console.log("getting user");
+          //  const token = req.cookies.token;  if (!token) {
         console.log(req.headers.cookie);
         var token = req.headers.cookie.substring(6);
         console.log(token);
