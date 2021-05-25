@@ -150,7 +150,7 @@ else:
         elif asset.Name == 'Average':
             latest = asset.History[-1]
             print("yesterday was " + str(latest))
-            asset.latest(round(latest* 1.002931507, 6)) #the idea here is to get a 7% return in a year
+            asset.latest(round(latest* 1.000185395, 6)) #the idea here is to get a 7% return in a year
             latest = asset.History[-1]
             print("today is " + str(latest))
 # persist data
