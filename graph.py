@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.dates as mdates
 from pymongo import MongoClient
 
 class Asset:
@@ -31,18 +32,23 @@ dates = obj['dates']
 newDates = []
 for i in range(len(dates)):
     newDates.append(str(i))
-t = newDates
+t = dates
 a = assets[0].History
 b = assets[1].History
 c = assets[2].History
+fig, ax = plt.subplots()
 
-average = plt.plot(t, a)
-voo = plt.plot(t, b)
-managed = plt.plot(t, c)
-plt.setp(average, 'color', 'r', 'linewidth', 0.5, label='7% per annum')
-plt.setp(voo, 'color', 'b', 'linewidth', 0.5, label='Everything in S&P 500')
-plt.setp(managed, 'color', 'black', 'linewidth', 2, label='Assets under management')
+fmt_month_year = mdates.MonthLocator()
+fmt_day_year = mdates.DayLocator()
+ax.xaxis.set_major_locator(fmt_month_year)
+ax.xaxis.set_minor_locator(fmt_day_year)
+#ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+fig.autofmt_xdate()
+
+ax.plot(t, a,color= 'red', linewidth=0.5, label='7% per annum')
+ax.plot(t, b, color='blue', linewidth=0.5, label='Everything in S&P 500')
+ax.plot(t, c, color='black', linewidth=1.5, label='Assets under management')
 plt.title('How we compare to market trends')
-plt.legend(title='rebalanced every month')
-plt.grid(False)
+plt.legend(title='Rebalanced every month')
+ax.xaxis.grid(True)
 plt.savefig("/home/stu/Documents/portfolioTracker/src/market.png")
