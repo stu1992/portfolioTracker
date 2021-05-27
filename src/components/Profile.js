@@ -3,7 +3,7 @@ import { useState , useEffect } from 'react'
 import React, { Component } from 'react';
 import Login from './Login'
 
-const Profile = () => {
+const Profile = ({state, setFunction}) => {
 
 const [name, setName] = useState("");
 
@@ -23,7 +23,8 @@ const fetchUsers = async() => {
 function fetchUser(){
   const getStocks = async () => {
     const JsonFromServer = await fetchUsers()
-    setName(JsonFromServer.name)
+    //setName(JsonFromServer.name)
+  setFunction({name: JsonFromServer.name})
   }
   getStocks()
 }
@@ -31,7 +32,7 @@ useEffect(() =>{fetchUser()}, [])
 
   return (
       <div>
-        <h2>{name}</h2>
+        <h2>{state}</h2>
       </div>
   )
 }
