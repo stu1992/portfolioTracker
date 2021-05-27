@@ -4,7 +4,7 @@ import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
 
-const Chart = () => {
+const Chart = ({state}) => {
 
 const [stocks, setStocks] = useState([
 ]);
@@ -13,7 +13,7 @@ const [dates, setDates] = useState([
 const [portfolio, setPortfolio] = useState([
 ]);
 
-const basePortfolioURI = 'http://localhost:3000/api/Portfolio/Stu'
+const basePortfolioURI = 'http://localhost:3000//api/Portfolio/Stu'
 var portfolioURI = basePortfolioURI
 
 const fetchStocks = async() => {
@@ -47,7 +47,7 @@ const options = {
         text: 'My asset portfolio'
     },
     subtitle: {
-        text: 'Stu\'s investments'
+        text: state['name']+'\'s investments'
     },
     xAxis: {
         categories: dates,

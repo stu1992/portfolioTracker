@@ -31,23 +31,20 @@ export default class Login extends Component {
   .then(res => {
     if (res.status === 200) {
       console.log("client loging success!");
-      this.props.history.push('/');
+      //this.props.history.push('/');
     } else {
       const error = new Error(res.error);
       throw error;
     }
-  })
-  .catch(err => {
-    console.error(err);
-    alert('Error logging in please try again');
   });
 }
 render() {
-  //if( this.state['email']){
-  //  return(
-  //    <h1>logged in!</h1>
-  //  );
-//  }else{
+  console.log("deeeeeerp" +this.props.state['email']);
+  if( this.props.state['email']){
+    return(
+      <h1>logged in{this.props.state['name']}!</h1>
+    )
+ }else{
     return (
       <form onSubmit={this.onSubmit}>
         <h1>Login Below!</h1>
@@ -69,8 +66,8 @@ render() {
         />
        <input type="submit" value="Submit"/>
       </form>
-    );
+    )
 //  }
   }
 }
-//dev-htek42ux
+}

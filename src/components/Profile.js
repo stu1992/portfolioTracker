@@ -1,6 +1,7 @@
 // Profile.js
 import { useState , useEffect } from 'react'
 import React, { Component } from 'react';
+import axios from 'axios';
 import Login from './Login'
 
 const Profile = ({state, setFunction}) => {
@@ -24,7 +25,9 @@ function fetchUser(){
   const getStocks = async () => {
     const JsonFromServer = await fetchUsers()
     //setName(JsonFromServer.name)
-  setFunction({name: JsonFromServer.name})
+  setFunction({name: JsonFromServer.name,
+  email: JsonFromServer.email,
+token: JsonFromServer.token})
   }
   getStocks()
 }
@@ -32,7 +35,9 @@ useEffect(() =>{fetchUser()}, [])
 
   return (
       <div>
-        <h2>{state}</h2>
+        <h2>{state['name']}</h2>
+        <h2>{state['email']}</h2>
+        <h2>{state['token']}</h2>
       </div>
   )
 }

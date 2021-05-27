@@ -10,17 +10,14 @@ import LandingPage from './components/LandingPage';
 import Login from './components/Login';
 import Profile from './components/Profile';
 
-const derp = () =>
-{
-console.log("deeeeeeeeeeeeeeeeeeeeeeerp");
-}
 class App extends Component {
 
   constructor() {
   super();
-  console.log("top level")
   this.state = {
-    name: 'Stu'
+    name: null,
+    email: null,
+    token: null
   };
 
 }
@@ -30,21 +27,21 @@ class App extends Component {
     return (
     <Router>
         <div>
-          <h2>Welcome to React Router Tutorial</h2>
+          <h2>Riiiich</h2>
           <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <ul className="navbar-nav mr-auto">
-            <li><Link to={'/'} className="nav-link"> Home </Link></li>
-            <li><Link to={'/contact'} className="nav-link">{this.state.name}</Link></li>
-            <li><Link to={'/about'} className="nav-link">About</Link></li>
-            <li><Link to={'/Profile'} className="nav-link">Profile</Link></li>
+            <li><Link to={'/'} className="nav-link"> Login1 </Link></li>
+            <li><Link to={'/contact'} className="nav-link">Trends</Link></li>
+            <li><Link to={'/about'} className="nav-link">My Portfolio</Link></li>
+            <li><Link to={'/Profile'} className="nav-link">Login2</Link></li>
           </ul>
           </nav>
           <hr />
           <Switch>
-              <Route exact path='/' component={Login} />
-              <Route path='/contact' component={LandingPage} />
-              <Route path='/about' component={Chart} />
-              <Route path='/Profile' component={() => <Profile state={this.state.name} setFunction={this.setState.bind(this)} />}/>
+              <Route exact path='/' component={() => <Login state={this.state} setFunction={this.setState.bind(this)} />}/>
+              <Route path='/contact' component={() => <LandingPage state={this.state}/>}/>
+              <Route path='/about' component={() => <Chart state={this.state}/>}/>
+              <Route path='/Profile' component={() => <Profile state={this.state} setFunction={this.setState.bind(this)} />}/>
           </Switch>
         </div>
       </Router>
