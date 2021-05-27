@@ -1,7 +1,42 @@
+import { useState , useEffect } from 'react'
+import React from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
-const Chart = ({ stocks, dates }) => {
+
+const Chart = () => {
+
+const [stocks, setStocks] = useState([
+]);
+const [dates, setDates] = useState([
+]);
+const [portfolio, setPortfolio] = useState([
+]);
+
+const basePortfolioURI = 'http://localhost:3000/api/Portfolio/Stu'
+var portfolioURI = basePortfolioURI
+
+const fetchStocks = async() => {
+  const res = await fetch (portfolioURI, {
+    method: 'GET',
+    credentials: "same-origin"
+    });
+  const data = await res.json()
+  console.log(data)
+  return data
+}
+
+function fetchUser(){
+  const getStocks = async () => {
+    const JsonFromServer = await fetchStocks()
+    setStocks(JsonFromServer.seriesdataset)
+    setDates(JsonFromServer.dates)
+    setPortfolio(JsonFromServer.portfolio)
+  }
+  getStocks()
+}
+useEffect(() =>{fetchUser()}, [])
+
 const options = {
   series: stocks
   ,
@@ -43,6 +78,11 @@ const options = {
             marker: {
                 lineWidth: 1,
                 lineColor: '#666666'
+            }
+        },
+        series: {
+            marker: {
+                enabled: false
             }
         }
     }

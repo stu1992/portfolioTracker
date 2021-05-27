@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.dates as mdates
 from pymongo import MongoClient
-
 class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
@@ -15,6 +15,13 @@ class Asset:
         dict['data'] = self.History
         return dict
 
+def MongoMarketScatter():
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    print(db.volume.find_one({'_id': 'all'}))
+    return db.volume.find_one({'_id': 'all'})
+    client.close()
+
 def MongoGetDocument(user = 'Stu'):
     key = "'_id': {}".format(user)
     client = MongoClient("localhost")
@@ -22,25 +29,50 @@ def MongoGetDocument(user = 'Stu'):
     return db.portfolios.find_one({'_id': user})
     client.close()
 
-obj = MongoGetDocument('Market')
-assets = []
-for struct in obj['seriesdataset']:
-    assets.append(Asset(struct))
-myPortfolio = obj['portfolio']
-dates = obj['dates']
+def genGraph(public=True):
+    obj = MongoGetDocument('Market')
+    assets = []
+    for struct in obj['seriesdataset']:
+        assets.append(Asset(struct))
+    myPortfolio = obj['portfolio']
+    dates = obj['dates']
+    newDates = []
+    for i in range(len(dates)):
+        newDates.append(str(i))
+    t = dates
+    a = assets[0].History
+    b = assets[1].History
+    c = assets[2].History
 
-t = dates
-a = assets[0].History
-b = assets[1].History
-c = assets[2].History
+    scatter_data = MongoMarketScatter()
+    scatter_x = scatter_data['date']
+    scatter_y = scatter_data['endValue']
+    scatter_volume= scatter_data['volume']
+    scatter_volume = list(map(lambda x: x/5, scatter_volume))
+    print(scatter_volume)
+    fig, ax = plt.subplots()
 
-average = plt.plot(t, a)
-voo = plt.plot(t, b)
-managed = plt.plot(t, c)
-plt.setp(average, 'color', 'r', 'linewidth', 0.5, label='7% per annum')
-plt.setp(voo, 'color', 'b', 'linewidth', 0.5, label='Everything in S&P 500')
-plt.setp(managed, 'color', 'black', 'linewidth', 2, label='Assets under management')
-plt.title('How we compare to market trends')
-plt.legend(title='rebalanced every month')
-plt.grid(False)
-plt.savefig("./src/market.png")
+    fmt_month_year = mdates.MonthLocator()
+    fmt_day_year = mdates.DayLocator()
+    ax.xaxis.set_major_locator(fmt_month_year)
+    ax.xaxis.set_minor_locator(fmt_day_year)
+    #ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    fig.autofmt_xdate()
+
+
+    ax.plot(t, a,color= 'red', linewidth=0.5, label='7% per annum')
+    ax.plot(t, b, color='blue', linewidth=0.5, label='Everything in S&P 500')
+    ax.plot(t, c, color='black', linewidth=1.5, label='Assets under management')
+    if public == False:
+        ax.scatter(scatter_x, scatter_y, s=scatter_volume, alpha=0.3, c=np.random.random_sample(len(scatter_x)))
+    plt.title('How we compare to market trends')
+    plt.legend(title='Rebalanced every month')
+    ax.xaxis.grid(True)
+    if public == False:
+        plt.savefig("/home/stu/Documents/portfolioTracker/src/private_market.png")
+    if public == True:
+        ax.yaxis.set_major_locator(plt.NullLocator())
+        ax.xaxis.set_major_formatter(plt.NullFormatter())
+        plt.savefig("/home/stu/Documents/portfolioTracker/src/market.png")
+genGraph(True)
+genGraph(False)
