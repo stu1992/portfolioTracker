@@ -44,6 +44,7 @@ router.route('/login').post((req, res) => {
               expiresIn: '1h'
             });
             res.cookie('token', token, { httpOnly: true }).sendStatus(200);
+          //  res.send({'token': token});
           }
         });
       }
@@ -82,5 +83,9 @@ router.route('/login').post((req, res) => {
         }
         })
     });
+    router.route('/logout').get((req, res) => {
+      console.log("logging out");
+          res.cookie('token', "expired", { httpOnly: true }).sendStatus(200);
+        });
 
 module.exports = router;

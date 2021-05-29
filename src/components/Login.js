@@ -1,10 +1,13 @@
 // Login.jsx
 import React, { Component } from 'react';
+import  API from './Api';
+import  Chart from './Chart';
 const Jwt = require('jsonwebtoken');
 const secret = 'mysecretsshhh';
 export default class Login extends Component {
   constructor(props) {
     super(props)
+
     this.state = {
       email : '',
       password: ''
@@ -14,6 +17,17 @@ export default class Login extends Component {
     this.setState({
       [name]: value
     });
+  };
+  logout(){
+    console.log("logging out");
+    API({
+    url: '/user/logout'//,
+  //  attributes
+  })
+  .then(response => {
+   this.props.state['name'] = null;
+   this.props.state['email'] = null;
+  });
   };
   onSubmit = (event) => {
   event.preventDefault();
@@ -31,7 +45,6 @@ export default class Login extends Component {
   .then(res => {
     if (res.status === 200) {
       console.log("client loging success!");
-      //this.props.history.push('/');
     } else {
       const error = new Error(res.error);
       throw error;
@@ -42,7 +55,17 @@ render() {
   console.log("deeeeeerp" +this.props.state['email']);
   if( this.props.state['email']){
     return(
+      <div>
+        <form onSubmit={this.logout}>
       <h1>logged in{this.props.state['name']}!</h1>
+        <div>
+          <h2>{this.props.state['name']}</h2>
+          <h2>{this.props.state['email']}</h2>
+          <h2>{this.props.state['token']}</h2>
+        </div>
+      <input type="submit" value="Log out"/>
+      </form>
+    </div>
     )
  }else{
     return (
