@@ -18,7 +18,7 @@ class Asset:
 def MongoMarketScatter():
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    print(db.volume.find_one({'_id': 'all'}))
+    #print(db.volume.find_one({'_id': 'all'}))
     return db.volume.find_one({'_id': 'all'})
     client.close()
 
@@ -49,7 +49,7 @@ def genGraph(public=True):
     scatter_y = scatter_data['endValue']
     scatter_volume= scatter_data['volume']
     scatter_volume = list(map(lambda x: x/5, scatter_volume))
-    print(scatter_volume)
+    #print(scatter_volume)
     fig, ax = plt.subplots()
 
     fmt_month_year = mdates.MonthLocator()
@@ -64,15 +64,17 @@ def genGraph(public=True):
     ax.plot(t, b, color='blue', linewidth=0.5, label='Everything in S&P 500')
     ax.plot(t, c, color='black', linewidth=1.5, label='Assets under management')
     if public == False:
-        ax.scatter(scatter_x, scatter_y, s=scatter_volume, alpha=0.3, c=np.random.random_sample(len(scatter_x)))
+        ax.scatter(scatter_x, scatter_y, s=scatter_volume, alpha=0.25, c=np.random.random_sample(len(scatter_x)))
     plt.title('How we compare to market trends')
     plt.legend(title='Rebalanced every month')
     ax.xaxis.grid(True)
     if public == False:
-        plt.savefig("/home/stu/Documents/portfolioTracker/src/private_market.png")
+        plt.savefig("/var/www/html/static/media/private_market.a9a30e98.png")
     if public == True:
         ax.yaxis.set_major_locator(plt.NullLocator())
         ax.xaxis.set_major_formatter(plt.NullFormatter())
-        plt.savefig("/home/stu/Documents/portfolioTracker/src/market.png")
+        ax.xaxis.set_minor_locator(plt.NullLocator())
+        ax.xaxis.set_minor_formatter(plt.NullFormatter())
+        plt.savefig("/var/www/html/static/media/market.e2034e63.png")
 genGraph(True)
 genGraph(False)
