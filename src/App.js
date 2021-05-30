@@ -15,6 +15,7 @@ class App extends Component {
   constructor() {
   super();
   this.state = {
+    loggedin: false,
     name: null,
     email: null,
     token: null

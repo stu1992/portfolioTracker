@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import  API from './Api';
 import  Chart from './Chart';
+import Profile from './Profile';
 const Jwt = require('jsonwebtoken');
 const secret = 'mysecretsshhh';
 export default class Login extends Component {
@@ -12,7 +13,21 @@ export default class Login extends Component {
       email : '',
       password: ''
     };
-  }  handleInputChange = (event) => {
+  }
+  forceUpdateHandler(){
+    API({
+    url: '/user/get'//,
+  //  attributes
+  })
+  .then(response => {
+    this.props.setFunction({name: response.data['name'], email: response.data['email']});
+    //this.props.state['name'] = response.data['name'];
+    //this.props.state['email'] = response.data['email'];
+  });
+    this.forceUpdate();
+  };
+
+    handleInputChange = (event) => {
     const { value, name } = event.target;
     this.setState({
       [name]: value
@@ -25,8 +40,8 @@ export default class Login extends Component {
   //  attributes
   })
   .then(response => {
-   this.props.state['name'] = null;
-   this.props.state['email'] = null;
+    this.props.setFunction({name: null, email: null});
+     this.forceUpdateHandler();
   });
   };
   onSubmit = (event) => {
@@ -45,6 +60,8 @@ export default class Login extends Component {
   .then(res => {
     if (res.status === 200) {
       console.log("client loging success!");
+      this.props.state['loggedin'] = true;
+        this.forceUpdateHandler();
     } else {
       const error = new Error(res.error);
       throw error;
@@ -52,16 +69,13 @@ export default class Login extends Component {
   });
 }
 render() {
-  console.log("deeeeeerp" +this.props.state['email']);
-  if( this.props.state['email']){
+  if( this.props.state['loggedin']){
     return(
       <div>
         <form onSubmit={this.logout}>
       <h1>logged in{this.props.state['name']}!</h1>
         <div>
-          <h2>{this.props.state['name']}</h2>
-          <h2>{this.props.state['email']}</h2>
-          <h2>{this.props.state['token']}</h2>
+        <Profile state={this.props.state} />
         </div>
       <input type="submit" value="Log out"/>
       </form>
