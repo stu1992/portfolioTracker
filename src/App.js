@@ -33,7 +33,7 @@ if(this.state.loggedin){
     return (
     <Router>
         <div>
-          <h2>Riiiich</h2>
+          <h2>Making My Mates rich!</h2>
           <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <ul className="navbar-nav mr-auto">
             <li><Link to={'/'} className="nav-link"> {this.state.titles['index']} </Link></li>
