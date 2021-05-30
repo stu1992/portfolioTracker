@@ -2,6 +2,7 @@
 
 import React, { Component, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { Button } from '@material-ui/core';
 import About from './components/About';
 import Strategy from './components/Strategy';
 import Chart from './components/Chart'
@@ -15,7 +16,7 @@ class App extends Component {
   super();
   this.state = {
     loggedin: false,
-    titles: {index: "Mission Statement"}, // This is just variables for this page, simple words that change
+    titles: {index: "Our Mission"}, // This is just variables for this page, simple words that change
     name: null,
     email: null,
     token: null
@@ -27,7 +28,7 @@ class App extends Component {
 if(this.state.loggedin){
    this.state.titles['index'] = "My Portfolio";
 }else{
-   this.state.titles['index'] = "Mission Statement";
+   this.state.titles['index'] = "Our Mission";
 }
     return (
     <Router>
@@ -36,9 +37,10 @@ if(this.state.loggedin){
           <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <ul className="navbar-nav mr-auto">
             <li><Link to={'/'} className="nav-link"> {this.state.titles['index']} </Link></li>
-            <li><Link to={'/trends'} className="nav-link">Our Trends</Link></li>
             <li><Link to={'/strategy'} className="nav-link">Our Strategy</Link></li>
+            <li><Link to={'/trends'} className="nav-link">Our Results</Link></li>
             <li><Login state={this.state} setFunction={this.setState.bind(this)} /></li>
+
           </ul>
           </nav>
           <hr />
