@@ -2,6 +2,7 @@ import { useState , useEffect } from 'react'
 import React from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import Mission from './Mission';
 
 
 const Chart = ({state}) => {
@@ -87,12 +88,17 @@ const options = {
         }
     }
 }
-
+if(state['loggedin']){
 return (
   <HighchartsReact
   highcharts={Highcharts}
   options={options}
 />
   )
+}else {
+  return(
+    <Mission />
+    )
+}
 }
 export default Chart

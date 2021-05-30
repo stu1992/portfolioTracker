@@ -1,5 +1,6 @@
 // Login.jsx
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import  API from './Api';
 import  Chart from './Chart';
 import Profile from './Profile';
@@ -21,8 +22,6 @@ export default class Login extends Component {
   })
   .then(response => {
     this.props.setFunction({name: response.data['name'], email: response.data['email']});
-    //this.props.state['name'] = response.data['name'];
-    //this.props.state['email'] = response.data['email'];
   });
     this.forceUpdate();
   };
@@ -73,11 +72,11 @@ render() {
     return(
       <div>
         <form onSubmit={this.logout}>
-      <h1>logged in{this.props.state['name']}!</h1>
+      <h1>Hello {this.props.state['name']}</h1>
         <div>
-        <Profile state={this.props.state} />
         </div>
       <input type="submit" value="Log out"/>
+      <Link to={'/Profile'} className="nav-link">My Profile</Link>
       </form>
     </div>
     )

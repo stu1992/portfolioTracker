@@ -2,14 +2,14 @@
 
 import React, { Component } from 'react';
 
-class Contact extends Component {
+class Strategy extends Component {
   render() {
     return (
         <div>
-          <h2>Contact</h2>
+          <h2>How I'm going to make you richhhhhh111</h2>
         </div>
     );
   }
 }
 
-export default Contact;
+export default Strategy;

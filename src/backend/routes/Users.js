@@ -41,7 +41,7 @@ router.route('/login').post((req, res) => {
             // Issue token
             const payload = { email };
             const token = Jwt.sign(payload, secret, {
-              expiresIn: '1h'
+              expiresIn: '1d'
             });
             res.cookie('token', token, { httpOnly: true }).sendStatus(200);
           //  res.send({'token': token});
