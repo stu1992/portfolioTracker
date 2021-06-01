@@ -70,7 +70,7 @@ router.route('/login').post((req, res) => {
         });
     });
 
-
+/*
     router.route('/register').post((req, res) => {
       const { email, password, name} = req.body;
       console.log(req.body)
@@ -87,5 +87,6 @@ router.route('/login').post((req, res) => {
       console.log("logging out");
           res.cookie('token', "expired", { httpOnly: true }).sendStatus(200);
         });
+        */
 
 module.exports = router;

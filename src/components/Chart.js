@@ -14,7 +14,7 @@ const [dates, setDates] = useState([
 const [portfolio, setPortfolio] = useState([
 ]);
 
-const basePortfolioURI = 'http://localhost:3000/api/portfolio'
+const basePortfolioURI = '/api/portfolio'
 var portfolioURI = basePortfolioURI
 
 const fetchStocks = async() => {

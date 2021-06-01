@@ -1,6 +1,7 @@
 // Login.jsx
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Button } from '@material-ui/core';
 import  API from './Api';
 import  Chart from './Chart';
 import Profile from './Profile';
@@ -39,14 +40,13 @@ export default class Login extends Component {
   //  attributes
   })
   .then(response => {
-    this.props.setFunction({name: null, email: null});
-     this.forceUpdateHandler();
+    this.props.setFunction({name: null, email: null, loggedin: false});
   });
   };
   onSubmit = (event) => {
   event.preventDefault();
   console.log("pressing");
-  fetch('http://localhost:3000/api/user/login', {
+  fetch('/api/user/login', {
     method: 'POST',
     body: JSON.stringify(this.state),
     credentials: 'include',
@@ -103,7 +103,6 @@ render() {
        <input type="submit" value="Submit"/>
       </form>
     )
-//  }
   }
 }
 }

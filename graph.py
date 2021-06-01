@@ -69,12 +69,12 @@ def genGraph(public=True):
     plt.legend(title='Rebalanced every month')
     ax.xaxis.grid(True)
     if public == False:
-        plt.savefig("/var/www/html/static/media/private_market.a9a30e98.png")
+        plt.savefig("/var/www/html/static/media/private_market.d3c151cb.png")
     if public == True:
         ax.yaxis.set_major_locator(plt.NullLocator())
         ax.xaxis.set_major_formatter(plt.NullFormatter())
         ax.xaxis.set_minor_locator(plt.NullLocator())
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
-        plt.savefig("/var/www/html/static/media/market.e2034e63.png")
+        plt.savefig("/var/www/html/static/media/market.74a21c94.png")
 genGraph(True)
 genGraph(False)
