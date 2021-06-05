@@ -11,7 +11,7 @@ export default class Profile extends Component {
   }
 render() {
   return (
-    <div>
+    <div style={{ padding: 20 }}>
         <h2>{this.props.state['name']}</h2>
         <h2>{this.props.state['email']}</h2>
         </div>

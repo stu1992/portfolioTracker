@@ -2,7 +2,7 @@
 
 import React, { Component, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import { Button } from '@material-ui/core';
+import { Button, Grid} from '@material-ui/core';
 import About from './components/About';
 import Strategy from './components/Strategy';
 import Chart from './components/Chart'
@@ -33,7 +33,7 @@ if(this.state.loggedin){
     return (
     <Router>
         <div>
-          <h2>Making My Mates rich!</h2>
+          <h2 style={{ padding: 10 }}>Making My Mates rich!</h2>
           <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <ul className="navbar-nav mr-auto">
             <li><Link to={'/'} className="nav-link"> {this.state.titles['index']} </Link></li>

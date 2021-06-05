@@ -59,7 +59,7 @@ def genGraph(public=True):
     fig.autofmt_xdate()
 
 
-    ax.plot(t, a,color= 'red', linewidth=0.5, label='7% per annum')
+    ax.plot(t, a, dashes=[1, 3], color= 'red', linewidth=0.5, label='7% per annum')
     ax.plot(t, b, color='blue', linewidth=0.5, label='Everything in S&P 500')
     ax.plot(t, c, color='black', linewidth=1.5, label='Assets under management')
     if public == False:

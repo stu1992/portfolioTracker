@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 class Mission extends Component {
   render() {
     return (
-        <div>
+        <div style={{ padding: 20 }}>
           <h2>Our Mission</h2>
           <p>
           Most of my friends suck with money and it's so easy to invest. I don't want to retire at the age of 40 and have no one to invite on adventures because all my mates are busy working.
