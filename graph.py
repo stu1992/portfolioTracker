@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.dates as mdates
 from pymongo import MongoClient
+from datetime import datetime
 class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
@@ -18,7 +19,6 @@ class Asset:
 def MongoMarketScatter():
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    #print(db.volume.find_one({'_id': 'all'}))
     return db.volume.find_one({'_id': 'all'})
     client.close()
 
@@ -37,9 +37,9 @@ def genGraph(public=True):
     myPortfolio = obj['portfolio']
     dates = obj['dates']
     newDates = []
-    for i in range(len(dates)):
-        newDates.append(str(i))
-    t = dates
+    for i in dates: # convert to epoc objects for consumption by matplotlib
+        newDates.append(datetime.strptime(i, '%Y-%m-%d'))
+    t = newDates
     a = assets[0].History
     b = assets[1].History
     c = assets[2].History
@@ -49,18 +49,17 @@ def genGraph(public=True):
     scatter_y = scatter_data['endValue']
     scatter_volume= scatter_data['volume']
     scatter_volume = list(map(lambda x: x/5, scatter_volume))
-    #print(scatter_volume)
     fig, ax = plt.subplots()
 
     fmt_month_year = mdates.MonthLocator()
     fmt_day_year = mdates.DayLocator()
     ax.xaxis.set_major_locator(fmt_month_year)
-    ax.xaxis.set_minor_locator(fmt_day_year)
-    #ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.xaxis.set_minor_locator(fmt_day_year) #i'll eventually remove this. it'll just get cluttered
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%y-%m'))
     fig.autofmt_xdate()
 
 
-    ax.plot(t, a,color= 'red', linewidth=0.5, label='7% per annum')
+    ax.plot(t, a, dashes=[1, 3], color= 'red', linewidth=0.5, label='7% per annum')
     ax.plot(t, b, color='blue', linewidth=0.5, label='Everything in S&P 500')
     ax.plot(t, c, color='black', linewidth=1.5, label='Assets under management')
     if public == False:
@@ -69,12 +68,12 @@ def genGraph(public=True):
     plt.legend(title='Rebalanced every month')
     ax.xaxis.grid(True)
     if public == False:
-        plt.savefig("/var/www/html/static/media/private_market.a9a30e98.png")
+        plt.savefig("/var/www/html/static/media/private_market.d3c151cb.png")
     if public == True:
         ax.yaxis.set_major_locator(plt.NullLocator())
         ax.xaxis.set_major_formatter(plt.NullFormatter())
         ax.xaxis.set_minor_locator(plt.NullLocator())
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
-        plt.savefig("/var/www/html/static/media/market.e2034e63.png")
+        plt.savefig("/var/www/html/static/media/market.74a21c94.png")
 genGraph(True)
 genGraph(False)

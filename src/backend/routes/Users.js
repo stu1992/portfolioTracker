@@ -41,9 +41,10 @@ router.route('/login').post((req, res) => {
             // Issue token
             const payload = { email };
             const token = Jwt.sign(payload, secret, {
-              expiresIn: '1h'
+              expiresIn: '1d'
             });
             res.cookie('token', token, { httpOnly: true }).sendStatus(200);
+          //  res.send({'token': token});
           }
         });
       }
@@ -69,7 +70,7 @@ router.route('/login').post((req, res) => {
         });
     });
 
-
+/*
     router.route('/register').post((req, res) => {
       const { email, password, name} = req.body;
       console.log(req.body)
@@ -82,5 +83,10 @@ router.route('/login').post((req, res) => {
         }
         })
     });
+    router.route('/logout').get((req, res) => {
+      console.log("logging out");
+          res.cookie('token', "expired", { httpOnly: true }).sendStatus(200);
+        });
+        */
 
 module.exports = router;

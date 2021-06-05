@@ -1,24 +1,52 @@
 // Login.jsx
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@material-ui/core';
+import  API from './Api';
+import  Chart from './Chart';
+import Profile from './Profile';
 const Jwt = require('jsonwebtoken');
 const secret = 'mysecretsshhh';
 export default class Login extends Component {
   constructor(props) {
     super(props)
+
     this.state = {
       email : '',
       password: ''
     };
-  }  handleInputChange = (event) => {
+  }
+  forceUpdateHandler(){
+    API({
+    url: '/user/get'//,
+  //  attributes
+  })
+  .then(response => {
+    this.props.setFunction({name: response.data['name'], email: response.data['email']});
+  });
+    this.forceUpdate();
+  };
+
+    handleInputChange = (event) => {
     const { value, name } = event.target;
     this.setState({
       [name]: value
     });
   };
+  logout(){
+    console.log("logging out");
+    API({
+    url: '/user/logout'//,
+  //  attributes
+  })
+  .then(response => {
+    this.props.setFunction({name: null, email: null, loggedin: false});
+  });
+  };
   onSubmit = (event) => {
   event.preventDefault();
   console.log("pressing");
-  fetch('http://localhost:3000/api/user/login', {
+  fetch('/api/user/login', {
     method: 'POST',
     body: JSON.stringify(this.state),
     credentials: 'include',
@@ -31,7 +59,8 @@ export default class Login extends Component {
   .then(res => {
     if (res.status === 200) {
       console.log("client loging success!");
-      //this.props.history.push('/');
+      this.props.state['loggedin'] = true;
+        this.forceUpdateHandler();
     } else {
       const error = new Error(res.error);
       throw error;
@@ -39,10 +68,17 @@ export default class Login extends Component {
   });
 }
 render() {
-  console.log("deeeeeerp" +this.props.state['email']);
-  if( this.props.state['email']){
+  if( this.props.state['loggedin']){
     return(
-      <h1>logged in{this.props.state['name']}!</h1>
+      <div>
+        <form onSubmit={this.logout}>
+      <h1>Hello {this.props.state['name']}</h1>
+        <div>
+        </div>
+      <input type="submit" value="Log out"/>
+      <Link to={'/Profile'} className="nav-link">My Profile</Link>
+      </form>
+    </div>
     )
  }else{
     return (
@@ -67,7 +103,6 @@ render() {
        <input type="submit" value="Submit"/>
       </form>
     )
-//  }
   }
 }
 }

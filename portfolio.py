@@ -127,7 +127,7 @@ if date_object.day == 1: # I want to rebalance the portfolio on a monthly bases 
     # buy the shares
     for asset in assets:
         if asset.Name == 'VOO':
-            localPrice = round(assetFactory.getPriceUSD('VOO') * myPortfolio['VOO'] * exchange , 2)
+            localPrice = round(assetFactory.getPriceUSD('VOO') * exchange , 2)
             asset.latest(localPrice * myPortfolio['VOO'])
     print("s&p rebalanced")
     # I'm going to 'create' an asset that perfectly grows by long term market average
