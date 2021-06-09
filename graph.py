@@ -48,8 +48,9 @@ def genGraph(public=True):
     scatter_x = scatter_data['date']
     scatter_y = scatter_data['endValue']
     scatter_volume= scatter_data['volume']
-    scatter_volume = list(map(lambda x: x/5, scatter_volume))
+    scatter_volume = list(map(lambda x: x/10, scatter_volume))
     fig, ax = plt.subplots()
+    fig.set_size_inches(10,6,450)
 
     fmt_month_year = mdates.MonthLocator()
     fmt_day_year = mdates.DayLocator()
@@ -63,8 +64,8 @@ def genGraph(public=True):
     ax.plot(t, b, color='blue', linewidth=0.5, label='Everything in S&P 500')
     ax.plot(t, c, color='black', linewidth=1.5, label='Assets under management')
     if public == False:
-        ax.scatter(scatter_x, scatter_y, s=scatter_volume, alpha=0.25, c=np.random.random_sample(len(scatter_x)))
-    plt.title('How we compare to market trends')
+        ax.scatter(scatter_x, scatter_y, s=scatter_volume, alpha=0.25, c=np.random.random_sample(len(scatter_x)), label='Trade volume')
+    plt.title('How we compare to market trends',fontsize = 20)
     plt.legend(title='Rebalanced every month')
     ax.xaxis.grid(True)
     if public == False:
