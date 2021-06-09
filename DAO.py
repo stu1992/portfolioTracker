@@ -72,10 +72,10 @@ action = input("(buy|sell):")
 if action != "buy" and action != "sell":
     print("exit program. Action not correct.")
     exit()
-if assetChoice == "BTC" or assetChoice == "ETH":
-    volume = round(float(input("how many:")),8)
-else:
-    volume = int(input("how many:"))
+volume = round(float(input("how many:")),8)
+if str(volume)[-2:] == '.0': # if the volume is a integer, we won't persist trailing zeros.
+    print("converting floag to int")
+    volume = int(volume)
 newOwned = 0
 if action == "sell" and volume > ownedShares:
     print("exit program. ensure shares are available.")
