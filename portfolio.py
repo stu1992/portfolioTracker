@@ -61,6 +61,14 @@ def MongoGetDocument(user = 'Stu'):
     db = client.portfolioTracker
     return db.portfolios.find_one({'_id': user})
     client.close()
+def MongoGetUsers():
+    userList = []
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    userDict = list(db.users.find({}, {'email':1, '_id' : 0}))
+    for emailKey in userDict:
+        userList.append(emailKey['email'])
+    return userList
 
 def MongoPersistDocument(data, user = 'Stu'):
     key = {'_id': user}
@@ -75,7 +83,7 @@ def MongoPersistDocument(data, user = 'Stu'):
 
 assetFactory = assetAPIFactory()
 totalValue = 0
-userList = ['stumay1992@gmail.com', 'kianazeighami@gmail.com']
+userList = MongoGetUsers()
 for user in userList:
     print("updating for "+ user)
     obj = MongoGetDocument(user)
