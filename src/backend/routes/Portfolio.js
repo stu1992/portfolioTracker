@@ -16,7 +16,7 @@ router.route('/').get((req, res) => {
         res.status(401).send('Unauthorized: Invalid token');
       } else {
         console.log(decoded.email);
-        Portfolio.findOne({_id: decoded.email})
+        Portfolio.findOne({_id: decoded.email}, {"_id": 0})
       .then(portfolio => res.json(portfolio));
     }
     });
