@@ -36,7 +36,9 @@ function fetchUser(){
   }
   getStocks()
 }
-useEffect(() =>{fetchUser()}, [])
+useEffect(() =>{
+  fetchUser()
+}, [])
 
 const options = {
   series: stocks
@@ -90,10 +92,13 @@ const options = {
 }
 if(state['loggedin']){
 return (
+  <div style={{ padding: 10 }}>
   <HighchartsReact
+    containerProps={{ style: { height: "100%" } }}
   highcharts={Highcharts}
   options={options}
 />
+</div>
   )
 }else {
   return(
