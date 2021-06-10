@@ -14,6 +14,7 @@ class App extends Component {
 
   constructor() {
   super();
+  document.title = "Making My Mates rich";
   this.state = {
     loggedin: false,
     titles: {index: "Our Mission"}, // This is just variables for this page, simple words that change
