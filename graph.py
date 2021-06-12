@@ -76,5 +76,3 @@ def genGraph(public=True):
         ax.xaxis.set_minor_locator(plt.NullLocator())
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
         plt.savefig("/var/www/html/static/media/market.74a21c94.png")
-genGraph(True)
-genGraph(False)
