@@ -45,7 +45,9 @@ def genGraph(public=True):
     c = assets[2].History
 
     scatter_data = MongoMarketScatter()
-    scatter_x = scatter_data['date']
+    scatter_x = []
+    for i in scatter_data['date']: # convert to epoc objects for consumption by matplotlib
+        scatter_x.append(datetime.strptime(i, '%Y/%m/%d'))
     scatter_y = scatter_data['endValue']
     scatter_volume= scatter_data['volume']
     scatter_volume = list(map(lambda x: x/10, scatter_volume))
@@ -76,3 +78,5 @@ def genGraph(public=True):
         ax.xaxis.set_minor_locator(plt.NullLocator())
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
         plt.savefig("/var/www/html/static/media/market.74a21c94.png")
+genGraph(True)
+genGraph(False)

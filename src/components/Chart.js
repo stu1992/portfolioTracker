@@ -34,7 +34,7 @@ function fetchUser(){
     var dateStrings = JsonFromServer.dates
     var dates = []
     dateStrings.forEach(function(entry) {
-    dates.push(Date.parse(entry));
+    dates.push(Date.parse(entry)+39600000);
     console.log(Date.parse(entry));
 });
     setDates(dates);
@@ -47,8 +47,7 @@ useEffect(() =>{
 }, [])
 
 const options = {
-  series: stocks
-  ,
+  series: stocks,
   chart: {
         type: 'area'
     },
@@ -59,6 +58,9 @@ const options = {
         text: state['name']+'\'s investments'
     },
     xAxis: {
+      time: {
+
+    },
       type: 'datetime',
        labels: {
          formatter: function() {
