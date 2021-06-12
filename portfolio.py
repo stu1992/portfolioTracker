@@ -105,7 +105,7 @@ for user in userList:
     for asset in assets:
         serialisableAssets.append(asset.export())
     date_object = datetime.date.today()
-    dates.append(str(date_object))
+    dates.append(str(date_object.strftime("%Y/%m/%d")))
     replacementObj = {'_id': user,
     'portfolio' : myPortfolio,
     'seriesdataset' : serialisableAssets,
@@ -166,7 +166,7 @@ serialisableAssets = []
 for asset in assets:
     serialisableAssets.append(asset.export())
 date_object = datetime.date.today()
-dates.append(str(date_object))
+dates.append(str(date_object.strftime("%Y/%m/%d")))
 replacementObj = {'_id': 'Market',
 'portfolio' : myPortfolio,
 'seriesdataset' : serialisableAssets,

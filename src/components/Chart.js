@@ -31,7 +31,13 @@ function fetchUser(){
   const getStocks = async () => {
     const JsonFromServer = await fetchStocks()
     setStocks(JsonFromServer.seriesdataset)
-    setDates(JsonFromServer.dates)
+    var dateStrings = JsonFromServer.dates
+    var dates = []
+    dateStrings.forEach(function(entry) {
+    dates.push(Date.parse(entry));
+    console.log(Date.parse(entry));
+});
+    setDates(dates);
     setPortfolio(JsonFromServer.portfolio)
   }
   getStocks()
@@ -53,6 +59,21 @@ const options = {
         text: state['name']+'\'s investments'
     },
     xAxis: {
+      type: 'datetime',
+       labels: {
+         formatter: function() {
+           const format = {
+             second: '%Y-%m-%d',
+             minute: '%Y-%m-%d',
+             hour: '%Y-%m-%d',
+             day: '%y%M-%d',
+             week: '%Y%m-%d',
+             month: '%Y-%m',
+             year: '%Y'
+           }[this.tickPositionInfo.unitName];
+           return  Highcharts.dateFormat('%d-%m/%Y', this.value);
+         }
+       },
         categories: dates,
         tickmarkPlacement: 'on',
         title: {
