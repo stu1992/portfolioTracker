@@ -38,7 +38,7 @@ def genGraph(public=True):
     dates = obj['dates']
     newDates = []
     for i in dates: # convert to epoc objects for consumption by matplotlib
-        newDates.append(datetime.strptime(i, '%Y-%m-%d'))
+        newDates.append(datetime.strptime(i, '%Y/%m/%d'))
     t = newDates
     a = assets[0].History
     b = assets[1].History
