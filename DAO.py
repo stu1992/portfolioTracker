@@ -28,8 +28,8 @@ def MongoPersistDocument(data, user = 'stumay1992@gmail.com'):
     confirmEntry = db.portfolios.find_one({'_id': user})
     client.close()
 
-def MongoPersistScatter(data):
-    key = {'_id': 'all'}
+def MongoPersistScatter(data, user):
+    key = {'_id': user}
     client = MongoClient("localhost")
     db = client.portfolioTracker
     if db.volume.find_one({}) == None:
@@ -107,6 +107,6 @@ print(scatterData)
 happy = input("persist to db?(yes|no):")
 if(happy == "yes"):
     MongoPersistDocument(user, email)
-    MongoPersistScatter(scatterData)
+    MongoPersistScatter(scatterData, email)
 else:
     exit()

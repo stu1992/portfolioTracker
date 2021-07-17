@@ -4,7 +4,7 @@ let Portfolio = require('../model/Portfolio');
 const User = require('../model/User');
 const Jwt = require('jsonwebtoken');
 
-const secret = 'mysecretsshhh';
+const secret = 'passwordKey';
 
 router.route('/login').post((req, res) => {
   const { email, password } = req.body;
