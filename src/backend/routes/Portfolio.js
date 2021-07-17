@@ -3,7 +3,7 @@ const router = require('express').Router();
 let Portfolio = require('../model/Portfolio');
 const User = require('../model/User');
 const Jwt = require('jsonwebtoken');
-const secret = 'mysecretsshhh';
+const secret = 'passwordKey';
 
 router.route('/').get((req, res) => {
 //  const token = req.cookies.token;  if (!token) {
@@ -25,8 +25,6 @@ router.route('/').get((req, res) => {
 router.route('/test/').get((req, res) => {
   //const token = req.cookies.token;  if (!token) {
     //console.log("noo token");
-
-    res.status(200).send('yes');
   //} else {
     //Jwt.verify(token, secret, function(err, decoded) {
       //if (err) {
