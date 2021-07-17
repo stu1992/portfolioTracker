@@ -60,10 +60,10 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         minus5 = userPreviousGrossValue * 0.95
         if userGrossValue >= plus5:
             logging.info("user up by >5%")
-            emailObj.sendHigh(emailTo='stumay1992@gmail.com', user=MongoPortfolio.MongoGetUserName(user))
+            emailObj.sendHigh(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
         elif userGrossValue <= minus5:
             logging.info("user down by >5%")
-            emailObj.sendLow(emailTo='stumay1992@gmail.com', user=MongoPortfolio.MongoGetUserName(user))
+            emailObj.sendLow(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
         serialisableAssets = []
         for asset in assets:
             serialisableAssets.append(asset.export())
