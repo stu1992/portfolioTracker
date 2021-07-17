@@ -15,150 +15,6 @@ from Email import Mail
 
 testing = True
 
-
-StartMarket = {
-    "_id" : "Market",
-    "portfolio" : {
-        "Average" : 1.0,
-        "VOO" : 33.0,
-        "Managed Assets" : 1.0
-    },
-    "seriesdataset" : [
-        {
-            "name" : "Average",
-            "data" : [
-                8755.6
-            ]
-        },
-        {
-            "name" : "VOO",
-            "data" : [
-                257.56
-            ]
-        },
-        {
-            "name" : "Managed Assets",
-            "data" : [
-                9044.69
-            ]
-        }
-    ],
-    "dates" : [
-        "2016/06/01"
-    ]
-}
-
-start1 ={
-    "_id" : "stumay1992@gmail.com",
-    "portfolio" : {
-        "BTC" : 0.08313852,
-        "ETH" : 0.41915205,
-        "AAPL" : 147.877006334,
-        "VUG" : 10,
-        "GME" : 2,
-        "BIQ" : 4025
-    },
-    "seriesdataset" : [
-        {
-            "name" : "AAPL",
-            "data" : [
-                4749.67
-            ]
-        },
-        {
-            "name" : "VUG",
-            "data" : [
-                1428.29
-            ]
-        },
-        {
-            "name" : "BTC",
-            "data" : [
-                57.79
-            ]
-        },
-        {
-            "name" : "GME",
-            "data" : [
-                510.83
-            ]
-        },
-        {
-            "name" : "BIQ",
-            "data" : [
-                2274.12
-            ]
-        },
-        {
-            "name" : "ETH",
-            "data" : [
-                7.7
-            ]
-        }
-    ],
-    "dates" : [
-        "2016/06/01"
-    ]
-}
-
-start2 ={
-    "_id" : "stu.may1992@gmail.com",
-    "portfolio" : {
-        "BTC" : 0.01463536,
-        "ETH" : 0.0999766
-    },
-    "seriesdataset" : [
-        {
-            "name" : "BTC",
-            "data" : [
-                10.32
-            ]
-        },
-        {
-            "name" : "ETH",
-            "data" : [
-                1.89
-            ]
-        }
-    ],
-    "dates" : [
-        "2016/06/01"
-    ]
-}
-
-start3 ={
-    "_id" : "stu.may.1992@gmail.com",
-    "portfolio" : {
-        "AAPL" : 0.122993666
-    },
-    "seriesdataset" : [
-        {
-            "name" : "AAPL",
-            "data" : [
-                4.01
-            ]
-        }
-    ],
-    "dates" : [
-        "2016/06/01"
-    ]
-}
-
-startScatter =     {
-    "_id" : "all",
-    "endValue" : [
-
-    ],
-    "date" : [
-
-    ],
-    "volume" : [
-
-    ]
-}
-
-
-
 class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
@@ -308,33 +164,20 @@ emailObj = None
 assetFactory = None
 date_object = None
 
-
-
 if(testing):
-    MongoPortfolio.MongoPersistDocument(start1, "stumay1992@gmail.com")
-    MongoPortfolio.MongoPersistDocument(StartMarket, "Market")
-    MongoPortfolio.MongoPersistDocument(start2,  "stu.may1992@gmail.com")
-    MongoPortfolio.MongoPersistDocument(start3, "stu.may.1992@gmail.com")
-    MongoPortfolio.MongoMarketScatter(startScatter)
+    MongoPortfolio.MongoPersistDocument(MongoPortfolio.start1, "stumay1992@gmail.com")
+    MongoPortfolio.MongoPersistDocument(MongoPortfolio.StartMarket, "Market")
+    MongoPortfolio.MongoPersistDocument(MongoPortfolio.start2,  "stu.may1992@gmail.com")
+    MongoPortfolio.MongoPersistDocument(MongoPortfolio.start3, "stu.may.1992@gmail.com")
+    MongoPortfolio.MongoMarketScatter(MongoPortfolio.startScatter)
 
     assetFactory = testAPI.assetAPIFactory()
     emailObj = testingMail.TestMail(logging)
     date_object = next(dateGen)
 else:
     assetFactory = assetAPIFactory()
-    emailObj = testingMail.TestMail(logging)
+    emailObj = Mail(logging)
     date_object = date.today()
-
-if(testing):
-    for a in range(300):
-        assetFactory.getExchangeRate()
-        assetFactory.getPriceUSD('AAPL')
-        assetFactory.getPriceUSD('VUG')
-        assetFactory.getPriceUSD('VOO')
-        assetFactory.getPriceUSD('BTC')
-        assetFactory.getPriceUSD('ETH')
-        assetFactory.getPriceUSD('GME')
-        next(dateGen)
 
 if(testing):
     for i in range(900):
@@ -344,6 +187,6 @@ if(testing):
         global_exchange = assetFactory.getExchangeRate()
         date_object = next(dateGen)
         updatePortfolio(assetFactory, date_object, emailObj)
-if( not testing):
+if(not testing):
     global_exchange = assetFactory.getExchangeRate()
     updatePortfolio(assetFactory, date_object, emailObj)
