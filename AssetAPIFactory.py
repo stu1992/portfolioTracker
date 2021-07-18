@@ -1,11 +1,14 @@
 import requests
 from yahoofinancials import YahooFinancials
 
-class assetAPIFactory:
+class AssetAPIFactory:
     cachedPrices = {}
+    def __init__(self, logging):
+        this.logging = logging
+
     def getPriceUSD(self, ticker):
         if ticker in self.cachedPrices:
-            logging.debug("using cache for " + ticker)
+            this.logging.debug("using cache for " + ticker)
             return self.cachedPrices[ticker]
 
         elif ticker == "AAPL" or ticker == "VUG" or ticker == "GME" or ticker == "VOO":

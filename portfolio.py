@@ -7,7 +7,7 @@ import MongoPortfolio
 import logging
 import logging.handlers
 import TestAssetAPIFactory as testAPI
-import AssetAPIFactory as AssetAPIFactory
+from AssetAPIFactory import AssetAPIFactory
 import TestMail as testingMail
 import os
 import random
@@ -171,11 +171,11 @@ if(testing):
     MongoPortfolio.MongoPersistDocument(MongoPortfolio.start3, "stu.may.1992@gmail.com")
     MongoPortfolio.MongoMarketScatter(MongoPortfolio.startScatter)
 
-    assetFactory = testAPI.assetAPIFactory()
+    assetFactory = testAPI.AssetAPIFactory()
     emailObj = testingMail.TestMail(logging)
     date_object = next(dateGen)
 else:
-    assetFactory = assetAPIFactory()
+    assetFactory = AssetAPIFactory(logging)
     emailObj = Mail(logging)
     date_object = date.today()
 
