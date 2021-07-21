@@ -50,4 +50,4 @@ Stu
         text = message.as_string()
         session.sendmail(self.sender_address, self.receiver_address, text)
         session.quit()
-        logging.warn('Mail Sent')
+        self.logging.warn('Mail Sent')
