@@ -180,7 +180,7 @@ else:
     date_object = date.today()
 
 if(testing):
-    for i in range(900):
+    for i in range(300):
         if random.randint(1,25) == 25:
             file = "buy" + str(random.randint(1,7))
             os.system("python3 DAO.py < " + file)
