@@ -70,7 +70,6 @@ def genGraph(public=True):
     fmt_month_year = mdates.MonthLocator()
     fmt_day_year = mdates.DayLocator()
     ax.xaxis.set_major_locator(fmt_month_year)
-    ax.xaxis.set_minor_locator(fmt_day_year) #i'll eventually remove this. it'll just get cluttered
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%y-%m'))
     fig.autofmt_xdate()
 
@@ -91,5 +90,6 @@ def genGraph(public=True):
         ax.xaxis.set_minor_locator(plt.NullLocator())
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
         plt.savefig("/var/www/html/static/media/market.74a21c94.png")
+# generate both logged in and guest graph
 genGraph(True)
 genGraph(False)
