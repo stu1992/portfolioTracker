@@ -76,7 +76,6 @@ const options = {
          }
        },
         categories: dates,
-        tickmarkPlacement: 'on',
         title: {
             enabled: false
         }
@@ -92,7 +91,9 @@ const options = {
         }
     },
     tooltip: {
-        split: true,
+      xDateFormat: '%d-%m-%Y',
+        shared: true,
+        split: false,
         valuePrefix: '$'
     },
     plotOptions: {
