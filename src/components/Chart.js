@@ -35,7 +35,6 @@ function fetchUser(){
     var dates = []
     dateStrings.forEach(function(entry) {
     dates.push(Date.parse(entry)+39600000);
-    console.log(Date.parse(entry));
 });
     setDates(dates);
     setPortfolio(JsonFromServer.portfolio)
@@ -73,7 +72,7 @@ const options = {
              month: '%Y-%m',
              year: '%Y'
            }[this.tickPositionInfo.unitName];
-           return  Highcharts.dateFormat('%d-%m/%Y', this.value);
+           return  Highcharts.dateFormat('%B-%d/%y', this.value);
          }
        },
         categories: dates,

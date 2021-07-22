@@ -1,4 +1,4 @@
-class assetAPIFactory:
+class AssetAPIFactory:
     def _exchangeRateGenerator(self):
         for rate in self._historical_exchanges:
             yield rate
