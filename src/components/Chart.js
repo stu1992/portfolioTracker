@@ -109,6 +109,9 @@ const options = {
         series: {
             marker: {
                 enabled: false
+            },
+            animation: {
+                duration: 3000
             }
         }
     }
