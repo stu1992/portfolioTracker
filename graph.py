@@ -1,6 +1,8 @@
+#!/usr/bin/python3
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.dates as mdates
+import matplotlib.patheffects as path_effects
 from pymongo import MongoClient
 from datetime import datetime
 class Asset:
@@ -59,7 +61,7 @@ def genGraph(public=True):
     for user in userList:
         scatter_data = MongoMarketScatter(user)
     scatter_x = []
-    for i in scatter_data['date']: # convert to epoc objects for consumption by matplotlib
+    for i in scatter_data['date']: #convert to epoc objects for consumption by matplotlib
         scatter_x.append(datetime.strptime(i, '%Y/%m/%d'))
     scatter_y = scatter_data['endValue']
     scatter_volume= scatter_data['volume']
@@ -76,7 +78,7 @@ def genGraph(public=True):
 
     ax.plot(t, a, dashes=[1, 3], color= 'red', linewidth=0.5, antialiased=True, label='7% per annum')
     ax.plot(t, b, color='blue', linewidth=0.5, antialiased=True, label='Everything in S&P 500')
-    ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management')
+    ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management', path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()])
     if public == False:
         ax.scatter(scatter_x, scatter_y, s=scatter_volume, antialiased=True, alpha=0.25, c=np.random.random_sample(len(scatter_x)), label='Trade volume')
     plt.title('How we compare to market trends',fontsize = 20)
