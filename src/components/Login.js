@@ -45,7 +45,6 @@ export default class Login extends Component {
   };
   onSubmit = (event) => {
   event.preventDefault();
-  console.log("pressing");
   fetch('/api/user/login', {
     method: 'POST',
     body: JSON.stringify(this.state),
