@@ -10,10 +10,15 @@ export default class Profile extends Component {
     super(props)
   }
 render() {
+  let tagsList = "";
+  if(this.props.state['tags']!= null){
+  tagsList = this.props.state['tags'].toString();
+  }
   return (
     <div style={{ padding: 20 }}>
         <h2>{this.props.state['name']}</h2>
         <h2>{this.props.state['email']}</h2>
+        <h2>{tagsList}</h2>
         </div>
   )
 }
