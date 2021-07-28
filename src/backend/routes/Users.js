@@ -64,7 +64,7 @@ router.route('/login').post((req, res) => {
             res.status(401).send('Unauthorized: Invalid token');
           } else {
             console.log(decoded.email);
-            User.findOne({email: decoded.email}, {"_id": 0, "password": 0})
+            User.findOne({email: decoded.email}, {"_id": 0, "password": 0, "__v" : 0})
           .then(portfolio => res.json(portfolio));
         }
         });

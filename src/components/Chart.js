@@ -27,7 +27,6 @@ const fetchStocks = async() => {
     credentials: "same-origin"
     });
   const data = await res.json()
-  console.log(data)
   return data
 }
 // get news based on user tags which should come in body from user info
@@ -37,7 +36,6 @@ const fetchUserNews = async() => {
     credentials: "same-origin"
     });
   const data = await res.json()
-  console.log(data)
   return data
 }
 
