@@ -22,7 +22,7 @@ export default class Login extends Component {
   //  attributes
   })
   .then(response => {
-    this.props.setFunction({name: response.data['name'], email: response.data['email']});
+    this.props.setFunction({name: response.data['name'], email: response.data['email'], tags: response.data['tags']});
   });
     this.forceUpdate();
   };
