@@ -20,6 +20,8 @@ const portfolioRouter = require('./routes/Portfolio')
 app.use('/api/Portfolio',cors(), portfolioRouter);
 const userRouter = require('./routes/Users')
 app.use('/api/user', userRouter);
+const newsRouter = require('./routes/News')
+app.use('/api/news', newsRouter);
 app.listen(port, () => {
   console.log(`server running on port ${port}`);
 });

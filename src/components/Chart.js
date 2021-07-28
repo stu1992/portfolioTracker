@@ -3,7 +3,7 @@ import React from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import Mission from './Mission';
-
+import Newsfeed from './Newsfeed';
 
 const Chart = ({state}) => {
 
@@ -14,11 +14,25 @@ const [dates, setDates] = useState([
 const [portfolio, setPortfolio] = useState([
 ]);
 
+const [news, setNews] = useState([
+]);
+
 const basePortfolioURI = '/api/portfolio'
+const newsURI = '/api/news'
 var portfolioURI = basePortfolioURI
 
 const fetchStocks = async() => {
   const res = await fetch (portfolioURI, {
+    method: 'GET',
+    credentials: "same-origin"
+    });
+  const data = await res.json()
+  console.log(data)
+  return data
+}
+// get news based on user tags which should come in body from user info
+const fetchUserNews = async() => {
+  const res = await fetch (newsURI, {
     method: 'GET',
     credentials: "same-origin"
     });
@@ -41,8 +55,18 @@ function fetchUser(){
   }
   getStocks()
 }
+// duplicate function to get news, this needs to move elsewhere but lets get a poc
+function fetchNews(){
+  const getNews = async () => {
+    const JsonFromServer = await fetchUserNews()
+    setNews(JsonFromServer)
+  }
+  getNews()
+}
+
 useEffect(() =>{
   fetchUser()
+  fetchNews()
 }, [])
 
 const options = {
@@ -119,11 +143,12 @@ const options = {
 if(state['loggedin']){
 return (
   <div style={{ padding: 10 }}>
-  <HighchartsReact
-    containerProps={{ style: { height: "100%" } }}
-  highcharts={Highcharts}
-  options={options}
-/>
+    <HighchartsReact
+      containerProps={{ style: { height: "100%" } }}
+    highcharts={Highcharts}
+    options={options}
+  />
+<Newsfeed NewsList={news}/>
 </div>
   )
 }else {
