@@ -22,8 +22,11 @@ router.route('/').get((req, res) => {
     );
   }
   });
-
-
 });
+
+router.route('/public').get((req, res) => {
+      News.find({tags : {$in : ["all"]}}, {"_id": 0}).sort({"date":-1}).limit(20)
+    .then(news => res.json(news));
+  });
 
 module.exports = router;

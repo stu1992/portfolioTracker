@@ -1,10 +1,15 @@
 import News from '../backend/model/News'
 import Headline from './Headline'
 const Newsfeed = ({NewsList}) => {
+  let list = "";
+  for(var i = 0; i < NewsList.length; i++)
+  {
+    list += ".. " +NewsList[i]["title"];
+  }
   return (
     <>
-    <div style={{ padding: 30 }}>
-    {NewsList.map((news) => (<Headline date={news["date"]} headline={news["title"]} comment={news["comment"]} link={news["link"]}/>))}
+    <div style={{ padding: 5 }}>
+    <p>{list}</p>
     </div>
     </>
   )

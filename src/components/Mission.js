@@ -1,11 +1,39 @@
 // Home.js
-
+import Marquee from "react-fast-marquee";
 import React, { Component } from 'react';
+import Newsfeed from './NewsfeedMarquee';
+import  API from './Api';
+import { useState , useEffect } from 'react'
 
-class Mission extends Component {
-  render() {
+const Mission = ({state}) => {
+  const [news, setNews] = useState([
+  ]);
+
+const newsURI = '/api/news/public'
+const fetchUserNews = async() => {
+  const res = await fetch (newsURI, {
+    method: 'GET',
+    credentials: "same-origin"
+    });
+  const data = await res.json()
+  return data
+}
+
+  function fetchNews(){
+    const getNews = async () => {
+      const JsonFromServer = await fetchUserNews()
+      setNews(JsonFromServer)
+    }
+    getNews()
+  }
+
+  useEffect(() =>{
+    fetchNews()
+  }, [])
+
     return (
         <div style={{ padding: 20 }}>
+          <Marquee><Newsfeed NewsList={news}/></Marquee>
           <h2>Our Mission</h2>
           <p>
           Most of my friends suck with money and it's so easy to invest. I don't want to retire at the age of 40 and have no one to invite on adventures because all my mates are busy working.
@@ -19,7 +47,6 @@ class Mission extends Component {
           </p>
         </div>
     );
-  }
 }
 
 export default Mission;

@@ -4,6 +4,7 @@ const Headline = ({date, headline, comment, link}) => {
   <div className='healine'>
   <h4>{headline} on {stamp}</h4>
   <p>{comment}</p>
+  <a href={link}>link</a>
   </div>
   )
 }
