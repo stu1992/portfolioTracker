@@ -32,7 +32,7 @@ const fetchUserNews = async() => {
   }, [])
 
     return (
-        <div style={{ padding: 20 }}>
+        <div>
           <Marquee><Newsfeed NewsList={news}/></Marquee>
           <h2>Our Mission</h2>
           <p>

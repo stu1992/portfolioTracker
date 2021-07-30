@@ -29,7 +29,7 @@ class Asset:
         return dict
 
 def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
-    logging.debug("\n\n Good mornging!\ndate: {}".format(date_object))
+    logging.debug("\n\nGood mornging!\ndate: {}".format(date_object))
     userList = MongoPortfolio.MongoGetUsers()
     totalValue = 0
     for user in userList:
