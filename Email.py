@@ -6,7 +6,7 @@ class Mail:
     def __init__(self, loggingObj):
     #The mail addresses and password
         self.sender_address = 'makingmymatesrich@gmail.com'
-        self.sender_pass = 'EMAILPASSWORD '
+        self.sender_pass = 'EMAILPASSWORD'
         self.logging = loggingObj
     def sendHigh(self, emailTo='stumay1992@gmail.com', user='Stu'):
         self.receiver_address = emailTo
