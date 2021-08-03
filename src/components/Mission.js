@@ -33,7 +33,8 @@ const fetchUserNews = async() => {
 
     return (
         <div>
-          <Marquee><Newsfeed NewsList={news}/></Marquee>
+          <Marquee speed={80} gradientWidth={20}><Newsfeed NewsList={news}/></Marquee>
+          <div style={{ padding: 20 }}>
           <h2>Our Mission</h2>
           <p>
           Most of my friends suck with money and it's so easy to invest. I don't want to retire at the age of 40 and have no one to invite on adventures because all my mates are busy working.
@@ -45,6 +46,7 @@ const fetchUserNews = async() => {
           <p>
           It's my mission to offer investment advice to people I trust without it costing anything.
           </p>
+          </div>
         </div>
     );
 }

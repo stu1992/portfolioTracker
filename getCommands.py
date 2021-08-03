@@ -12,7 +12,7 @@ mail.list()
 # Out: list of "folders" aka labels in gmail.
 mail.select("inbox") # connect to inbox.
 result, data = mail.search(None, "ALL")
-latest = int(open('latest','r').read().rstrip())
+latest = int(open('/home/ubuntu/portfolioTracker/latest','r').read().rstrip())
 
 print("latest = " + str(latest))
 ids = data[0] # data is a list.
@@ -76,8 +76,11 @@ for messages in newList:
         message_subject = subject
         comment = re.search(">comment:([^<]*)", body)
         link = re.search("href=\"([^\"]*)", body)
-        message_comment = comment.group(0)[9:]
-        message_link = link.group(0)[6:]
+        try:
+            message_comment = comment.group(0)[9:]
+            message_link = link.group(0)[6:]
+        except:
+            continue
     if message_link and message_comment and message_subject:
         print("writing to db")
         print("title: " + message_subject)
@@ -91,5 +94,5 @@ for messages in newList:
         db.news.insert_one(data)
 
 print("new latest = " + str(stringData[-1]))
-handler = open('latest','w')
+handler = open('/home/ubuntu/portfolioTracker/latest','w')
 handler.write(str(stringData[-1]))
