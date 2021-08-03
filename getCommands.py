@@ -4,6 +4,7 @@ import email
 from email.header import decode_header
 import re
 from datetime import date
+import datetime
 from pymongo import MongoClient
 mail = imaplib.IMAP4_SSL('imap.gmail.com')
 mail.login('makingmymatesrich@gmail.com', 'EMAILPASSWORD')
@@ -83,7 +84,7 @@ for messages in newList:
         print("comment: " + message_comment)
         print("link: " + message_link)
         tags = ["all"]
-        message_date = date.today().strftime("%Y/%m/%d")
+        message_date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         client = MongoClient("localhost")
         db = client.portfolioTracker
         data = {"date": message_date, "title" : message_subject, "comment": message_comment, "link" : message_link, "tags" : tags}
