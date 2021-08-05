@@ -3,11 +3,11 @@ from pymongo import MongoClient
 #constants
 known_tickers = ["AAPL", "VUG", "GME", "VOO", "BIQ", "BTC", "ETH"]
 #functions
-def MongoMarketScatter():
+def MongoMarketScatter(user):
     client = MongoClient("localhost")
     db = client.portfolioTracker
     #print(db.volume.find_one({'_id': 'all'}))
-    return db.volume.find_one({'_id': 'all'})
+    return db.volume.find_one({'_id': user})
     client.close()
 
 def MongoGetDocument(user = 'stumay1992@gmail.com'):
@@ -99,7 +99,7 @@ dataLength = len(managedList)
 allAssets = round(managedList[dataLength-1], 2)
 date = graphPoint['dates'][dataLength-1]
 
-scatterData = MongoMarketScatter()
+scatterData = MongoMarketScatter(email)
 scatterData["endValue"].append(allAssets)
 scatterData["date"].append(date)
 scatterData["volume"].append(price)

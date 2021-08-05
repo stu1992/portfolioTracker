@@ -57,10 +57,16 @@ def genGraph(public=True):
 
     userList = MongoGetUsers()
     userList.append('all') # backwards compadibility
-    scatter_data = []
+    scatter_data = {'date': [], 'volume' : [], 'endValue': []}
     for user in userList:
-        scatter_data = MongoMarketScatter(user)
+        print(user)
+        data = MongoMarketScatter(user)
+        scatter_data['date'].extend(data['date'])
+        scatter_data['volume'].extend(data['volume'])
+        scatter_data['endValue'].extend(data['endValue'])
+    print(scatter_data)
     scatter_x = []
+    print(scatter_data['date'])
     for i in scatter_data['date']: #convert to epoc objects for consumption by matplotlib
         scatter_x.append(datetime.strptime(i, '%Y/%m/%d'))
     scatter_y = scatter_data['endValue']
