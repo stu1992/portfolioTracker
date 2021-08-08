@@ -9,7 +9,7 @@ from pymongo import MongoClient
 import os
 import logging
 import logging.handlers
-
+latestFile = "/home/ubuntu/portfolioTracker/latest"
 
 handler = logging.handlers.WatchedFileHandler(
     os.environ.get("LOGFILE", "./log"))
@@ -25,7 +25,7 @@ mail.list()
 # Out: list of "folders" aka labels in gmail.
 mail.select("inbox") # connect to inbox.
 result, data = mail.search(None, "ALL")
-latest = int(open('/home/ubuntu/portfolioTracker/latest','r').read().rstrip())
+latest = int(open(latestFile,'r').read().rstrip())
 
 logging.debug("latest = " + str(latest))
 ids = data[0] # data is a list.
@@ -88,28 +88,38 @@ for messages in newList:
         message_subject = subject
         comment = re.search(">comment:([^<]*)", body)
         link = re.search("href=\"([^\"]*)", body)
+        tags = re.search(">tags:([^<]*)", body)
         message_link = None
         message_comment = None
+        message_tags = None
         try:
             message_comment = comment.group(0)[9:]
             message_link = link.group(0)[6:]
+            message_tags = tags.group(0)[6:].split(",")
+            message_tags.append("all")
+
         except:
             continue
     if message_comment == None:
+        logging.debug("didn't parse comment")
         message_comment = "didn't parse"
     if message_link == None:
+        logging.debug("didn't parse link")
         message_link = "didn't parse"
+    if message_tags == None:
+        logging.debug("didn't parse tags")
+        message_tags = ["all"]
     logging.info("writing to db")
     logging.info("title: " + message_subject)
     logging.info("comment: " + message_comment)
     logging.info("link: " + message_link)
-    tags = ["all"]
+    logging.info("tags: " + str(message_tags))
     message_date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    data = {"date": message_date, "title" : message_subject, "comment": message_comment, "link" : message_link, "tags" : tags}
+    data = {"date": message_date, "title" : message_subject, "comment": message_comment, "link" : message_link, "tags" : message_tags}
     db.news.insert_one(data)
 
 logging.debug("new latest = " + str(stringData[-1]))
-handler = open('/home/ubuntu/portfolioTracker/latest','w')
+handler = open(latestFile,'w')
 handler.write(str(stringData[-1]))
