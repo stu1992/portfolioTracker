@@ -76,22 +76,27 @@ for messages in newList:
         message_subject = subject
         comment = re.search(">comment:([^<]*)", body)
         link = re.search("href=\"([^\"]*)", body)
+        message_link = None
+        message_comment = None
         try:
             message_comment = comment.group(0)[9:]
             message_link = link.group(0)[6:]
         except:
             continue
-    if message_link and message_comment and message_subject:
-        print("writing to db")
-        print("title: " + message_subject)
-        print("comment: " + message_comment)
-        print("link: " + message_link)
-        tags = ["all"]
-        message_date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-        client = MongoClient("localhost")
-        db = client.portfolioTracker
-        data = {"date": message_date, "title" : message_subject, "comment": message_comment, "link" : message_link, "tags" : tags}
-        db.news.insert_one(data)
+    if message_comment == None:
+        message_comment = "didn't parse"
+    if message_link == None:
+        message_link = "didn't parse"
+    print("writing to db")
+    print("title: " + message_subject)
+    print("comment: " + message_comment)
+    print("link: " + message_link)
+    tags = ["all"]
+    message_date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    data = {"date": message_date, "title" : message_subject, "comment": message_comment, "link" : message_link, "tags" : tags}
+    db.news.insert_one(data)
 
 print("new latest = " + str(stringData[-1]))
 handler = open('/home/ubuntu/portfolioTracker/latest','w')

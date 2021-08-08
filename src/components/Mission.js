@@ -33,7 +33,7 @@ const fetchUserNews = async() => {
 
     return (
         <div>
-          <Marquee speed={80} gradientWidth={20}><Newsfeed NewsList={news}/></Marquee>
+          <Marquee speed={60} gradientWidth={20}><Newsfeed NewsList={news}/></Marquee>
           <div style={{ padding: 20 }}>
           <h2>Our Mission</h2>
           <p>
