@@ -6,6 +6,19 @@ import re
 from datetime import date
 import datetime
 from pymongo import MongoClient
+import os
+import logging
+import logging.handlers
+
+
+handler = logging.handlers.WatchedFileHandler(
+    os.environ.get("LOGFILE", "./log"))
+formatter = logging.Formatter(logging.BASIC_FORMAT)
+handler.setFormatter(formatter)
+root = logging.getLogger()
+root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
+root.addHandler(handler)
+
 mail = imaplib.IMAP4_SSL('imap.gmail.com')
 mail.login('makingmymatesrich@gmail.com', 'EMAILPASSWORD')
 mail.list()
@@ -14,7 +27,7 @@ mail.select("inbox") # connect to inbox.
 result, data = mail.search(None, "ALL")
 latest = int(open('/home/ubuntu/portfolioTracker/latest','r').read().rstrip())
 
-print("latest = " + str(latest))
+logging.debug("latest = " + str(latest))
 ids = data[0] # data is a list.
 stringData = []
 
@@ -22,18 +35,17 @@ id_list = ids.split() # ids is a space separated string
 for num in id_list:
     stringData.append(int(num))
 
-print(stringData)
+logging.debug(stringData)
 spliceAt = int(stringData.index(latest))
 
 newList = id_list[spliceAt+1:]
-print("fetching latest emails:\n" + str(newList))
+logging.info("fetching latest emails:\n" + str(newList))
 for messages in newList:
     # fetch the email body (RFC822) for the given ID
     result, data = mail.fetch(messages, "(RFC822)")
     message_subject =""
     message_body = ""
     message_from = ""
-    print(len(data))
     for response in data:
         if isinstance(response, tuple):
             # parse a bytes email into a message object
@@ -72,7 +84,7 @@ for messages in newList:
                 if content_type == "text/html":
                     message_body=body
         if "stumay1992@gmail.com" in From:
-            print("authenticated from stu")
+            logging.debug("authenticated from stu")
         message_subject = subject
         comment = re.search(">comment:([^<]*)", body)
         link = re.search("href=\"([^\"]*)", body)
@@ -87,10 +99,10 @@ for messages in newList:
         message_comment = "didn't parse"
     if message_link == None:
         message_link = "didn't parse"
-    print("writing to db")
-    print("title: " + message_subject)
-    print("comment: " + message_comment)
-    print("link: " + message_link)
+    logging.info("writing to db")
+    logging.info("title: " + message_subject)
+    logging.info("comment: " + message_comment)
+    logging.info("link: " + message_link)
     tags = ["all"]
     message_date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     client = MongoClient("localhost")
@@ -98,6 +110,6 @@ for messages in newList:
     data = {"date": message_date, "title" : message_subject, "comment": message_comment, "link" : message_link, "tags" : tags}
     db.news.insert_one(data)
 
-print("new latest = " + str(stringData[-1]))
+logging.debug("new latest = " + str(stringData[-1]))
 handler = open('/home/ubuntu/portfolioTracker/latest','w')
 handler.write(str(stringData[-1]))
