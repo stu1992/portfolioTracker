@@ -71,7 +71,7 @@ def genGraph(public=True):
         scatter_x.append(datetime.strptime(i, '%Y/%m/%d'))
     scatter_y = scatter_data['endValue']
     scatter_volume= scatter_data['volume']
-    scatter_volume = list(map(lambda x: x/7, scatter_volume))
+    scatter_volume = list(map(lambda x: x/3, scatter_volume))
     fig, ax = plt.subplots()
     fig.set_size_inches(10,6,450)
 

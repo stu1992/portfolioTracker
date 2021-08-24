@@ -85,19 +85,25 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
     dates = obj['dates']
     # get the day
 
+    rebalanceThreshold = 20
     rebalance = False
     if date_object.day == 1: # I want to rebalance the portfolio on a monthly bases so I don't gete wrecked my the market out performing me.
-        print("first of the month.. ")
+        logging.info("first of the month.. ")
         monthOfPrices = YahooFinancials(['^VIX']).get_historical_price_data(str((date_object - timedelta(days = 30)).strftime("%Y-%m-%d")), str(date_object.strftime("%Y-%m-%d")), 'daily')['^VIX']['prices']
         sum = 0
+        daysInMonth = 0
         for price in monthOfPrices:
-            sum += price['close']
-        logging.info("average:" + str(sum/30))
-        if sum/30 < 12: # 12 is low, 20 is high
-            logging.info("Average volitility below 12")
+            try:
+                sum += price['close']
+                daysInMonth +=1
+            except:
+                pass
+        logging.info("average:" + str(sum/daysInMonth))
+        if sum/daysInMonth < rebalanceThreshold: # 12 is low, 20 is high
+            logging.info("Average volitility below " + str(rebalanceThreshold))
             rebalance = True
         else:
-            logging.info("Average volitility above 12")
+            logging.info("Average volitility above " + str(rebalanceThreshold))
             rebalance = False # already false but easy to read
     if rebalance == True:
         logging.info("Rebalancing")
