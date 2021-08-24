@@ -57,14 +57,25 @@ def genGraph(public=True):
 
     userList = MongoGetUsers()
     userList.append('all') # backwards compadibility
-    scatter_data = {'date': [], 'volume' : [], 'endValue': []}
+    scatter_data = {'date_unsorted': [], 'date' : [], 'volume' : [], 'endValue': []}
     for user in userList:
         print(user)
         data = MongoMarketScatter(user)
-        scatter_data['date'].extend(data['date'])
+        scatter_data['date_unsorted'].extend(data['date'])
         scatter_data['volume'].extend(data['volume'])
         scatter_data['endValue'].extend(data['endValue'])
     print(scatter_data)
+
+    #check if there are any duplicates to perform superposition
+    for i in range(len(scatter_data['date_unsorted'])):
+        if scatter_data['date_unsorted'][i] not in scatter_data['date']:
+            print("all good")
+            scatter_data['date'].append(scatter_data['date_unsorted'][i])
+        else:
+            print("found dup at "  + str(i))
+            newIndex = scatter_data['date'].index(scatter_data['date_unsorted'][i])
+            scatter_data['volume'][newIndex] += scatter_data['volume'][i]*8
+            scatter_data['date'].append(scatter_data['date_unsorted'][i])
     scatter_x = []
     print(scatter_data['date'])
     for i in scatter_data['date']: #convert to epoc objects for consumption by matplotlib
