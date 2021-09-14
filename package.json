@@ -25,7 +25,8 @@
     "react-fitted-img": "^2.0.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.1"
+    "web-vitals": "^1.1.1",
+        "node-sass": "^4.13.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -46,8 +47,8 @@
       "not op_mini all"
     ],
     "development": [
+    "last 1 firefox version",
       "last 1 chrome version",
-      "last 1 firefox version",
       "last 1 safari version"
     ]
   }
