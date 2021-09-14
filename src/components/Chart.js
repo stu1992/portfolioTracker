@@ -1,20 +1,21 @@
-import { useState , useEffect } from 'react'
-import React from 'react'
+
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import Mission from './Mission';
 import Newsfeed from './Newsfeed';
+import LandingPage from './LandingPage';
+import React, { useEffect, useState} from 'react';
 
-const Chart = ({state}) => {
+const Chart = ({name, loggedIn}) => {
 
-const [stocks, setStocks] = useState([
+const [stocks, setStocks] = React.useState([
 ]);
-const [dates, setDates] = useState([
+const [dates, setDates] = React.useState([
 ]);
-const [portfolio, setPortfolio] = useState([
+const [portfolio, setPortfolio] = React.useState([
 ]);
 
-const [news, setNews] = useState([
+const [news, setNews] = React.useState([
 ]);
 
 const basePortfolioURI = '/api/portfolio'
@@ -76,7 +77,7 @@ const options = {
         text: 'My asset portfolio'
     },
     subtitle: {
-        text: state['name']+'\'s investments'
+        text: name+'\'s investments'
     },
     xAxis: {
       time: {
@@ -138,7 +139,8 @@ const options = {
         }
     }
 }
-if(state['loggedin']){
+if(loggedIn){
+  console.log(name);
 return (
   <div style={{ padding: 10 }}>
     <HighchartsReact
@@ -146,7 +148,7 @@ return (
     highcharts={Highcharts}
     options={options}
   />
-<Newsfeed NewsList={news}/>
+<LandingPage loggedIn={loggedIn}/>
 </div>
   )
 }else {

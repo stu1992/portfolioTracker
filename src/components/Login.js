@@ -10,11 +10,6 @@ const secret = 'mysecretsshhh';
 export default class Login extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      email : '',
-      password: ''
-    };
   }
   forceUpdateHandler(){
     API({
@@ -67,7 +62,7 @@ export default class Login extends Component {
   });
 }
 render() {
-  if( this.props.state['loggedin']){
+  if( this.props.state.loggedin !== undefined){
     return(
       <div>
         <form onSubmit={this.logout}>
