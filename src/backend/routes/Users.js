@@ -83,10 +83,11 @@ router.route('/login').post((req, res) => {
         }
         })
     });
+    */
     router.route('/logout').get((req, res) => {
       console.log("logging out");
           res.cookie('token', "expired", { httpOnly: true }).sendStatus(200);
         });
-  */
+
 
 module.exports = router;

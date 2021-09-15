@@ -21,6 +21,7 @@ const defaultProps = {
 
 const Hero = ({
   name,
+  loggedIn,
   loggedInCallBack,
   className,
   topOuterDivider,
@@ -128,6 +129,7 @@ const Hero = ({
                 A 4 step program to long term returns
                 </p>
               <div className="reveal-from-bottom" data-reveal-delay="600">
+                {!loggedIn &&
                 <form onSubmit={onSubmit}>
                   <h1>Login Below!</h1>
                   <Input
@@ -146,6 +148,7 @@ const Hero = ({
                   />
                 <Input type="submit" value="Submit"/>
                 </form>
+              }
               </div>
             </div>
           </div>

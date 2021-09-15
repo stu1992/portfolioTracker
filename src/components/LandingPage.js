@@ -3,7 +3,7 @@ import marketImg from '../market.png';
 import loggedInMarketImg from '../private_market.png';
 import FittedImg from 'react-fitted-img';
 const LandingPage = ({loggedIn}) => {
-  if( !loggedIn){
+  if( loggedIn){
 
     return (
       <div>

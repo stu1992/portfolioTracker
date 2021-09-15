@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import API from '../Api';
 
 const propTypes = {
   navPosition: PropTypes.string,
@@ -18,6 +19,16 @@ const defaultProps = {
   bottomOuterDivider: false,
   bottomDivider: false
 }
+
+const logout = () =>{
+    console.log("logging out");
+    API({
+    url: '/user/logout'//,
+  //  attributes
+  })
+  .then(response => {
+  });
+  }
 
 const Header = ({
   loggedIn,
@@ -116,12 +127,12 @@ const Header = ({
 
                     </li>
                   </ul>
-                  {!hideSignin &&
+                  {!hideSignin && !loggedIn &&
                     <ul
                       className="list-reset header-nav-right"
                     >
                       <li>
-                        <Link to="#" className="button button-primary button-wide-mobile button-sm" onClick={closeMenu}>Sign up</Link>
+                        <Link to="/" className="button button-primary button-wide-mobile button-sm" onClick={logout}>Log off</Link>
                       </li>
                     </ul>}
                 </div>
