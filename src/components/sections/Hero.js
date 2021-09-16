@@ -23,6 +23,7 @@ const Hero = ({
   name,
   loggedIn,
   loggedInCallBack,
+  loggedOutCallBack,
   className,
   topOuterDivider,
   bottomOuterDivider,
@@ -54,6 +55,7 @@ const Hero = ({
       console.log("home says logged out");
       loggedIn = false
       setUserLoggedIn(false);
+      loggedOutCallBack(false);
     }
   }
      });

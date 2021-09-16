@@ -33,6 +33,10 @@ const history = useHistory();
      console.log("yo you logged in!");
      history.push("/portfolio");
    }
+   const logout = (value) => {
+     setLoggedIn(value);
+     console.log("yo you logged out!");
+   }
 
   const childRef = useRef();
   let location = useLocation();
@@ -63,7 +67,7 @@ if(loggedIn){
       ref={childRef}
       children={() => (
         <Switch>
-          <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} />} layout={LayoutLoggedIn} />
+          <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={logout} />} layout={LayoutLoggedIn} />
           <AppRoute exact path="/portfolio" component={() => <Portfolio name={name} loggedIn={loggedIn} />} layout={LayoutLoggedIn} />
         </Switch>
       )} />
