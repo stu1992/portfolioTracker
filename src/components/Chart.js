@@ -71,7 +71,8 @@ useEffect(() =>{
 const options = {
   series: stocks,
   chart: {
-        type: 'area'
+        type: 'area',
+        backgroundColor: '#eceded'
     },
     title: {
         text: 'My asset portfolio'
