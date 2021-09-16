@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { SectionProps } from '../../utils/SectionProps';
 import ButtonGroup from '../elements/ButtonGroup';
@@ -33,9 +33,39 @@ const Hero = ({
   ...props
 }) => {
 
+  useEffect(() => {
+    async function fetchMyAPI() {
+      fetch('/api/user/get', {
+       method: 'GET',
+       credentials: 'include',
+       mode: "cors",
+       headers: {
+         'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+       }
+      })
+      .then(res => {
+  if (res.status === 200) {
+    console.log("home says logged in");
+    loggedIn = true;
+    setUserLoggedIn(true)
+  }else {
+    {
+      console.log("home says logged out");
+      loggedIn = false
+      setUserLoggedIn(false);
+    }
+  }
+     });
+    }
+
+    fetchMyAPI()
+  }, [])
+
   const [videoModalActive, setVideomodalactive] = useState(false);
   const [userEmail, setEmail] = useState("");
   const [userPassword, setPassword] = useState("");
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
  const userDetails = async (event) =>
   {
@@ -71,6 +101,7 @@ const Hero = ({
       const response = userDetails();
       console.log(response);
       loggedInCallBack(true);
+
     //  this.props.state['loggedin'] = true;
     } else {
       //TODO incorrect password modal
@@ -112,7 +143,7 @@ const Hero = ({
     bottomDivider && 'has-bottom-divider'
   );
 
-
+console.log("hero rendering with loging" + loggedIn);
   return (
     <section
       {...props}
@@ -129,7 +160,7 @@ const Hero = ({
                 A 4 step program to long term returns
                 </p>
               <div className="reveal-from-bottom" data-reveal-delay="600">
-                {!loggedIn &&
+                { !userLoggedIn &&
                 <form onSubmit={onSubmit}>
                   <h1>Login Below!</h1>
                   <Input

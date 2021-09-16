@@ -20,18 +20,11 @@ const defaultProps = {
   bottomDivider: false
 }
 
-const logout = () =>{
-    console.log("logging out");
-    API({
-    url: '/user/logout'//,
-  //  attributes
-  })
-  .then(response => {
-  });
-  }
+
 
 const Header = ({
   loggedIn,
+  loggedInCallBack,
   className,
   navPosition,
   hideNav,
@@ -40,11 +33,23 @@ const Header = ({
   bottomDivider,
   ...props
 }) => {
-
   const [isActive, setIsactive] = useState(false);
 
   const nav = useRef(null);
   const hamburger = useRef(null);
+
+
+  const logout = () =>{
+      console.log("logging out");
+      API({
+      url: '/user/logout'//,
+    //  attributes
+    })
+    .then(response => {
+    loggedInCallBack(false);
+    });
+    }
+
 
   useEffect(() => {
     isActive && openMenu();
@@ -123,7 +128,7 @@ const Header = ({
                     )}>
                     <li>
                       <Link to="/portfolio" onClick={closeMenu}>portfolio</Link>
-                      <Link to="/" onClick={closeMenu}>home</Link>
+                      <Link to="/" onClick={closeMenu}>Home</Link>
 
                     </li>
                   </ul>

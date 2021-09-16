@@ -63,7 +63,7 @@ if(loggedIn){
       ref={childRef}
       children={() => (
         <Switch>
-          <AppRoute exact path="/" component={() => <Home loggedIn={loggedIn} loggedInCallBack={login} />} layout={LayoutLoggedIn} />
+          <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} />} layout={LayoutLoggedIn} />
           <AppRoute exact path="/portfolio" component={() => <Portfolio name={name} loggedIn={loggedIn} />} layout={LayoutLoggedIn} />
         </Switch>
       )} />
