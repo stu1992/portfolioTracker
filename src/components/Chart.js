@@ -1,7 +1,6 @@
 
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import Mission from './Mission';
 import Newsfeed from './Newsfeed';
 import LandingPage from './LandingPage';
 import React, { useEffect, useState} from 'react';
@@ -152,10 +151,6 @@ return (
 <LandingPage loggedIn={loggedIn}/>
 </div>
   )
-}else {
-  return(
-    <Mission />
-    )
 }
 }
 export default Chart
