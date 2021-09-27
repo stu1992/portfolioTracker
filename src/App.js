@@ -30,12 +30,10 @@ const history = useHistory();
 
    const login = (value) => {
      setLoggedIn(value);
-     console.log("yo you logged in!");
      history.push("/portfolio");
    }
    const logout = (value) => {
      setLoggedIn(value);
-     console.log("yo you logged out!");
    }
 
   const childRef = useRef();
@@ -61,7 +59,6 @@ const history = useHistory();
 
   }, [location]);
 if(loggedIn){
-  console.log("loggedddd in, showing stuff");
   return (
     <ScrollReveal
       ref={childRef}
@@ -73,13 +70,12 @@ if(loggedIn){
       )} />
   );
 }else{
-    console.log("not logged in, fuck you");
   return (
     <ScrollReveal
       ref={childRef}
       children={() => (
         <Switch>
-          <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} />} layout={LayoutDefault} />
+          <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={logout} />} layout={LayoutDefault} />
         </Switch>
       )} />
   );

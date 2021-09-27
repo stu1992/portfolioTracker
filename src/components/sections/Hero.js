@@ -6,7 +6,6 @@ import Button from '../elements/Button';
 import Image from '../elements/Image';
 import Modal from '../elements/Modal';
 import Input from '../elements/Input';
-import Login from '../Login';
 import marketImg from './../../market.png';
 
 const propTypes = {
@@ -16,8 +15,6 @@ const propTypes = {
 const defaultProps = {
   ...SectionProps.defaults
 }
-
-
 
 const Hero = ({
   name,
@@ -47,12 +44,10 @@ const Hero = ({
       })
       .then(res => {
   if (res.status === 200) {
-    console.log("home says logged in");
     loggedIn = true;
     setUserLoggedIn(true)
   }else {
     {
-      console.log("home says logged out");
       loggedIn = false
       setUserLoggedIn(false);
       loggedOutCallBack(false);
@@ -99,15 +94,10 @@ const Hero = ({
   })
   .then(res => {
     if (res.status === 200) {
-      console.log("client loging success!");
       const response = userDetails();
-      console.log(response);
       loggedInCallBack(true);
-
-    //  this.props.state['loggedin'] = true;
     } else {
       //TODO incorrect password modal
-  console.log("incorrect username or password");
     }
   });
 }
@@ -145,7 +135,6 @@ const Hero = ({
     bottomDivider && 'has-bottom-divider'
   );
 
-console.log("hero rendering with loging" + loggedIn);
   return (
     <section
       {...props}
