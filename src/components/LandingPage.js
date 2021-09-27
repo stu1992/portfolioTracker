@@ -7,13 +7,13 @@ const LandingPage = ({loggedIn}) => {
 
     return (
       <div>
-        <img style={{maxWidth:'100%'}} src={loggedInMarketImg} alt="Market trends" />
+        <img style={{maxWidth:'100%', margin: "auto"}} src={loggedInMarketImg} alt="Market trends" />
      </div>
     )
     }else{
    return(
      <div>
-    <img style={{maxWidth:'100%'}} src={marketImg} alt="Market trends" />
+    <img style={{maxWidth:'100%', margin: "auto"}} src={marketImg} alt="Market trends" />
 </div>
   )
    }
