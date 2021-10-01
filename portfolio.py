@@ -85,7 +85,7 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
     dates = obj['dates']
     # get the day
 
-    rebalanceThreshold = 20
+    rebalanceThreshold = 15
     rebalance = False
     if date_object.day == 1: # I want to rebalance the portfolio on a monthly bases so I don't gete wrecked my the market out performing me.
         logging.info("first of the month.. ")

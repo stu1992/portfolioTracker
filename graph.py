@@ -86,11 +86,26 @@ def genGraph(public=True):
     fig, ax = plt.subplots()
     fig.set_size_inches(10,6,450)
 
+    fig.patch.set_facecolor('#25282c')
+    ax.set_facecolor('#eceded')
     fmt_month_year = mdates.MonthLocator()
     fmt_day_year = mdates.DayLocator()
+    ax.xaxis.label.set_color("#9ca9b3")
+
+    ax.spines['left'].set_color('#9ca9b3')
+    ax.spines['right'].set_color('#9ca9b3')
+    ax.spines['bottom'].set_color('#9ca9b3')
+    ax.spines['top'].set_color('#9ca9b3')
+    ax.yaxis.label.set_color('#9ca9b3')
+    ax.xaxis.label.set_color('#9ca9b3')
+    ax.tick_params(axis='y', colors='#9ca9b3')
+    ax.tick_params(axis='x', colors='#9ca9b3')
+
+    ax.yaxis.label.set_color("#9ca9b3")
     ax.xaxis.set_major_locator(fmt_month_year)
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%y-%m'))
     fig.autofmt_xdate()
+    ax.yaxis.tick_right()
 
 
     ax.plot(t, a, dashes=[1, 3], color= 'red', linewidth=0.5, antialiased=True, label='7% per annum')
@@ -98,7 +113,7 @@ def genGraph(public=True):
     ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management', path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()])
     if public == False:
         ax.scatter(scatter_x, scatter_y, s=scatter_volume, antialiased=True, alpha=0.25, c=np.random.random_sample(len(scatter_x)), label='Trade volume')
-    plt.title('How we compare to market trends',fontsize = 20)
+    plt.title('How we compare to market trends',fontsize = 25, color='#eceded')
     plt.legend(title='Rebalanced with low volitility')
     ax.xaxis.grid(True)
     if public == False:

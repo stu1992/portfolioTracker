@@ -1,60 +1,85 @@
-// App.js
+import React, { useRef, useEffect, Component } from 'react';
+import { useLocation, Switch, useHistory } from 'react-router-dom';
+import AppRoute from './utils/AppRoute';
+import ScrollReveal from './utils/ScrollReveal';
+import ReactGA from 'react-ga';
+import  API from './Api';
 
-import React, { Component, useState } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import { Button, Grid} from '@material-ui/core';
-import About from './components/About';
-import Strategy from './components/Strategy';
-import Chart from './components/Chart'
-import LandingPage from './components/LandingPage';
-import Login from './components/Login';
-import Profile from './components/Profile';
+// Layouts
+import LayoutDefault from './layouts/LayoutDefault';
+import LayoutLoggedIn from './layouts/LayoutLoggedIn';
 
-class App extends Component {
+// Views
+import Home from './views/Home';
+import Portfolio from './views/Portfolio';
 
-  constructor() {
-  super();
-  document.title = "Making My Mates rich";
-  this.state = {
-    loggedin: false,
-    titles: {index: "Our Mission"}, // This is just variables for this page, simple words that change
-    name: null,
-    email: null,
-    token: null
-  };
+// Initialize Google Analytics
+ReactGA.initialize(process.env.REACT_APP_GA_CODE);
 
-}
+const trackPage = page => {
+  ReactGA.set({ page });
+  ReactGA.pageview(page);
+};
 
-  render() {
-if(this.state.loggedin){
-   this.state.titles['index'] = "My Portfolio";
+const App = () => {
+const history = useHistory();
+  // persisting app state
+   const [name, setName] = React.useState(null);
+   const [email, setEmail] = React.useState(null);
+   const [loggedIn, setLoggedIn] = React.useState(null);
+
+   const login = (value) => {
+     setLoggedIn(value);
+     history.push("/portfolio");
+   }
+   const logout = (value) => {
+     setLoggedIn(value);
+   }
+
+  const childRef = useRef();
+  let location = useLocation();
+
+  useEffect(() => {
+    const page = location.pathname;
+    document.body.classList.add('is-loaded')
+    childRef.current.init();
+    trackPage(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+
+    API({
+    url: '/user/get'//,
+  //  attributes
+  })
+  .then(response => {
+    setName(response.data['name']);
+    setEmail(response.data['email']);
+    setLoggedIn(true);
+  });
+
+  }, [location]);
+if(loggedIn){
+  return (
+    <ScrollReveal
+      ref={childRef}
+      children={() => (
+        <Switch>
+          <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={logout} />} layout={LayoutLoggedIn} />
+          <AppRoute exact path="/portfolio" component={() => <Portfolio name={name} loggedIn={loggedIn} />} layout={LayoutLoggedIn} />
+        </Switch>
+      )} />
+  );
 }else{
-   this.state.titles['index'] = "Our Mission";
+  return (
+    <ScrollReveal
+      ref={childRef}
+      children={() => (
+        <Switch>
+          <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={logout} />} layout={LayoutDefault} />
+        </Switch>
+      )} />
+  );
 }
-    return (
-    <Router>
-        <div>
-          <h2 style={{ padding: 10 }}>Making My Mates rich!</h2>
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <ul className="navbar-nav mr-auto">
-            <li><Link to={'/'} className="nav-link"> {this.state.titles['index']} </Link></li>
-            <li><Link to={'/strategy'} className="nav-link">Our Strategy</Link></li>
-            <li><Link to={'/trends'} className="nav-link">Our Results</Link></li>
-            <li><Login state={this.state} setFunction={this.setState.bind(this)} /></li>
-
-          </ul>
-          </nav>
-          <hr />
-          <Switch>
-              <Route exact path='/' component={() => <Chart state={this.state}/>}/>
-              <Route path='/trends' component={() => <LandingPage state={this.state}/>}/>
-              <Route path='/strategy' component={() => <Strategy />}/>
-              <Route path='/profile' component={() => <Profile state={this.state} setFunction={this.setState.bind(this)} />}/>
-          </Switch>
-        </div>
-      </Router>
-    );
-  }
 }
 
 export default App;
