@@ -105,6 +105,7 @@ def genGraph(public=True):
     ax.xaxis.set_major_locator(fmt_month_year)
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%y-%m'))
     fig.autofmt_xdate()
+    ax.yaxis.tick_right()
 
 
     ax.plot(t, a, dashes=[1, 3], color= 'red', linewidth=0.5, antialiased=True, label='7% per annum')
