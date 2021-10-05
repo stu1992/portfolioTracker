@@ -143,7 +143,7 @@ const options = {
 if(loggedIn){
   console.log(name);
 return (
-  <div style={{ padding: 10 }}>
+  <div>
     <HighchartsReact
       containerProps={{ style: { height: "100%", padding: 10} }}
     highcharts={Highcharts}
