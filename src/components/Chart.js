@@ -104,6 +104,7 @@ const options = {
         }
     },
     yAxis: {
+        opposite: true,
         title: {
             text: '$1000'
         },
@@ -144,7 +145,7 @@ if(loggedIn){
 return (
   <div style={{ padding: 10 }}>
     <HighchartsReact
-      containerProps={{ style: { height: "100%" } }}
+      containerProps={{ style: { height: "100%", padding: 10} }}
     highcharts={Highcharts}
     options={options}
   />
