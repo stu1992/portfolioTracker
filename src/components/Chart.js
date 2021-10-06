@@ -145,7 +145,7 @@ if(loggedIn){
 return (
   <div>
     <HighchartsReact
-      containerProps={{ style: { height: "100%", padding: 10} }}
+      containerProps={{ style: { height: "100%" } }}
     highcharts={Highcharts}
     options={options}
   />
