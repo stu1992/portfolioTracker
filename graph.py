@@ -5,6 +5,8 @@ import matplotlib.dates as mdates
 import matplotlib.patheffects as path_effects
 from pymongo import MongoClient
 from datetime import datetime
+import random
+import string
 class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
@@ -39,6 +41,28 @@ def MongoGetDocument(user = 'Stu'):
     db = client.portfolioTracker
     return db.portfolios.find_one({'_id': user})
     client.close()
+
+def MongoPersistUser(data, user = 'stumay1992@gmail.com'):
+    key = {'email': user}
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    result=db.users.replace_one(key, data)
+    confirmEntry = db.users.find_one({'email': user})
+    client.close()
+
+def MongoGetUser(user = 'stumay1992@gmail.com'):
+    key = "'_id': {}".format(user)
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    return db.users.find_one({'email': user})
+    client.close()
+
+def MongoUpdateSecret(secret):
+    users = MongoGetUsers()
+    for user in users:
+        data = MongoGetUser(user)
+        data['daily secret'] = secret
+        MongoPersistUser(data, user)
 
 def genGraph(public=True):
     obj = MongoGetDocument('Market')
@@ -117,6 +141,11 @@ def genGraph(public=True):
     plt.legend(title='Rebalanced with low volitility')
     ax.xaxis.grid(True)
     if public == False:
+        secret = ''.join(random.choice(string.ascii_letters) for i in range(12))
+        secret_url = "/var/www/html/static/media/private_market." + secret + ".png"
+        plt.savefig(secret_url)
+        MongoUpdateSecret(secret_url)
+        plt.savefig(secret_url)
         plt.savefig("/var/www/html/static/media/private_market.d3c151cb.png")
     if public == True:
         ax.yaxis.set_major_locator(plt.NullLocator())

@@ -182,3 +182,18 @@ def MongoPersistDocument(data, user = 'Stu'):
         result=db.portfolios.replace_one(key, data)
     confirmEntry = db.portfolios.find_one({'_id': user})
     client.close()
+
+def MongoPersistUser(data, user = 'stumay1992@gmail.com'):
+    key = {'email': user}
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    result=db.users.replace_one(key, data)
+    confirmEntry = db.users.find_one({'email': user})
+    client.close()
+
+def MongoUpdateSecret(secret):
+    users = MongoPortfolio.MongoGetUsers()
+    for user in users:
+        data = MongoGetDocument(user)
+        data['daily secret'] = secret
+        MongoPersistUser(data, user)
