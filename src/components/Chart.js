@@ -5,7 +5,7 @@ import Newsfeed from './Newsfeed';
 import LandingPage from './LandingPage';
 import React, { useEffect, useState} from 'react';
 
-const Chart = ({name, loggedIn}) => {
+const Chart = ({name, loggedIn, dailySecret}) => {
 
 const [stocks, setStocks] = React.useState([
 ]);
@@ -80,9 +80,6 @@ const options = {
         text: name+'\'s investments'
     },
     xAxis: {
-      time: {
-
-    },
       type: 'datetime',
        labels: {
          formatter: function() {
@@ -140,8 +137,6 @@ const options = {
         }
     }
 }
-if(loggedIn){
-  console.log(name);
 return (
   <div>
     <HighchartsReact
@@ -149,9 +144,8 @@ return (
     highcharts={Highcharts}
     options={options}
   />
-<LandingPage loggedIn={loggedIn}/>
+<LandingPage dailySecret={dailySecret}/>
 </div>
   )
-}
 }
 export default Chart

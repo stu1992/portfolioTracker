@@ -32,7 +32,6 @@ const Home = ({loggedIn, loggedInCallBack, loggedOutCallBack}) => {
     fetchMyAPI()
   }, [])
 
-  console.log("home rendering with loggedin " + loggedIn);
   return (
     <>
       <Hero className="illustration-section-01" loggedOutCallBack={loggedOutCallBack} loggedIn={loggedIn} loggedInCallBack={loggedInCallBack}/>
