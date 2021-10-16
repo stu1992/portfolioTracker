@@ -27,6 +27,7 @@ const history = useHistory();
    const [name, setName] = React.useState(null);
    const [email, setEmail] = React.useState(null);
    const [loggedIn, setLoggedIn] = React.useState(null);
+   const [dailySecret, setDailySecret] = React.useState("secret_undef");
 
    const login = (value) => {
      setLoggedIn(value);
@@ -54,6 +55,8 @@ const history = useHistory();
   .then(response => {
     setName(response.data['name']);
     setEmail(response.data['email']);
+    setDailySecret(response.data['dailySecret']);
+    console.log(dailySecret);
     setLoggedIn(true);
   });
 
@@ -65,7 +68,7 @@ if(loggedIn){
       children={() => (
         <Switch>
           <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={logout} />} layout={LayoutLoggedIn} />
-          <AppRoute exact path="/portfolio" component={() => <Portfolio name={name} loggedIn={loggedIn} />} layout={LayoutLoggedIn} />
+          <AppRoute exact path="/portfolio" component={() => <Portfolio name={name} loggedIn={loggedIn} dailySecret={dailySecret} />} layout={LayoutLoggedIn} />
         </Switch>
       )} />
   );

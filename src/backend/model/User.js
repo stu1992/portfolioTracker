@@ -7,7 +7,8 @@ const bcrypt = require('bcrypt');const saltRounds = 10;const UserSchema = new mo
   name: { type: String, required: true, unique: false},
   tags: [{
     type: String
-}]
+}],
+  dailySecret: { type: String, required: true }
 });UserSchema.pre('save', function(next) {
   // Check if document is new or a new password has been set
   if (this.isNew || this.isModified('password')) {
