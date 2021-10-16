@@ -137,9 +137,6 @@ const options = {
         }
     }
 }
-if(loggedIn){
-  console.log(name);
-  console.log("daily secret in chart: " +dailySecret);
 return (
   <div>
     <HighchartsReact
@@ -147,9 +144,8 @@ return (
     highcharts={Highcharts}
     options={options}
   />
-<LandingPage loggedIn={loggedIn} dailySecret={dailySecret}/>
+<LandingPage dailySecret={dailySecret}/>
 </div>
   )
-}
 }
 export default Chart

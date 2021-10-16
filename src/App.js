@@ -56,7 +56,6 @@ const history = useHistory();
     setName(response.data['name']);
     setEmail(response.data['email']);
     setDailySecret(response.data['dailySecret']);
-    console.log(dailySecret);
     setLoggedIn(true);
   });
 
@@ -68,7 +67,7 @@ if(loggedIn){
       children={() => (
         <Switch>
           <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={logout} />} layout={LayoutLoggedIn} />
-          <AppRoute exact path="/portfolio" component={() => <Portfolio name={name} loggedIn={loggedIn} dailySecret={dailySecret} />} layout={LayoutLoggedIn} />
+          <AppRoute exact path="/portfolio" component={() => <Portfolio name={name} dailySecret={dailySecret} />} layout={LayoutLoggedIn} />
         </Switch>
       )} />
   );
