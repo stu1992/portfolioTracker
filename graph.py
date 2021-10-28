@@ -174,7 +174,7 @@ def genGraph(public=True, months=1):
     if public == False:
         secret_url = "/var/www/html/static/media/market" + str(months) + "_" + secret + ".png"
         plt.savefig(secret_url)
-        MongoUpdateSecret("/static/media/market0_" + secret + ".png")
+        MongoUpdateSecret("/static/media/market6_" + secret + ".png")
     if public == True:
         ax.yaxis.set_major_locator(plt.NullLocator())
         ax.xaxis.set_major_formatter(plt.NullFormatter())

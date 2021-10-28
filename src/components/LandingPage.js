@@ -10,7 +10,7 @@ const LandingPage = ({dailySecret}) => {
 
 
   const [secret, setSecret] = React.useState(dailySecret);
-  const [currentScope, setCurrentScope] = React.useState(0);
+  const [currentScope, setCurrentScope] = React.useState(1);
 
   const scope = ["0", "6", "3", "1"];
   //var currentScope = 0;
