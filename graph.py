@@ -4,9 +4,10 @@ import numpy as np
 import matplotlib.dates as mdates
 import matplotlib.patheffects as path_effects
 from pymongo import MongoClient
-from datetime import datetime
+import datetime
 import random
 import string
+from numpy import array
 class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
@@ -63,8 +64,26 @@ def MongoUpdateSecret(secret):
         data = MongoGetUser(user)
         data['dailySecret'] = secret
         MongoPersistUser(data, user)
+def limitScope(dateList, months):
+    today = datetime.date.today()
+    currentMonth = today.month
+    currentYear = today.year
+    daysInScope = []
+    for i in range(len(dateList)):
+        if months == 0:
+            daysInScope.append(i)
+            continue
+        print("considering " + str(dateList[i]))
+        #obj = datetime.datetime.strptime(newDates[i], '%Y/%m/%d')
+        if dateList[i].year == currentYear:
+            if dateList[i].month <= currentMonth and dateList[i].month > currentMonth - months:
+                print("adding " + str(dateList[i]))
+                daysInScope.append(i)
+    print("dates in scope")
+    print(daysInScope)
+    return daysInScope
 
-def genGraph(public=True):
+def genGraph(public=True, months=1):
     obj = MongoGetDocument('Market')
     assets = []
     for struct in obj['seriesdataset']:
@@ -73,11 +92,16 @@ def genGraph(public=True):
     dates = obj['dates']
     newDates = []
     for i in dates: # convert to epoc objects for consumption by matplotlib
-        newDates.append(datetime.strptime(i, '%Y/%m/%d'))
-    t = newDates
-    a = assets[0].History
-    b = assets[1].History
-    c = assets[2].History
+        newDates.append(datetime.datetime.strptime(i, '%Y/%m/%d'))
+
+
+    daysInScope = limitScope(newDates, months)
+
+# array(aList)[myIndices]
+    t = array(newDates)[daysInScope]
+    a = array(assets[0].History)[daysInScope]
+    b = array(assets[1].History)[daysInScope]
+    c = array(assets[2].History)[daysInScope]
 
     userList = MongoGetUsers()
     userList.append('all') # backwards compadibility
@@ -100,13 +124,20 @@ def genGraph(public=True):
             newIndex = scatter_data['date'].index(scatter_data['date_unsorted'][i])
             scatter_data['volume'][newIndex] += scatter_data['volume'][i]*8
             scatter_data['date'].append(scatter_data['date_unsorted'][i])
-    scatter_x = []
+    scatter_x_tmp = []
     print(scatter_data['date'])
     for i in scatter_data['date']: #convert to epoc objects for consumption by matplotlib
-        scatter_x.append(datetime.strptime(i, '%Y/%m/%d'))
-    scatter_y = scatter_data['endValue']
-    scatter_volume= scatter_data['volume']
+        scatter_x_tmp.append(datetime.datetime.strptime(i, '%Y/%m/%d'))
+
+    daysInScope = limitScope(scatter_x_tmp, months)
+
+    scatter_x = array(scatter_x_tmp)[daysInScope]
+    scatter_y = array(scatter_data['endValue'])[daysInScope]
+    scatter_volume= array(scatter_data['volume'])[daysInScope]
     scatter_volume = list(map(lambda x: x/3, scatter_volume))
+
+
+
     fig, ax = plt.subplots()
     fig.set_size_inches(10,6,450)
 
@@ -141,10 +172,10 @@ def genGraph(public=True):
     plt.legend(title='Rebalanced with low volitility')
     ax.xaxis.grid(True)
     if public == False:
-        secret = ''.join(random.choice(string.ascii_letters) for i in range(12))
-        secret_url = "/var/www/html/static/media/market." + secret + ".png"
+        secret_url = "/var/www/html/static/media/market" + str(months) + "_" + secret + ".png"
         plt.savefig(secret_url)
-        MongoUpdateSecret("/static/media/market." + secret + ".png")
+        plt.savefig("/home/stu/graph.png")
+        MongoUpdateSecret("/static/media/market0_" + secret + ".png")
     if public == True:
         ax.yaxis.set_major_locator(plt.NullLocator())
         ax.xaxis.set_major_formatter(plt.NullFormatter())
@@ -152,5 +183,12 @@ def genGraph(public=True):
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
         plt.savefig("/var/www/html/static/media/market.74a21c94.png")
 # generate both logged in and guest graph
-genGraph(True)
-genGraph(False)
+secret = ''.join(random.choice(string.ascii_letters) for i in range(12))
+genGraph(True,1)
+genGraph(True,3)
+genGraph(True,6)
+genGraph(True,0)
+genGraph(False,1)
+genGraph(False,3)
+genGraph(False,6)
+genGraph(False,0)
