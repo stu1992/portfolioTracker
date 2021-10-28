@@ -154,7 +154,7 @@ def genGraph(public=True, months=1):
     ax.yaxis.label.set_color('#9ca9b3')
     ax.xaxis.label.set_color('#9ca9b3')
     ax.tick_params(axis='y', colors='#9ca9b3')
-    ax.tick_params(axis='x', colors='#9ca9b3')
+    ax.tick_params(axis='x', colors='#9ca9b3', rotation=30)
 
     ax.yaxis.label.set_color("#9ca9b3")
     ax.xaxis.set_major_locator(fmt_month_year)
