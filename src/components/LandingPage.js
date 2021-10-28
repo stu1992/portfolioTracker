@@ -10,25 +10,31 @@ const LandingPage = ({dailySecret}) => {
 
 
   const [secret, setSecret] = React.useState(dailySecret);
+  const [currentScope, setCurrentScope] = React.useState(0);
 
   const scope = ["0", "6", "3", "1"];
-  var currentScope = 0;
+  //var currentScope = 0;
   function changeScope(){
     var currentStr = scope[currentScope];
     console.log("the index is " + currentScope);
     var newStr = "";
     if(currentScope == 3){
+      console.log("buffer at 3");
       newStr = scope[0]
-      currentScope = 0;
+      setCurrentScope(0);
+      //currentScope = 0;
       console.log(currentStr);
       console.log(newStr);
     }else {
-      currentScope ++;
-      newStr = scope[currentScope]
+      var newScope = currentScope + 1;
+
+      newStr = scope[newScope]
       console.log(currentStr);
       console.log(newStr);
+      setCurrentScope(newScope)
     }
-    console.log(secret);
+
+    console.log(secret);;
     var newDailySecret = secret.replace(currentStr, newStr);
     console.log(newDailySecret);
     dailySecret = newDailySecret;
