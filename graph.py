@@ -183,10 +183,7 @@ def genGraph(public=True, months=1):
         plt.savefig("/var/www/html/static/media/market.74a21c94.png")
 # generate both logged in and guest graph
 secret = ''.join(random.choice(string.ascii_letters) for i in range(12))
-genGraph(True,1)
-genGraph(True,3)
 genGraph(True,6)
-genGraph(True,0)
 genGraph(False,1)
 genGraph(False,3)
 genGraph(False,6)
