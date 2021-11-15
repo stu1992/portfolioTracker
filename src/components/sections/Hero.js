@@ -4,6 +4,7 @@ import { SectionProps } from '../../utils/SectionProps';
 import ButtonGroup from '../elements/ButtonGroup';
 import Button from '../elements/Button';
 import Image from '../elements/Image';
+import Input from '../elements/Input';
 import marketImg from './../../market.png';
 
 const propTypes = {
@@ -141,21 +142,21 @@ const Hero = ({
                 { !userLoggedIn &&
                 <form onSubmit={onSubmit}>
                   <h1>Login Below!</h1>
-                  <input
+                  <Input
                     type="email"
                     name="email"
                     placeholder="Enter email"
                     onChange={emailHandler}
                     required
                   />
-                <input
+                <Input
                     type="password"
                     name="password"
                     placeholder="Enter password"
                     onChange={passwordHandler}
                     required
                   />
-                <input type="submit" value="Submit"/>
+                <Input type="submit" value="Submit"/>
                 </form>
               }
               </div>
