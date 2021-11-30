@@ -164,7 +164,6 @@ const newChart = {
         curve: 'smooth'
       },
       fill: {
-        colors: ['#b86767', '##90c97f', '##9abaed', '#d293e6', '#74aeb3', '#d6d07e'],
         type: 'gradient',
         gradient: {
           opacityFrom: 1.0,
