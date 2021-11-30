@@ -158,6 +158,9 @@ const newChart = {
     ,
     series: stocks,
     options: {
+      theme: {
+      palette: 'palette2'
+    },
       chart: {
         type: 'area',
         height: 600,
@@ -176,7 +179,8 @@ const newChart = {
         enabled: false
       },
       stroke: {
-        curve: 'smooth'
+        curve: 'straight',
+        width : 0.5,
       },
       fill: {
         type: 'gradient',
