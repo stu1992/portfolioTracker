@@ -4,6 +4,7 @@ import HighchartsReact from 'highcharts-react-official'
 import Newsfeed from './Newsfeed';
 import LandingPage from './LandingPage';
 import React, { useEffect, useState} from 'react';
+import ReactApexChart from "react-apexcharts";
 
 const Chart = ({name, loggedIn, dailySecret}) => {
 
@@ -137,13 +138,52 @@ const options = {
         }
     }
 }
+
+const newChart = {
+
+    series: stocks,
+    options: {
+      chart: {
+        type: 'area',
+        height: 600,
+        stacked: true,
+        events: {
+          selection: function (chart, e) {
+            console.log(new Date(e.xaxis.min))
+          }
+        },
+        toolbar: {
+       show: true
+     }
+      },
+
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'smooth'
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          opacityFrom: 1.0,
+          opacityTo: 1.0,
+        }
+      },
+      legend: {
+        position: 'bottom',
+        horizontalAlign: 'right'
+      },
+      xaxis: {
+        type: 'datetime',
+        categories: dates
+      },
+    },
+}
 return (
-  <div>
-    <HighchartsReact
-      containerProps={{ style: { height: "100%" } }}
-    highcharts={Highcharts}
-    options={options}
-  />
+  <div style={{ paddingTop: '100px' }}>
+
+<ReactApexChart  options={newChart.options} series={newChart.series} type="area" height={350} />
 <LandingPage dailySecret={dailySecret}/>
 </div>
   )
