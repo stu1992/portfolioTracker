@@ -129,6 +129,11 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
             if asset.Name == 'Managed Assets':
                 logging.debug("total managed assets are " + str(totalValue))
                 asset.latest(totalValue)
+        for asset in assets:
+            if asset.Name == 'VIX':
+                vix = round(assetFactory.getPriceUSD('VIX') * exchange , 2)
+                logging.debug("VIX today is " + str(vix))
+
     else:
         for asset in assets:
             if asset.Name == 'VOO':
@@ -143,6 +148,10 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
                 asset.latest(round(latest* 1.000185395, 6)) #the idea here is to get a 7% return in a year
                 latest = asset.History[-1]
                 logging.debug("today is " + str(latest))
+            elif  asset.Name == 'VIX':
+                vix = round(assetFactory.getPriceUSD('VIX') * exchange , 2)
+                asset.latest(vix)
+                logging.debug("VIX today is " + str(vix))
     # persist data
     serialisableAssets = []
     for asset in assets:

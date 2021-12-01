@@ -18,6 +18,9 @@ class AssetAPIFactory:
         elif ticker == "BIQ":
             self.cachedPrices[ticker] = YahooFinancials([ticker+ ".AX"]).get_current_price()[ticker+ ".AX"]
             return self.cachedPrices[ticker]
+        elif ticker == "VIX":
+            self.cachedPrices[ticker] = YahooFinancials(['^VIX']).get_current_price()['^VIX']
+            return self.cachedPrices[ticker]
         elif ticker == "BTC" or  ticker == "ETH":
             TICKER_API_URL = 'https://www.bitstamp.net/api/v2/ticker/' + ticker.lower() + "usd/"
             response = requests.get(TICKER_API_URL)
