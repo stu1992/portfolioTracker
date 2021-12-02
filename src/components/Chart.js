@@ -176,6 +176,19 @@ const newChart = {
       },
 
        yaxis: {
+         show: true,
+showAlways: true,
+showForNullSeries: true,
+seriesName: undefined,
+opposite: true,
+reversed: false,
+logarithmic: false,
+tickAmount: 6,
+min: 6,
+max: 6,
+forceNiceScale: false,
+floating: false,
+decimalsInFloat: 2,
          labels: {
                   show: true,
                   align: 'right',
