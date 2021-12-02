@@ -178,7 +178,7 @@ const newChart = {
        yaxis: {
          show: true,
          opposite: true,
-
+         decimalsInFloat: 2,
          labels: {
                   show: true,
                   align: 'right',

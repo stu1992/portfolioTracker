@@ -73,11 +73,11 @@ def limitScope(dateList, months):
         if months == 0:
             daysInScope.append(i)
             continue
-        print("considering " + str(dateList[i]))
+        #print("considering " + str(dateList[i]))
         #obj = datetime.datetime.strptime(newDates[i], '%Y/%m/%d')
         if dateList[i].year == currentYear:
             if dateList[i].month <= currentMonth and dateList[i].month > currentMonth - months:
-                print("adding " + str(dateList[i]))
+                #print("adding " + str(dateList[i]))
                 daysInScope.append(i)
     print("dates in scope")
     print(daysInScope)
@@ -97,11 +97,13 @@ def genGraph(public=True, months=1):
 
     daysInScope = limitScope(newDates, months)
 
+    vix_threshold = 20
 # array(aList)[myIndices]
     t = array(newDates)[daysInScope]
-    a = array(assets[0].History)[daysInScope]
-    b = array(assets[1].History)[daysInScope]
-    c = array(assets[2].History)[daysInScope]
+    vix = array(assets[0].History)[daysInScope]
+    a = array(assets[1].History)[daysInScope]
+    b = array(assets[2].History)[daysInScope]
+    c = array(assets[3].History)[daysInScope]
 
     userList = MongoGetUsers()
     userList.append('all') # backwards compadibility
@@ -112,28 +114,28 @@ def genGraph(public=True, months=1):
         scatter_data['date_unsorted'].extend(data['date'])
         scatter_data['volume'].extend(data['volume'])
         scatter_data['endValue'].extend(data['endValue'])
-    print(scatter_data)
+    #print(scatter_data)
 
     #check if there are any duplicates to perform superposition
     for i in range(len(scatter_data['date_unsorted'])):
         if scatter_data['date_unsorted'][i] not in scatter_data['date']:
-            print("all good")
+            #print("all good")
             scatter_data['date'].append(scatter_data['date_unsorted'][i])
         else:
-            print("found dup at "  + str(i))
+            #print("found dup at "  + str(i))
             newIndex = scatter_data['date'].index(scatter_data['date_unsorted'][i])
             scatter_data['volume'][newIndex] += scatter_data['volume'][i]*8
             scatter_data['date'].append(scatter_data['date_unsorted'][i])
     scatter_x_tmp = []
-    print(scatter_data['date'])
+    #print(scatter_data['date'])
     for i in scatter_data['date']: #convert to epoc objects for consumption by matplotlib
         scatter_x_tmp.append(datetime.datetime.strptime(i, '%Y/%m/%d'))
 
-    daysInScope = limitScope(scatter_x_tmp, months)
+    scatter_daysInScope = limitScope(scatter_x_tmp, months)
 
-    scatter_x = array(scatter_x_tmp)[daysInScope]
-    scatter_y = array(scatter_data['endValue'])[daysInScope]
-    scatter_volume= array(scatter_data['volume'])[daysInScope]
+    scatter_x = array(scatter_x_tmp)[scatter_daysInScope]
+    scatter_y = array(scatter_data['endValue'])[scatter_daysInScope]
+    scatter_volume= array(scatter_data['volume'])[scatter_daysInScope]
     scatter_volume = list(map(lambda x: x/3, scatter_volume))
 
 
@@ -161,9 +163,24 @@ def genGraph(public=True, months=1):
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%y-%m'))
     fig.autofmt_xdate()
     ax.yaxis.tick_right()
-
-
-    ax.plot(t, a, dashes=[1, 3], color= 'red', linewidth=0.5, antialiased=True, label='7% per annum')
+    #print(months)
+    #print(daysInScope)
+    #print(len(daysInScope),len(t),len(a),len(vix))
+    for i in range(len(daysInScope)-1):
+        #print(i,i+2)
+        #print(t[i:i+2], a[i:i+2], vix[i])i
+        if vix[i] >= vix_threshold:
+            opacity = 1.0
+        else:
+            opacity = (vix[i]/vix_threshold) * (vix[i]/vix_threshold)
+        width =  ((vix[i]-vix_threshold)/4)*((vix[i]-vix_threshold)/4)
+        print("width: " + str(width))
+        print("opacity: " + str(opacity))
+        if vix[i] >= vix_threshold:
+            ax.plot(t[i:i+2], a[i:i+2], color='red', linewidth=width, alpha=opacity, antialiased=True, path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()])
+        else:
+            ax.plot(t[i:i+2], a[i:i+2], color='red', linewidth=width, alpha=opacity, antialiased=True)
+    ax.plot(t, a, color= 'red', alpha=1.0, linewidth=0.5, antialiased=True, label='7% per annum')
     ax.plot(t, b, color='blue', linewidth=0.5, antialiased=True, label='Everything in S&P 500')
     ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management', path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()])
     if public == False:
