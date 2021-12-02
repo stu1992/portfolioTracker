@@ -140,27 +140,72 @@ const options = {
 }
 
 const newChart = {
-  toolbar: {
-    show: true,
-    offsetX: 0,
-    offsetY: 0,
-    tools: {
-      download: true,
-      selection: true,
-      zoom: true,
-      zoomin: true,
-      zoomout: true,
-      pan: true,
-      reset: true | '<img src="/static/icons/reset.png" width="20">',
-      customIcons: []
-    }
-  }
-    ,
+
     series: stocks,
     options: {
       theme: {
-      palette: 'palette2'
-    },
+      palette: 'palette2',
+      },
+
+      tooltip: {
+          enabled: true,
+          enabledOnSeries: undefined,
+          shared: true,
+          followCursor: true,
+          intersect: false,
+          inverseOrder: false,
+          custom: undefined,
+          fillSeriesColor: false,
+          theme: false,
+          style: {
+            fontSize: '10px',
+            fontFamily: undefined
+          },
+          onDatasetHover: {
+              highlightDataSeries: false,
+          },
+          x: {
+              show: true,
+              format: 'dd MMMMM',
+              formatter: undefined,
+          },
+          y: {
+              formatter: undefined,
+              title: {
+                  formatter: (seriesName) => seriesName,
+              },
+          },
+          z: {
+              formatter: undefined,
+              title: 'Size: '
+          },
+          marker: {
+              show: true,
+          },
+          fixed: {
+              enabled: false,
+              position: 'topRight',
+              offsetX: 0,
+              offsetY: 0,
+          },
+      },
+
+       yaxis: {
+         labels: {
+                  show: true,
+                  align: 'right',
+                  minWidth: 0,
+                  maxWidth: 160,
+                  style: {
+                      colors: [],
+                      fontSize: '12px',
+                      fontFamily: 'Helvetica, Arial, sans-serif',
+                      fontWeight: 400,
+                      cssClass: 'apexcharts-yaxis-label',
+       }
+     }
+   },
+
       chart: {
         type: 'area',
         height: 600,
@@ -171,10 +216,21 @@ const newChart = {
           }
         },
         toolbar: {
-       show: true
-     }
+          show: true,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: true,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true | '<img src="/static/icons/reset.png" width="20">',
+            customIcons: []
+          }
+        }
       },
-
       dataLabels: {
         enabled: false
       },
@@ -195,9 +251,12 @@ const newChart = {
       },
       xaxis: {
         type: 'datetime',
-        categories: dates
+        categories: dates,
+        labels: {
+  format: 'dd/MMM',
+}
       },
-    },
+    }
 }
 return (
   <div style={{ paddingTop: '100px' }}>
