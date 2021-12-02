@@ -177,7 +177,7 @@ const newChart = {
 
        yaxis: {
          labels: {
-                  show: false,
+                  show: true,
                   align: 'right',
                   minWidth: 0,
                   maxWidth: 160,
