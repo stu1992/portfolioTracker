@@ -190,7 +190,8 @@ const newChart = {
                       fontFamily: 'Helvetica, Arial, sans-serif',
                       fontWeight: 400,
                       cssClass: 'apexcharts-yaxis-label',
-       }
+       },
+       formatter: (value) => { return val / 1000 },
      }
    },
 
