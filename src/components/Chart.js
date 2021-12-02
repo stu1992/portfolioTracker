@@ -191,7 +191,6 @@ const newChart = {
                       fontWeight: 400,
                       cssClass: 'apexcharts-yaxis-label',
        },
-       formatter: (value) => { return this.value / 1000; },
      }
    },
 
