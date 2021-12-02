@@ -164,21 +164,6 @@ const newChart = {
           onDatasetHover: {
               highlightDataSeries: false,
           },
-          x: {
-              show: true,
-              format: 'dd MMMMM',
-              formatter: undefined,
-          },
-          y: {
-              formatter: undefined,
-              title: {
-                  formatter: (seriesName) => seriesName,
-              },
-          },
-          z: {
-              formatter: undefined,
-              title: 'Size: '
-          },
           marker: {
               show: true,
           },
@@ -187,18 +172,18 @@ const newChart = {
               position: 'topRight',
               offsetX: 0,
               offsetY: 0,
-          },
+          }
       },
 
        yaxis: {
          labels: {
-                  show: true,
+                  show: false,
                   align: 'right',
                   minWidth: 0,
                   maxWidth: 160,
                   style: {
                       colors: [],
-                      fontSize: '12px',
+                      fontSize: '14px',
                       fontFamily: 'Helvetica, Arial, sans-serif',
                       fontWeight: 400,
                       cssClass: 'apexcharts-yaxis-label',
