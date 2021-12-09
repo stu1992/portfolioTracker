@@ -116,18 +116,20 @@ const options = {
       xDateFormat: '%d-%m-%Y',
         shared: true,
         split: false,
-        valuePrefix: '$'
+        valuePrefix: '$',
+	fixed: {
+          enabled: true,
+          position: 'bottomleft',
+          offsetX: 0,
+          offsetY: 0,
+      }
     },
     plotOptions: {
         area: {
             stacking: 'normal',
-            lineColor: '#666666',
+            lineColor: '#66ff66',
             lineWidth: 1,
-            marker: {
-                lineWidth: 1,
-                lineColor: '#666666'
-            }
-        },
+            }, 
         series: {
             marker: {
                 enabled: false
@@ -144,7 +146,7 @@ const newChart = {
     series: stocks,
     options: {
       theme: {
-      palette: 'palette2',
+      palette: 'palette1',
       },
 
       tooltip: {
@@ -168,8 +170,8 @@ const newChart = {
               show: true,
           },
           fixed: {
-              enabled: false,
-              position: 'topRight',
+              enabled: true,
+              position: 'bottomleft',
               offsetX: 0,
               offsetY: 0,
           }

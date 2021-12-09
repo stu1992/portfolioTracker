@@ -73,14 +73,9 @@ def limitScope(dateList, months):
         if months == 0:
             daysInScope.append(i)
             continue
-        #print("considering " + str(dateList[i]))
-        #obj = datetime.datetime.strptime(newDates[i], '%Y/%m/%d')
         if dateList[i].year == currentYear:
             if dateList[i].month <= currentMonth and dateList[i].month > currentMonth - months:
-                #print("adding " + str(dateList[i]))
                 daysInScope.append(i)
-    print("dates in scope")
-    print(daysInScope)
     return daysInScope
 
 def genGraph(public=True, months=1):
@@ -114,20 +109,16 @@ def genGraph(public=True, months=1):
         scatter_data['date_unsorted'].extend(data['date'])
         scatter_data['volume'].extend(data['volume'])
         scatter_data['endValue'].extend(data['endValue'])
-    #print(scatter_data)
 
     #check if there are any duplicates to perform superposition
     for i in range(len(scatter_data['date_unsorted'])):
         if scatter_data['date_unsorted'][i] not in scatter_data['date']:
-            #print("all good")
             scatter_data['date'].append(scatter_data['date_unsorted'][i])
         else:
-            #print("found dup at "  + str(i))
             newIndex = scatter_data['date'].index(scatter_data['date_unsorted'][i])
             scatter_data['volume'][newIndex] += scatter_data['volume'][i]*8
             scatter_data['date'].append(scatter_data['date_unsorted'][i])
     scatter_x_tmp = []
-    #print(scatter_data['date'])
     for i in scatter_data['date']: #convert to epoc objects for consumption by matplotlib
         scatter_x_tmp.append(datetime.datetime.strptime(i, '%Y/%m/%d'))
 
@@ -163,23 +154,14 @@ def genGraph(public=True, months=1):
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%y-%m'))
     fig.autofmt_xdate()
     ax.yaxis.tick_right()
-    #print(months)
-    #print(daysInScope)
-    #print(len(daysInScope),len(t),len(a),len(vix))
     for i in range(len(daysInScope)-1):
-        #print(i,i+2)
-        #print(t[i:i+2], a[i:i+2], vix[i])i
-        if vix[i] >= vix_threshold:
-            opacity = 1.0
+        x = vix[i]
+        if vix[i] >= 20:
+            width = (0.2 * x) - 3
         else:
-            opacity = (vix[i]/vix_threshold) * (vix[i]/vix_threshold)
-        width =  ((vix[i]-vix_threshold)/4)*((vix[i]-vix_threshold)/4)
+            width = (0.00013 * x) * (20 * x ) * (0.05 * x)
         print("width: " + str(width))
-        print("opacity: " + str(opacity))
-        if vix[i] >= vix_threshold:
-            ax.plot(t[i:i+2], a[i:i+2], color='red', linewidth=width, alpha=opacity, antialiased=True, path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()])
-        else:
-            ax.plot(t[i:i+2], a[i:i+2], color='red', linewidth=width, alpha=opacity, antialiased=True)
+        ax.plot(t[i:i+2], a[i:i+2], color='red', linewidth=width, alpha=1.0, antialiased=True)
     ax.plot(t, a, color= 'red', alpha=1.0, linewidth=0.5, antialiased=True, label='7% per annum')
     ax.plot(t, b, color='blue', linewidth=0.5, antialiased=True, label='Everything in S&P 500')
     ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management', path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()])

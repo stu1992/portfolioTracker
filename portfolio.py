@@ -85,7 +85,7 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
     dates = obj['dates']
     # get the day
 
-    rebalanceThreshold = 15
+    rebalanceThreshold = 20
     rebalance = False
     if date_object.day == 1: # I want to rebalance the portfolio on a monthly bases so I don't gete wrecked my the market out performing me.
         logging.info("first of the month.. ")
@@ -131,7 +131,7 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
                 asset.latest(totalValue)
         for asset in assets:
             if asset.Name == 'VIX':
-                vix = round(assetFactory.getPriceUSD('VIX') * exchange , 2)
+                vix = round(assetFactory.getPriceUSD('VIX'), 2)
                 logging.debug("VIX today is " + str(vix))
 
     else:
@@ -149,7 +149,7 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
                 latest = asset.History[-1]
                 logging.debug("today is " + str(latest))
             elif  asset.Name == 'VIX':
-                vix = round(assetFactory.getPriceUSD('VIX') * exchange , 2)
+                vix = round(assetFactory.getPriceUSD('VIX'), 2)
                 asset.latest(vix)
                 logging.debug("VIX today is " + str(vix))
     # persist data
