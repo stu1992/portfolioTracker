@@ -64,18 +64,17 @@ def MongoUpdateSecret(secret):
         data = MongoGetUser(user)
         data['dailySecret'] = secret
         MongoPersistUser(data, user)
-def limitScope(dateList, months):
-    today = datetime.date.today()
-    currentMonth = today.month
-    currentYear = today.year
+
+def limitScope(dateList, monthsGoingBack):
+    monthsAgo = datetime.datetime.today() - relativedelta(months=monthsGoingBack)
     daysInScope = []
     for i in range(len(dateList)):
-        if months == 0:
+        if monthsGoingBack == 0: # all history, do no filtering
             daysInScope.append(i)
             continue
-        if dateList[i].year == currentYear:
-            if dateList[i].month <= currentMonth and dateList[i].month > currentMonth - months:
-                daysInScope.append(i)
+        print(dateList[i], "compared to " , monthsAgo)
+        if dateList[i] >= monthsAgo: # if this date is greater than the months going back
+            daysInScope.append(i)
     return daysInScope
 
 def genGraph(public=True, months=1):
@@ -89,9 +88,8 @@ def genGraph(public=True, months=1):
     for i in dates: # convert to epoc objects for consumption by matplotlib
         newDates.append(datetime.datetime.strptime(i, '%Y/%m/%d'))
 
-
     daysInScope = limitScope(newDates, months)
-
+    print(daysInScope)
     vix_threshold = 20
 # array(aList)[myIndices]
     t = array(newDates)[daysInScope]
@@ -99,6 +97,7 @@ def genGraph(public=True, months=1):
     a = array(assets[1].History)[daysInScope]
     b = array(assets[2].History)[daysInScope]
     c = array(assets[3].History)[daysInScope]
+    print(t)
 
     userList = MongoGetUsers()
     userList.append('all') # backwards compadibility
@@ -160,7 +159,7 @@ def genGraph(public=True, months=1):
             width = (0.2 * x) - 3
         else:
             width = (0.00013 * x) * (20 * x ) * (0.05 * x)
-        print("width: " + str(width))
+        #print("width: " + str(width))
         ax.plot(t[i:i+2], a[i:i+2], color='red', linewidth=width, alpha=1.0, antialiased=True)
     ax.plot(t, a, color= 'red', alpha=1.0, linewidth=0.5, antialiased=True, label='7% per annum')
     ax.plot(t, b, color='blue', linewidth=0.5, antialiased=True, label='Everything in S&P 500')
