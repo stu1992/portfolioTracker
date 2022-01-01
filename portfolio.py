@@ -84,27 +84,68 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
     myPortfolio = obj['portfolio']
     dates = obj['dates']
     # get the day
-
-    rebalanceThreshold = 20
     rebalance = False
-    if date_object.day == 1: # I want to rebalance the portfolio on a monthly bases so I don't gete wrecked my the market out performing me.
+    if date_object.day == 1: # I want to rebalance the portfolio on a monthly bases so I don't get wrecked my the market out performing me.
         logging.info("first of the month.. ")
-        monthOfPrices = YahooFinancials(['^VIX']).get_historical_price_data(str((date_object - timedelta(days = 30)).strftime("%Y-%m-%d")), str(date_object.strftime("%Y-%m-%d")), 'daily')['^VIX']['prices']
-        sum = 0
-        daysInMonth = 0
-        for price in monthOfPrices:
-            try:
-                sum += price['close']
-                daysInMonth +=1
-            except:
-                pass
-        logging.info("average:" + str(sum/daysInMonth))
-        if sum/daysInMonth < rebalanceThreshold: # 12 is low, 20 is high
-            logging.info("Average volitility below " + str(rebalanceThreshold))
-            rebalance = True
-        else:
-            logging.info("Average volitility above " + str(rebalanceThreshold))
-            rebalance = False # already false but easy to read
+        marketAssets = MongoPortfolio.MongoGetDocument("Market")['seriesdataset']
+        vix = []
+        for asset in marketAssets:
+            if asset['name'] == "VIX":
+                vix = asset['data']
+        a = vix[-30:]
+        b = vix[-60:-30]
+        c = vix[-90:-60]
+        d = vix[-120:-90]
+        e = vix[-150:-120]
+        f = vix[-180:150]
+
+        avg6 = (sum(f) / len(f))
+        avg5 = (sum(e) / len(e))
+        avg4 = (sum(d) / len(d))
+        avg3 = (sum(c) / len(c))
+        avg2 = (sum(b) / len(b))
+        avg1 = (sum(a) / len(a))
+
+        h6 = avg6 > 14
+        h5 = avg5 > 14
+        h4 = avg4 > 14
+        h3 = avg3 > 14
+        h2 = avg2 > 14
+        h1 =  avg1 > 14
+
+        step = 14
+        logging.debug("monthly vix average is " + str(avg1))
+        if h1:
+            step += 2
+            if avg1 < step:
+                rebalance = True
+                logging.debug("raising by 2 to " + str(step))
+            if h2:
+                step += 2
+                if avg1 < step:
+                    rebalance = True
+                    logging.debug("raising by 2 to " +  str(step))
+                if h3:
+                    step += 2
+                    if avg1 < step:
+                        realance = True
+                        logging.debug("raising by 2 to " + str(step))
+                    if h4:
+                        step += 2
+                        if avg1 < step:
+                            rebalance = True
+                            logging.debug("raising by 2 to " + str(step))
+                        if h5:
+                            step += 2
+                            if avg1 < step:
+                                rebalance = True
+                                logging.debug("raising by 2 to " + str(step))
+                            if h6:
+                                step +=2
+                                if avg1 < step:
+                                    rebalance = True
+                                    logging.debug("raising by 2 to " + str(step))
+
     if rebalance == True:
         logging.info("Rebalancing")
         # my 'Market' portfolio is going to just buy all the S&P shares I could afford
@@ -133,6 +174,7 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
             if asset.Name == 'VIX':
                 vix = round(assetFactory.getPriceUSD('VIX'), 2)
                 logging.debug("VIX today is " + str(vix))
+                asset.latest(vix)
 
     else:
         for asset in assets:
