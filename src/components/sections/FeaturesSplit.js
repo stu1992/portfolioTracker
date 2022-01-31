@@ -5,7 +5,7 @@ import SectionHeader from './partials/SectionHeader';
 import Image from '../elements/Image';
 import feature from './../../assets/images/features-split-image-02.png';
 import rule1 from './../../assets/images/rule_1.jpg';
-import rule2 from './../../assets/images/rule_2.jpeg';
+import rule2 from './../../assets/images/rule_2.jpg';
 import rule3 from './../../assets/images/rule_3.jpg';
 import rule4 from './../../assets/images/rule_4.jpg';
 const propTypes = {
