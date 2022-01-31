@@ -1,5 +1,9 @@
 from pymongo import MongoClient
-
+import MongoPortfolio
+from Email import Mail
+import logging
+import logging.handlers
+import os
 #constants
 known_tickers = ["AAPL", "VUG", "GME", "VOO", "BIQ", "BTC", "ETH"]
 #functions
@@ -39,7 +43,14 @@ def MongoPersistScatter(data, user):
     confirmEntry = db.volume.find_one(key)
     client.close()
 
-
+handler = logging.handlers.WatchedFileHandler(
+    os.environ.get("LOGFILE", "./log"))
+formatter = logging.Formatter(logging.BASIC_FORMAT)
+handler.setFormatter(formatter)
+root = logging.getLogger()
+root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
+root.addHandler(handler)
+emailObj = Mail(logging)
 
 email = input("Enter user email: ")
 print("You entered: " + email)
@@ -108,5 +119,8 @@ happy = input("persist to db?(yes|no):")
 if(happy == "yes"):
     MongoPersistDocument(user, email)
     MongoPersistScatter(scatterData, email)
+    emailObj.sendOrder(emailTo=email, user=MongoPortfolio.MongoGetUserName(email), order=action, volume=volume, ticker=assetChoice, price=price)
+    if email != 'stumay1992@gmail.com':
+        emailObj.sendOrder(emailTo='stumay1992@gmail.com', user="Stu", order=action, volume=volume, ticker=assetChoice, price=price)
 else:
     exit()

@@ -5,6 +5,8 @@ import Newsfeed from './Newsfeed';
 import LandingPage from './LandingPage';
 import React, { useEffect, useState} from 'react';
 import ReactApexChart from "react-apexcharts";
+import Testimonial from './sections/Testimonial';
+import News from '../backend/model/News';
 
 const Chart = ({name, loggedIn, dailySecret}) => {
 
@@ -248,11 +250,13 @@ const newChart = {
       },
     }
 }
+console.log(news);
 return (
   <div style={{ paddingTop: '100px' }}>
 
 <ReactApexChart  options={newChart.options} series={newChart.series} type="area" height={350} />
 <LandingPage dailySecret={dailySecret}/>
+<Testimonial topDivider NewsList={news} loggedIn={true}/>
 </div>
   )
 }

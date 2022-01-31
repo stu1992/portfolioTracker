@@ -73,7 +73,6 @@ def limitScope(dateList, monthsGoingBack):
         if monthsGoingBack == 0: # all history, do no filtering
             daysInScope.append(i)
             continue
-        print(dateList[i], "compared to " , monthsAgo)
         if dateList[i] >= monthsAgo: # if this date is greater than the months going back
             daysInScope.append(i)
     return daysInScope
@@ -90,7 +89,6 @@ def genGraph(public=True, months=1):
         newDates.append(datetime.datetime.strptime(i, '%Y/%m/%d'))
 
     daysInScope = limitScope(newDates, months)
-    print(daysInScope)
     vix_threshold = 20
 # array(aList)[myIndices]
     t = array(newDates)[daysInScope]
@@ -98,13 +96,11 @@ def genGraph(public=True, months=1):
     a = array(assets[1].History)[daysInScope]
     b = array(assets[2].History)[daysInScope]
     c = array(assets[3].History)[daysInScope]
-    print(t)
 
     userList = MongoGetUsers()
     userList.append('all') # backwards compadibility
     scatter_data = {'date_unsorted': [], 'date' : [], 'volume' : [], 'endValue': []}
     for user in userList:
-        print(user)
         data = MongoMarketScatter(user)
         scatter_data['date_unsorted'].extend(data['date'])
         scatter_data['volume'].extend(data['volume'])

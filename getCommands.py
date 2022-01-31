@@ -27,7 +27,7 @@ mail.select("inbox") # connect to inbox.
 result, data = mail.search(None, "ALL")
 latest = int(open(latestFile,'r').read().rstrip())
 
-logging.debug("latest = " + str(latest))
+#logging.debug("latest = " + str(latest))
 ids = data[0] # data is a list.
 stringData = []
 
@@ -35,11 +35,11 @@ id_list = ids.split() # ids is a space separated string
 for num in id_list:
     stringData.append(int(num))
 
-logging.debug(stringData)
+#logging.debug(stringData)
 spliceAt = int(stringData.index(latest))
 
 newList = id_list[spliceAt+1:]
-logging.info("fetching latest emails:\n" + str(newList))
+#logging.info("fetching latest emails")
 for messages in newList:
     # fetch the email body (RFC822) for the given ID
     result, data = mail.fetch(messages, "(RFC822)")
@@ -84,42 +84,72 @@ for messages in newList:
                 if content_type == "text/html":
                     message_body=body
         if "stumay1992@gmail.com" in From:
-            logging.debug("authenticated from stu")
-        message_subject = subject
-        comment = re.search(">comment:([^<]*)", body)
-        link = re.search("href=\"([^\"]*)", body)
-        tags = re.search(">tags:([^<]*)", body)
-        message_link = None
-        message_comment = None
-        message_tags = None
-        try:
-            message_comment = comment.group(0)[9:]
-            message_link = link.group(0)[6:]
-            message_tags = tags.group(0)[6:].split(",")
-            message_tags.append("all")
+            logging.debug("authenticated from stu") # this should break if not
+            message_subject = subject
+        if "order" in message_subject:
+            logging.debug("order message")
+            email = re.search(">email:([^<]*)", body)
+            ticker = re.search(">ticker:([^<]*)", body)
+            ordertype = re.search("order:([^<]*)", body)
+            volume = re.search("volume:([^<]*)", body)
+            price = re.search("price:([^<]*)", body)
+            try:
+                message_email = email.group(0)[7:]
+                message_ticker = ticker.group(0)[8:]
+                message_ordertype = ordertype.group(0)[6:]
+                message_volume = volume.group(0)[7:]
+                message_price = price.group(0)[6:]
+            except:
+                continue
+            logging.debug("email:" + message_email)
+            logging.debug("ticker:" + message_ticker)
+            logging.debug("ordertype:" + message_ordertype)
+            logging.debug("volume:" + message_volume)
+            logging.debug("price:" + message_price)
+            f = open("/home/ubuntu/portfolioTracker/order", "w")
+            f.write(message_email + '\n')
+            f.write(message_ticker + '\n')
+            f.write(message_ordertype + '\n')
+            f.write(message_volume + '\n')
+            f.write(message_price + '\n')
+            f.write("yes\n")
+            os.system("/usr/bin/python3 /home/ubuntu/portfolioTracker/DAO.py < /home/ubuntu/portfolioTracker/order")
+            os.system("rm /home/ubuntu/portfolioTracker/order")
+        else:
+            comment = re.search(">comment:([^<]*)", body)
+            link = re.search("href=\"([^\"]*)", body)
+            tags = re.search(">tags:([^<]*)", body)
+            message_link = None
+            message_comment = None
+            message_tags = None
+            try:
+                message_comment = comment.group(0)[9:]
+                message_link = link.group(0)[6:]
+                message_tags = tags.group(0)[6:].split(",")
+                message_tags.append("all")
 
-        except:
-            continue
-    if message_comment == None:
-        logging.debug("didn't parse comment")
-        message_comment = "didn't parse"
-    if message_link == None:
-        logging.debug("didn't parse link")
-        message_link = "didn't parse"
-    if message_tags == None:
-        logging.debug("didn't parse tags")
-        message_tags = ["all"]
-    logging.info("writing to db")
-    logging.info("title: " + message_subject)
-    logging.info("comment: " + message_comment)
-    logging.info("link: " + message_link)
-    logging.info("tags: " + str(message_tags))
-    message_date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    data = {"date": message_date, "title" : message_subject, "comment": message_comment, "link" : message_link, "tags" : message_tags}
-    db.news.insert_one(data)
+            except:
+                continue
+            if message_comment == None:
+                logging.debug("didn't parse comment")
+                message_comment = "didn't parse"
+            if message_link == None:
+                logging.debug("didn't parse link")
+                message_link = "didn't parse"
+            if message_tags == None:
+                logging.debug("didn't parse tags")
+                message_tags = ["all"]
+            logging.info("writing to db")
+            logging.info("title: " + message_subject)
+            logging.info("comment: " + message_comment)
+            logging.info("link: " + message_link)
+            logging.info("tags: " + str(message_tags))
+            message_date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            client = MongoClient("localhost")
+            db = client.portfolioTracker
+            data = {"date": message_date, "title" : message_subject, "comment": message_comment, "link" : message_link, "tags" : message_tags}
+            db.news.insert_one(data)
 
-logging.debug("new latest = " + str(stringData[-1]))
+#logging.debug("new latest = " + str(stringData[-1]))
 handler = open(latestFile,'w')
 handler.write(str(stringData[-1]))

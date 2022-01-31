@@ -2,6 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 import { SectionTilesProps } from '../../utils/SectionProps';
 import SectionHeader from './partials/SectionHeader';
+import Headline from './Headline'
+import News from '../../backend/model/News'
 
 const propTypes = {
   ...SectionTilesProps.types
@@ -20,6 +22,8 @@ const Testimonial = ({
   hasBgColor,
   invertColor,
   pushLeft,
+  NewsList,
+  loggedIn,
   ...props
 }) => {
 
@@ -47,6 +51,10 @@ const Testimonial = ({
     title: 'News that I\'m following',
     paragraph: 'Log in for more insight'
   };
+  const sectionHeaderLoggedIn = {
+    title: 'News that you\'re following',
+    paragraph: 'specific to your investment preferences'
+  };
 
   return (
     <section
@@ -55,59 +63,15 @@ const Testimonial = ({
     >
       <div className="container">
         <div className={innerClasses}>
+	  { !loggedIn &&
           <SectionHeader data={sectionHeader} className="center-content" />
+	  }
+	  { loggedIn &&
+	<SectionHeader data={sectionHeaderLoggedIn} className="center-content" />
+	  }
           <div className={tilesClasses}>
 
-            <div className="tiles-item reveal-from-right" data-reveal-delay="200">
-              <div className="tiles-item-inner">
-                <div className="testimonial-item-content">
-                  <p className="text-sm mb-0">
-                    — Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum cillum dolore eu fugiat.
-                      </p>
-                </div>
-                <div className="testimonial-item-footer text-xs mt-32 mb-0 has-top-divider">
-                  <span className="testimonial-item-name text-color-high">Roman Level</span>
-                  <span className="text-color-low"> / </span>
-                  <span className="testimonial-item-link">
-                    <a href="#0">AppName</a>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="tiles-item reveal-from-bottom">
-              <div className="tiles-item-inner">
-                <div className="testimonial-item-content">
-                  <p className="text-sm mb-0">
-                    — Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum cillum dolore eu fugiat.
-                      </p>
-                </div>
-                <div className="testimonial-item-footer text-xs mt-32 mb-0 has-top-divider">
-                  <span className="testimonial-item-name text-color-high">Diana Rynzhuk</span>
-                  <span className="text-color-low"> / </span>
-                  <span className="testimonial-item-link">
-                    <a href="#0">AppName</a>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="tiles-item reveal-from-left" data-reveal-delay="200">
-              <div className="tiles-item-inner">
-                <div className="testimonial-item-content">
-                  <p className="text-sm mb-0">
-                    — Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum cillum dolore eu fugiat.
-                      </p>
-                </div>
-                <div className="testimonial-item-footer text-xs mt-32 mb-0 has-top-divider">
-                  <span className="testimonial-item-name text-color-high">Ben Stafford</span>
-                  <span className="text-color-low"> / </span>
-                  <span className="testimonial-item-link">
-                    <a href="#0">AppName</a>
-                  </span>
-                </div>
-              </div>
-            </div>
+          {NewsList.map((news) => (<Headline date={news["date"]} headline={news["title"]} comment={news["comment"]} link={news["link"]} tags={news["tags"]}/>))}
 
           </div>
         </div>
@@ -120,3 +84,4 @@ Testimonial.propTypes = propTypes;
 Testimonial.defaultProps = defaultProps;
 
 export default Testimonial;
+

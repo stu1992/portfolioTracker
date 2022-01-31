@@ -12,7 +12,6 @@ console.log("signed in?" + loggedIn);
   return (
     <>
     <Chart name={name} loggedIn={loggedIn} dailySecret={dailySecret}/>
-      <Testimonial topDivider />
     </>
   );
 }
