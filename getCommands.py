@@ -114,7 +114,6 @@ for messages in newList:
             f.write(message_price + '\n')
             f.write("yes\n")
             os.system("/usr/bin/python3 /home/ubuntu/portfolioTracker/DAO.py < /home/ubuntu/portfolioTracker/order")
-            os.system("rm /home/ubuntu/portfolioTracker/order")
         else:
             comment = re.search(">comment:([^<]*)", body)
             link = re.search("href=\"([^\"]*)", body)
