@@ -1,7 +1,6 @@
 
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import Newsfeed from './Newsfeed';
 import LandingPage from './LandingPage';
 import React, { useEffect, useState} from 'react';
 import ReactApexChart from "react-apexcharts";
@@ -204,7 +203,6 @@ const newChart = {
         stacked: true,
         events: {
           selection: function (chart, e) {
-            console.log(new Date(e.xaxis.min))
           }
         },
         toolbar: {
@@ -250,7 +248,6 @@ const newChart = {
       },
     }
 }
-console.log(news);
 return (
   <div style={{ paddingTop: '100px' }}>
 

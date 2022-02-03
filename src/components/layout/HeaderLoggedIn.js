@@ -23,7 +23,7 @@ const defaultProps = {
 
 
 const Header = ({
-  loggedIn,
+  userLoggedIn,
   loggedInCallBack,
   className,
   navPosition,
@@ -43,11 +43,13 @@ const Header = ({
       console.log("logging out");
       API({
       url: '/user/logout'//,
-    //  attributes
     })
     .then(response => {
     loggedInCallBack(false);
-    });
+    }).catch(response =>{
+    loggedInCallBack(false);
+  }
+  );
     }
 
 
@@ -132,7 +134,7 @@ const Header = ({
 
                     </li>
                   </ul>
-                  {!hideSignin && !loggedIn &&
+                  {!hideSignin && !userLoggedIn &&
                     <ul
                       className="list-reset header-nav-right"
                     >

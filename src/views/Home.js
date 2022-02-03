@@ -29,30 +29,6 @@ const [news, setNews] = React.useState([
 ]);
 
   useEffect(() => {
-    async function fetchMyAPI() {
-      fetch('/api/user/get', {
-       method: 'GET',
-       credentials: 'include',
-       mode: "cors",
-       headers: {
-         'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-       }
-      })
-      .then(res => {
-  if (res.status === 200) {
-    console.log("home says logged in");
-    loggedIn = true;
-  }else {
-    {
-      console.log("home says logged out");
-      loggedIn = false
-    }
-  }
-     });
-    }
-
-    fetchMyAPI()
     fetchNews()
   }, [])
 

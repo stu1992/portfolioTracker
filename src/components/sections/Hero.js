@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { SectionProps } from '../../utils/SectionProps';
-import ButtonGroup from '../elements/ButtonGroup';
-import Button from '../elements/Button';
 import Image from '../elements/Image';
 import Input from '../elements/Input';
 import marketImg from './../../market.png';
-
 const propTypes = {
   ...SectionProps.types
 }
@@ -17,6 +14,8 @@ const defaultProps = {
 
 const Hero = ({
   name,
+  setUserLoggedIn,
+  userLoggedIn,
   loggedIn,
   loggedInCallBack,
   loggedOutCallBack,
@@ -30,37 +29,8 @@ const Hero = ({
   ...props
 }) => {
 
-  useEffect(() => {
-    async function fetchMyAPI() {
-      fetch('/api/user/get', {
-       method: 'GET',
-       credentials: 'include',
-       mode: "cors",
-       headers: {
-         'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-       }
-      })
-      .then(res => {
-  if (res.status === 200) {
-    loggedIn = true;
-    setUserLoggedIn(true)
-  }else {
-    {
-      loggedIn = false
-      setUserLoggedIn(false);
-      loggedOutCallBack(false);
-    }
-  }
-     });
-    }
-
-    fetchMyAPI()
-  }, [])
-
-  const [userEmail, setEmail] = useState("");
-  const [userPassword, setPassword] = useState("");
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
+   const [userEmail, setEmail] = useState("");
+   const [userPassword, setPassword] = useState("");
 
  const userDetails = async (event) =>
   {
@@ -97,18 +67,23 @@ const Hero = ({
     } else {
       //TODO incorrect password modal
     }
+  }).catch(response =>{
+    console.log("login failed");
+    loggedInCallBack(false);
   });
 }
 
- const emailHandler = (event) =>{
+const emailHandler = (event) =>{
+	 event.preventDefault();
    setEmail(event.target.value);
  }
 
- const passwordHandler = (event) =>{
+const passwordHandler = (event) =>{
+	 event.preventDefault();
    setPassword(event.target.value);
  }
 
-  const outerClasses = classNames(
+const outerClasses = classNames(
     'hero section center-content',
     topOuterDivider && 'has-top-divider',
     bottomOuterDivider && 'has-bottom-divider',
@@ -117,12 +92,12 @@ const Hero = ({
     className
   );
 
-  const innerClasses = classNames(
+const innerClasses = classNames(
     'hero-inner section-inner',
     topDivider && 'has-top-divider',
     bottomDivider && 'has-bottom-divider'
   );
-
+console.log("showing login " +name);
   return (
     <section
       {...props}
@@ -141,7 +116,7 @@ const Hero = ({
               <div className="reveal-from-bottom" data-reveal-delay="600">
                 { !userLoggedIn &&
                 <form onSubmit={onSubmit}>
-                  <h1>Login Below!</h1>
+                  <h2>Login Below</h2>
                   <Input
                     type="email"
                     name="email"
