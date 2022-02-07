@@ -1,8 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useLocation, Switch, useHistory } from 'react-router-dom';
+import { Switch, useHistory } from 'react-router-dom';
 import AppRoute from './utils/AppRoute';
 import ScrollReveal from './utils/ScrollReveal';
-import ReactGA from 'react-ga';
 import  API from './Api';
 
 // Layouts
@@ -10,35 +9,24 @@ import LayoutDefault from './layouts/LayoutDefault';
 import LayoutLoggedIn from './layouts/LayoutLoggedIn';
 
 // Views
-import Portfolio from './views/Portfolio';
 import Chart from './components/Chart';
 import Home from './views/Home';
-
-// Initialize Google Analytics
-ReactGA.initialize(process.env.REACT_APP_GA_CODE);
-
-const trackPage = page => {
-  ReactGA.set({ page });
-  ReactGA.pageview(page);
-};
 
 const App = () => {
 const history = useHistory();
   // persisting app state
    const [name, setName] = React.useState(null);
-   const [loggedIn, setLoggedIn] = React.useState(null);
    const [dailySecret, setDailySecret] = React.useState("secret_undef");
    const [userLoggedIn, setUserLoggedIn] = useState(false);
 
    const login = (value) => {
-     setLoggedIn(value);
+     setUserLoggedIn(value);
      if (value){
          history.push("/portfolio");
      }
    }
 
   const childRef = useRef();
-  let location = useLocation();
 
   useEffect(() => {
     API({
@@ -46,7 +34,7 @@ const history = useHistory();
   //  attributes
   })
   .then(response => {
-    if (response.statusText == "OK"){
+    if (response.statusText === "OK"){
         setName(response.data['name']);
         setDailySecret(response.data['dailySecret']);
         setUserLoggedIn(true);
@@ -54,14 +42,14 @@ const history = useHistory();
     }
   }).catch(response =>{
     console.log("auto login failed at " + window.location.pathname);
-    if(window.location.pathname == "/portfolio"){
+    if(window.location.pathname === "/portfolio"){
         history.push("/");
     }
     setUserLoggedIn(false);
   }
   );
 
-  }, [location]);
+  });
 if(userLoggedIn){
   return (
     <ScrollReveal
