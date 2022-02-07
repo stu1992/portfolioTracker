@@ -53,7 +53,10 @@ const history = useHistory();
 	console.log("auto login success\n "+ name );
     }
   }).catch(response =>{
-    console.log("auto login failed");
+    console.log("auto login failed at " + window.location.pathname);
+    if(window.location.pathname == "/portfolio"){
+        history.push("/");
+    }
     setUserLoggedIn(false);
   }
   );
@@ -65,7 +68,7 @@ if(userLoggedIn){
       ref={childRef}
       children={() => (
         <Switch>
-          <AppRoute exact path="/" component={() => <Home setUserLoggedIn={setUserLoggedIn} userLoggedIn={userLoggedIn} loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutLoggedIn} />
+          <AppRoute exact path="/" component={() => <Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} loggedInCallBack={login} />} layout={LayoutLoggedIn} />
           <AppRoute exact path="/portfolio" component={() => <Chart name={name} dailySecret={dailySecret} />} layout={LayoutLoggedIn} />
         </Switch>
       )} />

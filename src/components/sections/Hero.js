@@ -15,10 +15,8 @@ const defaultProps = {
 const Hero = ({
   name,
   setUserLoggedIn,
-  userLoggedIn,
   loggedIn,
   loggedInCallBack,
-  loggedOutCallBack,
   className,
   topOuterDivider,
   bottomOuterDivider,
@@ -97,7 +95,6 @@ const innerClasses = classNames(
     topDivider && 'has-top-divider',
     bottomDivider && 'has-bottom-divider'
   );
-console.log("showing login " +name);
   return (
     <section
       {...props}
@@ -114,7 +111,7 @@ console.log("showing login " +name);
                 A 4 step program to long term returns
                 </p>
               <div className="reveal-from-bottom" data-reveal-delay="600">
-                { !userLoggedIn &&
+                { !loggedIn &&
                 <form onSubmit={onSubmit}>
                   <h2>Login Below</h2>
                   <Input
