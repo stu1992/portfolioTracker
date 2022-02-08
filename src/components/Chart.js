@@ -73,7 +73,28 @@ const options = {
   series: stocks,
   chart: {
         type: 'area',
-        backgroundColor: '#eceded'
+	  zoomType: 'x',
+        backgroundColor: '#151719'
+    },
+	    rangeSelector: {
+      buttons: [{
+        text: '+',
+        events: {
+          click() {
+            /* const xAxis = chart.xAxis[0];
+            xAxis.setExtremes(Date.UTC(2000, 11, 30), Date.UTC(2001, 11, 30)); */
+            return false
+          }
+        }
+      }, {
+        text: '-',
+        events: {
+          click() {
+            return false
+          }
+        }
+
+      }]
     },
     title: {
         text: 'My asset portfolio'
@@ -82,7 +103,7 @@ const options = {
         text: name+'\'s investments'
     },
     xAxis: {
-      type: 'datetime',
+       type: 'datetime',
        labels: {
          formatter: function() {
            const format = {
@@ -98,6 +119,7 @@ const options = {
          }
        },
         categories: dates,
+categories: dates,
         title: {
             enabled: false
         }
@@ -114,7 +136,7 @@ const options = {
         }
     },
     tooltip: {
-      xDateFormat: '%d-%m-%Y',
+      xDateFormat: '%d-%B-%Y',
         shared: true,
         split: false,
         valuePrefix: '$',
@@ -128,7 +150,7 @@ const options = {
     plotOptions: {
         area: {
             stacking: 'normal',
-            lineColor: '#66ff66',
+            lineColor: '#88ff88',
             lineWidth: 1,
             }, 
         series: {
@@ -147,7 +169,7 @@ const newChart = {
     series: stocks,
     options: {
       theme: {
-      palette: 'palette1',
+      palette: 'palette2',
       },
 
       tooltip: {
@@ -225,8 +247,8 @@ const newChart = {
         enabled: false
       },
       stroke: {
-        curve: 'straight',
-        width : 0.5,
+        curve: 'smooth',
+        width : 0.1,
       },
       fill: {
         type: 'gradient',
@@ -249,9 +271,13 @@ const newChart = {
     }
 }
 return (
-  <div style={{ paddingTop: '100px' }}>
+    <div style={{ paddingTop: '100px' }}>
+    <HighchartsReact
+      containerProps={{ style: { height: "100%" } }}
+    highcharts={Highcharts}
+    options={options}
+  />
 
-<ReactApexChart  options={newChart.options} series={newChart.series} type="area" height={350} />
 <LandingPage dailySecret={dailySecret}/>
 <Testimonial topDivider NewsList={news} loggedIn={true}/>
 </div>
