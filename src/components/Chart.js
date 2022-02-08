@@ -72,9 +72,9 @@ useEffect(() =>{
 const options = {
   series: stocks,
   chart: {
-        type: 'area',
-	  zoomType: 'x',
-        backgroundColor: '#151719'
+    type: 'area',
+      zoomType: 'x',
+      backgroundColor: '#151719'
     },
 	    rangeSelector: {
       buttons: [{
@@ -97,10 +97,12 @@ const options = {
       }]
     },
     title: {
-        text: 'My asset portfolio'
+        text: 'My asset portfolio',
+	    style: { "color": "#ececec", "fontSize": "18px" }
     },
     subtitle: {
-        text: name+'\'s investments'
+        text: name+'\'s investments',
+	    style: { "color": "#ececec"}
     },
     xAxis: {
        type: 'datetime',
@@ -136,21 +138,17 @@ categories: dates,
         }
     },
     tooltip: {
-      xDateFormat: '%d-%B-%Y',
-        shared: true,
-        split: false,
-        valuePrefix: '$',
-	fixed: {
-          enabled: true,
-          position: 'bottomleft',
-          offsetX: 0,
-          offsetY: 0,
-      }
-    },
+      xDateFormat: '%d %B %Y',
+      shared: true,
+      split: false,
+      pointFormat: '<b style="color: {series.color}">⬤</b><b>{series.name}: ${point.y}</b><br>',
+      footerFormat: '<b>Worth: ${point.total} </b>',
+    }
+    ,
     plotOptions: {
         area: {
             stacking: 'normal',
-            lineColor: '#88ff88',
+            lineColor: '#DDDDDD',
             lineWidth: 1,
             }, 
         series: {
@@ -271,7 +269,7 @@ const newChart = {
     }
 }
 return (
-    <div style={{ paddingTop: '100px' }}>
+	<div style={{ paddingTop: '100px' }}>
     <HighchartsReact
       containerProps={{ style: { height: "100%" } }}
     highcharts={Highcharts}
