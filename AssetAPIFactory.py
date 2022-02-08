@@ -11,7 +11,7 @@ class AssetAPIFactory:
             self.logging.debug("using cache for " + ticker)
             return self.cachedPrices[ticker]
 
-        elif ticker == "AAPL" or ticker == "VUG" or ticker == "GME" or ticker == "VOO":
+        elif ticker == "AAPL" or ticker == "VUG" or ticker == "GME" or ticker == "VOO" or ticker == "BRK-B":
             yahoo_financials = YahooFinancials(ticker)
             self.cachedPrices[ticker] = YahooFinancials([ticker]).get_current_price()[ticker]
             return self.cachedPrices[ticker]
