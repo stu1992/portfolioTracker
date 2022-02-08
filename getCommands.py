@@ -40,6 +40,8 @@ spliceAt = int(stringData.index(latest))
 
 newList = id_list[spliceAt+1:]
 #logging.info("fetching latest emails")
+known_subjects = [] #shit work around for dubplications in email parsing
+items_acted_on = False
 for messages in newList:
     # fetch the email body (RFC822) for the given ID
     result, data = mail.fetch(messages, "(RFC822)")
@@ -114,7 +116,14 @@ for messages in newList:
             f.write(message_price + '\n')
             f.write("yes\n")
             os.system("/usr/bin/python3 /home/ubuntu/portfolioTracker/DAO.py < /home/ubuntu/portfolioTracker/order")
+            items_acted_on = True
         else:
+            if message_subject not in known_subjects:
+                logging.debug("adding a new message")
+                known_subjects.append(message_subject)
+            else:
+                logging.debug("passing on second " + message_subject)
+                continue
             comment = re.search(">comment:([^<]*)", body)
             link = re.search("href=\"([^\"]*)", body)
             tags = re.search(">tags:([^<]*)", body)
@@ -148,7 +157,9 @@ for messages in newList:
             db = client.portfolioTracker
             data = {"date": message_date, "title" : message_subject, "comment": message_comment, "link" : message_link, "tags" : message_tags}
             db.news.insert_one(data)
+            items_acted_on = True
 
-#logging.debug("new latest = " + str(stringData[-1]))
-handler = open(latestFile,'w')
-handler.write(str(stringData[-1]))
+if items_acted_on:
+    logging.debug("new latest = " + str(stringData[-1]))
+    handler = open(latestFile,'w')
+    handler.write(str(stringData[-1]))
