@@ -123,7 +123,8 @@ def genGraph(public=True, months=1):
     scatter_x = array(scatter_x_tmp)[scatter_daysInScope]
     scatter_y = array(scatter_data['endValue'])[scatter_daysInScope]
     scatter_volume= array(scatter_data['volume'])[scatter_daysInScope]
-    scatter_volume = list(map(lambda x: x/3, scatter_volume))
+    max_volume = max(scatter_volume)
+    scatter_volume = list(map(lambda x: 1 * (x/max_volume), scatter_volume))
 
 
 
@@ -162,7 +163,7 @@ def genGraph(public=True, months=1):
     ax.plot(t, b, color='blue', linewidth=0.5, antialiased=True, label='Everything in S&P 500')
     ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management', path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()])
     if public == False:
-        ax.scatter(scatter_x, scatter_y, s=scatter_volume, antialiased=True, alpha=0.25, c=np.random.random_sample(len(scatter_x)), label='Trade volume')
+        ax.scatter(scatter_x, scatter_y, s=200, antialiased=True, alpha=scatter_volume, c='green', label='Trade volume')
     plt.title('How we compare to market trends',fontsize = 25, color='#eceded')
     plt.legend(title='Rebalanced with low volitility')
     ax.xaxis.grid(True)
