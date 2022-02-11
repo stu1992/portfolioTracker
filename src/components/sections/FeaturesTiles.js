@@ -49,7 +49,7 @@ const FeaturesTiles = ({
   );
 
   const sectionHeader = {
-    title: 'It\'s my mission to offer investment advice to people I trust at the lowest possible price point.',
+    title: 'My mission is to offer investment advice to people I trust without the usual barriers to entry and red tape.',
     paragraph: 'Further reading if you think I\'m a moron.'
   };
 
