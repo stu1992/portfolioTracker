@@ -93,7 +93,7 @@ def sanitizeOrder(body):
     if payload['order'] not in ['buy', 'sell'] :
         print('order failed')
         raise Exception("unable to parse order type")
-    if payload['ticker'] not in ["AAPL", "VUG", "GME", "VOO", "BIQ", "BTC", "ETH", "BRK-B"]:
+    if payload['ticker'] not in ["AAPL", "VUG", "GME", "VOO", "BTC", "ETH", "BRK-B"]:
         print('ticker failed')
         raise Exception("unable to parse ticker")
     if type(payload['price']) != float and type(payload['price']) !=  int or payload['price'] <= 0:

@@ -5,7 +5,7 @@ import logging
 import logging.handlers
 import os
 #constants
-known_tickers = ["AAPL", "VUG", "GME", "VOO", "BIQ", "BTC", "ETH"]
+known_tickers = ["AAPL", "VUG", "GME", "VOO", "BTC", "ETH", "BRK-B"]
 #functions
 def MongoMarketScatter(user):
     client = MongoClient("localhost")
