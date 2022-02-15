@@ -54,7 +54,7 @@ const FeaturesSplit = ({
 
   const sectionHeader = {
     title: 'Most Americans can\'t afford a $500 medical bill.',
-    paragraph: 'I don\'t want to retire at the age of 40 and have no one to invite on adventures because all my mates are a paycheck away from homelessness, especially when my system is so easy.',
+    paragraph: 'I don\'t want to retire at the age of 40 and have no one to invite on adventures because all my mates are a paycheck away from homelessness. Especially when my system is so easy.',
   };
 
   return (
@@ -102,7 +102,7 @@ const FeaturesSplit = ({
                   The system isn't rigged against you. Your psychology is.
                   </h3>
                 <p className="m-0">
-                  You only need to be right like 4 times. Be patient and don't get pulled into FOMO(fear of missing out)
+                  You only need to be right 4 times. Be patient and don't get pulled into FOMO (fear of missing out)
                   </p>
               </div>
               <div className={
