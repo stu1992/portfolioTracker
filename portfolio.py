@@ -6,14 +6,10 @@ from yahoofinancials import YahooFinancials
 import MongoPortfolio
 import logging
 import logging.handlers
-import TestAssetAPIFactory as testAPI
 from AssetAPIFactory import AssetAPIFactory
-import TestMail as testingMail
 import os
 import random
 from Email import Mail
-
-testing = True
 
 class Asset:
     def __init__(self, jsonObj):
@@ -225,29 +221,10 @@ emailObj = None
 assetFactory = None
 date_object = None
 
-if(testing):
-    MongoPortfolio.MongoPersistDocument(MongoPortfolio.start1, "stumay1992@gmail.com")
-    MongoPortfolio.MongoPersistDocument(MongoPortfolio.StartMarket, "Market")
-    MongoPortfolio.MongoPersistDocument(MongoPortfolio.start2,  "stu.may1992@gmail.com")
-    MongoPortfolio.MongoPersistDocument(MongoPortfolio.start3, "stu.may.1992@gmail.com")
-    MongoPortfolio.MongoMarketScatter(MongoPortfolio.startScatter)
 
-    assetFactory = testAPI.AssetAPIFactory()
-    emailObj = testingMail.TestMail(logging)
-    date_object = next(dateGen)
-else:
-    assetFactory = AssetAPIFactory(logging)
-    emailObj = Mail(logging)
-    date_object = date.today()
+assetFactory = AssetAPIFactory(logging)
+emailObj = Mail(logging)
+date_object = date.today()
 
-if(testing):
-    for i in range(300):
-        if random.randint(1,25) == 25:
-            file = "buy" + str(random.randint(1,7))
-            os.system("python3 DAO.py < " + file)
-        global_exchange = assetFactory.getExchangeRate()
-        date_object = next(dateGen)
-        updatePortfolio(assetFactory, date_object, emailObj)
-if(not testing):
-    global_exchange = assetFactory.getExchangeRate()
-    updatePortfolio(assetFactory, date_object, emailObj)
+global_exchange = assetFactory.getExchangeRate()
+updatePortfolio(assetFactory, date_object, emailObj)
