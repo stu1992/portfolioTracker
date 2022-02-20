@@ -9,6 +9,8 @@ import random
 import string
 from numpy import array
 from dateutil.relativedelta import relativedelta
+import MongoPortfolio
+
 class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
@@ -22,49 +24,6 @@ class Asset:
         dict['data'] = self.History
         return dict
 
-def MongoMarketScatter(email):
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    return db.volume.find_one({'_id': email})
-    client.close()
-
-def MongoGetUsers():
-    userList = []
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    userDict = list(db.users.find({}, {'email':1, '_id' : 0}))
-    for emailKey in userDict:
-        userList.append(emailKey['email'])
-    return userList
-
-def MongoGetDocument(user = 'Stu'):
-    key = "'_id': {}".format(user)
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    return db.portfolios.find_one({'_id': user})
-    client.close()
-
-def MongoPersistUser(data, user = 'stumay1992@gmail.com'):
-    key = {'email': user}
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    result=db.users.replace_one(key, data)
-    confirmEntry = db.users.find_one({'email': user})
-    client.close()
-
-def MongoGetUser(user = 'stumay1992@gmail.com'):
-    key = "'_id': {}".format(user)
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    return db.users.find_one({'email': user})
-    client.close()
-
-def MongoUpdateSecret(secret):
-    users = MongoGetUsers()
-    for user in users:
-        data = MongoGetUser(user)
-        data['dailySecret'] = secret
-        MongoPersistUser(data, user)
 
 def limitScope(dateList, monthsGoingBack):
     monthsAgo = datetime.datetime.today() - relativedelta(months=monthsGoingBack)
@@ -78,7 +37,7 @@ def limitScope(dateList, monthsGoingBack):
     return daysInScope
 
 def genGraph(public=True, months=1):
-    obj = MongoGetDocument('Market')
+    obj = MongoPortfolio.MongoGetDocument('Market')
     assets = []
     for struct in obj['seriesdataset']:
         assets.append(Asset(struct))
@@ -97,11 +56,11 @@ def genGraph(public=True, months=1):
     b = array(assets[2].History)[daysInScope]
     c = array(assets[3].History)[daysInScope]
 
-    userList = MongoGetUsers()
+    userList = MongoPortfolio.MongoGetUsers()
     userList.append('all') # backwards compadibility
     scatter_data = {'date_unsorted': [], 'date' : [], 'volume' : [], 'endValue': []}
     for user in userList:
-        data = MongoMarketScatter(user)
+        data = MongoPortfolio.MongoMarketScatter(user)
         scatter_data['date_unsorted'].extend(data['date'])
         scatter_data['volume'].extend(data['volume'])
         scatter_data['endValue'].extend(data['endValue'])
@@ -170,7 +129,7 @@ def genGraph(public=True, months=1):
     if public == False:
         secret_url = "/var/www/html/static/media/market" + str(months) + "_" + secret + ".png"
         plt.savefig(secret_url)
-        MongoUpdateSecret("/static/media/market6_" + secret + ".png")
+        MongoUpdateSecret.MongoUpdateSecret("/static/media/market6_" + secret + ".png")
     if public == True:
         ax.yaxis.set_major_locator(plt.NullLocator())
         ax.xaxis.set_major_formatter(plt.NullFormatter())
