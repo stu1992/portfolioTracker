@@ -49,7 +49,7 @@ const FeaturesTiles = ({
   );
 
   const sectionHeader = {
-    title: 'My mission is to offer investment advice to people I trust without the usual barriers to entry and red tape.',
+    title: 'My mission is to offer investment advice to people I trust, without the usual barriers to entry and red tape.',
     paragraph: 'Further reading if you think I\'m a moron.'
   };
 
@@ -79,7 +79,7 @@ const FeaturesTiles = ({
                     The Intelligent Investor - Benjamin Graham
                     </h4>
                   <p className="m-0 text-sm">
-                    A long and dry rite of passage for you, if you're overly excited about making 10000% gains on your bitcoin.
+                    A rite of passage for you, if you're overly excited about making 10000% gains on your bitcoin.
                     </p>
                 </div>
               </div>
@@ -101,7 +101,7 @@ const FeaturesTiles = ({
                     The richest man in babylon - George S. Clason
                     </h4>
                   <p className="m-0 text-sm">
-                    A short and sweet book that hammers the brilliance of compound interest and basic financial theory, into your head.
+                    A book that hammers the brilliance of compound interest and basic financial theory into your head.
                     </p>
                 </div>
               </div>
