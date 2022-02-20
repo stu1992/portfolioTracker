@@ -215,6 +215,8 @@ formatter = logging.Formatter(logging.BASIC_FORMAT)
 handler.setFormatter(formatter)
 root = logging.getLogger()
 root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
+logging.getLogger('requests').setLevel(logging.ERROR)
+logging.getLogger('urllib3').setLevel(logging.ERROR)
 root.addHandler(handler)
 
 emailObj = None
