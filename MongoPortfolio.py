@@ -7,6 +7,7 @@ def MongoGetDocument(user = 'Stu'):
     db = client.portfolioTracker
     return db.portfolios.find_one({'_id': user})
     client.close()
+
 def MongoGetUsers():
     userList = []
     client = MongoClient("localhost")
@@ -15,6 +16,12 @@ def MongoGetUsers():
     for emailKey in userDict:
         userList.append(emailKey['email'])
     return userList
+
+def MongoGetUser(email):
+    client=MongoClient("localhost")
+    db=client.portfolioTracker
+    return db.users.find_one({'email':email})
+    client.close()
 
 def MongoGetUserName(email):
     userList = []
@@ -29,6 +36,13 @@ def MongoMarketScatter(data):
     client = MongoClient("localhost")
     db = client.portfolioTracker
     return db.volume.replace_one({'_id': 'all'}, data)
+    client.close()
+
+
+def MongoGetScatter(email):
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    return db.volume.find_one({'_id': email})
     client.close()
 
 def MongoPersistDocument(data, user = 'Stu'):
@@ -51,8 +65,8 @@ def MongoPersistUser(data, user = 'stumay1992@gmail.com'):
     client.close()
 
 def MongoUpdateSecret(secret):
-    users = MongoPortfolio.MongoGetUsers()
+    users = MongoGetUsers()
     for user in users:
-        data = MongoGetDocument(user)
+        data = MongoGetUser(user)
         data['daily secret'] = secret
         MongoPersistUser(data, user)

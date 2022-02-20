@@ -60,7 +60,7 @@ def genGraph(public=True, months=1):
     userList.append('all') # backwards compadibility
     scatter_data = {'date_unsorted': [], 'date' : [], 'volume' : [], 'endValue': []}
     for user in userList:
-        data = MongoPortfolio.MongoMarketScatter(user)
+        data = MongoPortfolio.MongoGetScatter(user)
         scatter_data['date_unsorted'].extend(data['date'])
         scatter_data['volume'].extend(data['volume'])
         scatter_data['endValue'].extend(data['endValue'])
@@ -129,7 +129,7 @@ def genGraph(public=True, months=1):
     if public == False:
         secret_url = "/var/www/html/static/media/market" + str(months) + "_" + secret + ".png"
         plt.savefig(secret_url)
-        MongoUpdateSecret.MongoUpdateSecret("/static/media/market6_" + secret + ".png")
+        MongoPortfolio.MongoUpdateSecret("/static/media/market6_" + secret + ".png")
     if public == True:
         ax.yaxis.set_major_locator(plt.NullLocator())
         ax.xaxis.set_major_formatter(plt.NullFormatter())
