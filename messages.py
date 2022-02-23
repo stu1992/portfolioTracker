@@ -6,6 +6,7 @@ from pymongo import MongoClient
 import logging
 import logging.handlers
 from Email import Mail
+import MongoPortfolio
 
 handler = logging.handlers.WatchedFileHandler(
     os.environ.get("LOGFILE", "./log"))
@@ -13,54 +14,13 @@ formatter = logging.Formatter(logging.BASIC_FORMAT)
 handler.setFormatter(formatter)
 root = logging.getLogger()
 root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
+logging.getLogger('pika').setLevel(logging.ERROR)
 root.addHandler(handler)
+emailObj = Mail(logging)
 
 credentials = pika.PlainCredentials('messenger', 'messengerPassword')
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost', port=5672, virtual_host='/', credentials=credentials ))
 channel = connection.channel()
-
-def MongoMarketScatter(user):
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    #print(db.volume.find_one({'_id': 'all'}))
-    return db.volume.find_one({'_id': user})
-    client.close()
-
-def MongoGetDocument(user = 'stumay1992@gmail.com'):
-    key = "'_id': {}".format(user)
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    return db.portfolios.find_one({'_id': user})
-    client.close()
-
-def MongoPersistDocument(data, user = 'stumay1992@gmail.com'):
-    key = {'_id': user}
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    if db.portfolios.find_one({}) == None:
-        db.portfolios.insert_one(data)
-    else:
-        result=db.portfolios.replace_one(key, data)
-    confirmEntry = db.portfolios.find_one({'_id': user})
-    client.close()
-
-def MongoPersistScatter(data, user):
-    key = {'_id': user}
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    if db.volume.find_one({}) == None:
-        db.volume.insert_one(data)
-    else:
-        result=db.volume.replace_one(key, data)
-    confirmEntry = db.volume.find_one(key)
-    client.close()
-
-def MongoGetDocument(user):
-    key = "'_id': {}".format(user)
-    client = MongoClient("localhost")
-    db = client.portfolioTracker
-    return db.portfolios.find_one({'_id': user})
-    client.close()
 
 def sanitizeNews(body):
     payload = json.loads(body)
@@ -78,7 +38,7 @@ userPortfolio = None
 
 def emailInSystem(email):
     try:
-        userPortfolio = MongoGetDocument(email)
+        userPortfolio = MongoPortfolio.MongoGetDocument(email)
         if userPortfolio:
             return True
     except:
@@ -118,16 +78,17 @@ def persistNews(body):
     try:
         client = MongoClient("localhost")
         db = client.portfolioTracker
-        data = {"date": message_date, "title" : payload['title'], "comment": payload['comment'], "link" : payload['link'], "tags" : str(payload['tags'])}
+        data = {"date": message_date, "title" : payload['title'], "comment": payload['comment'], "link" : payload['link'], "tags" : payload['tags']}
         db.news.insert_one(data)
+        emailObj.sendNews(title=payload['title'])
     except:
         logging.error("unable to write to db")
         raise Exception("unable to write to db")
 
 def persistOrder(body):
     payload = json.loads(body)
-
-    user = MongoGetDocument(payload['email'])
+    email = payload['email']
+    user = MongoPortfolio.MongoGetDocument(payload['email'])
     stocks = user['portfolio'].keys()
     for item in stocks:
         logging.info(item + ", owning " + str(user['portfolio'][item]) + " shares")
@@ -167,7 +128,7 @@ def persistOrder(body):
     user['portfolio'][assetChoice]=newOwned
     logging.info(user['portfolio'])
 
-    graphPoint = MongoGetDocument("Market")
+    graphPoint = MongoPortfolio.MongoGetDocument("Market")
     managedList = 0
     for list in graphPoint['seriesdataset']:
         if list['name'] == "Managed Assets":
@@ -176,19 +137,19 @@ def persistOrder(body):
     allAssets = round(managedList[dataLength-1], 2)
     date = graphPoint['dates'][dataLength-1]
 
-    scatterData = MongoMarketScatter(payload['email'])
+    scatterData = MongoPortfolio.MongoGetScatter(payload['email'])
     scatterData["endValue"].append(allAssets)
     scatterData["date"].append(date)
     scatterData["volume"].append(price)
     logging.info(scatterData)
     try:
-        MongoPersistDocument(user, email)
-        MongoPersistScatter(scatterData, email)
+        MongoPortfolio.MongoPersistDocument(user, email)
+        MongoPortfolio.MongoPersistScatter(scatterData, email)
         emailObj.sendOrder(emailTo=email, user=MongoPortfolio.MongoGetUserName(email), order=action, volume=volume, ticker=assetChoice, price=price)
         if email != 'stumay1992@gmail.com':
             emailObj.sendOrder(emailTo='stumay1992@gmail.com', user="Stu", order=action, volume=volume, ticker=assetChoice, price=price)
-    except:
-        raise Exception("unable to persist order")
+    except Exception as e:
+        raise Exception("unable to persist order " + str(e))
 
 
 newsQueuePending = True
@@ -202,6 +163,7 @@ while newsQueuePending:
         try:
             sanitizeNews(body)
             persistNews(body)
+            logging.info("done")
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
         except Exception as e:
             print("failed to handle message " + str(e))
@@ -218,6 +180,7 @@ while orderQueuePending:
         try:
             sanitizeOrder(body)
             persistOrder(body)
+            logging.info("done")
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
         except Exception as e:
             print("failed to handle message " + str(e))

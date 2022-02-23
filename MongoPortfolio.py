@@ -45,6 +45,17 @@ def MongoGetScatter(email):
     return db.volume.find_one({'_id': email})
     client.close()
 
+def MongoPersistScatter(data, user):
+    key = {'_id': user}
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    if db.volume.find_one({}) == None:
+        db.volume.insert_one(data)
+    else:
+        result=db.volume.replace_one(key, data)
+    confirmEntry = db.volume.find_one(key)
+    client.close()
+
 def MongoPersistDocument(data, user = 'Stu'):
     key = {'_id': user}
     client = MongoClient("localhost")
@@ -68,5 +79,5 @@ def MongoUpdateSecret(secret):
     users = MongoGetUsers()
     for user in users:
         data = MongoGetUser(user)
-        data['daily secret'] = secret
+        data['dailySecret'] = secret
         MongoPersistUser(data, user)

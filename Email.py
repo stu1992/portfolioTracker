@@ -49,6 +49,18 @@ Stu
         '''.format( user, order,  str(volume), str(ticker), str(price))
         self.send()
 
+    def sendNews(self, title):
+        self.receiver_address = "stumay1992@gmail.com"
+        self.subject = "news updated"
+        self.mail_content = '''Hi Stu!
+
+{}
+This email account isn't being actively monitored but you know how to find me.
+Kindest of regards,
+Stu
+        '''.format(title)
+        self.send()
+
     def sendOrderFail(self, emailTo='stumay1992@gmail.com'):
         self.receiver_address = emailTo
         self.subject = "Your order has failed"
