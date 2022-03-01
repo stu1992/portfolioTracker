@@ -36,7 +36,13 @@ router.route('/login').post((req, res) => {
               .json({
               error: 'Incorrect email or password'
             });
-          } else {
+          } else if ( user.enabled == "false" ){
+	    console.log("not enabled");
+	    res.status(401)
+              .json({
+              error: 'Account disabled. Contact Stu'
+            });
+	  } else {
             console.log("loggin in");
             // Issue token
             const payload = { email };
@@ -70,11 +76,15 @@ router.route('/login').post((req, res) => {
         });
     });
 
-/*
+
     router.route('/register').post((req, res) => {
       const { email, password, name} = req.body;
       console.log(req.body)
       const user = new User(req.body);
+      //adding default variables
+      user.enabled = "false";
+      user.tags = ["all"];
+      user.dailySecret = "/";
       user.save(function(err) {
         if (err) {
           res.status(500).json("error registering user");
@@ -83,7 +93,7 @@ router.route('/login').post((req, res) => {
         }
         })
     });
-    */
+    
     router.route('/logout').get((req, res) => {
       console.log("logging out");
           res.cookie('token', "expired", { httpOnly: true }).sendStatus(200);
