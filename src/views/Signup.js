@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import classNames from 'classnames';
-
+import Input from '../components/elements/Input';
 export default function Form() {
 
 // States for registration
@@ -102,8 +102,7 @@ const errorMessage = () => {
     <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
     It's free if you know me.
     </p>
-    </div> 
-</div>
+
       {/* Calling to the methods */}
       <div className="messages">
         {errorMessage()}
@@ -112,22 +111,19 @@ const errorMessage = () => {
  
       <form>
         {/* Labels and inputs for form data */}
-        <label className="label">Name</label>
-        <input onChange={handleName} className="input"
+        <Input onChange={handleName} placeholder="User name" className="input"
           value={name} type="text" />
  
-        <label className="label">Email</label>
-        <input onChange={handleEmail} className="input"
+        <Input onChange={handleEmail} placeholder="Email" className="input"
           value={email} type="email" />
  
-        <label className="label">Password</label>
-        <input onChange={handlePassword} className="input"
+        <Input onChange={handlePassword} placeholder="Password" className="input"
           value={password} type="password" />
  
-        <button onClick={handleSubmit} className="btn" type="submit">
-          Submit
-        </button>
+        <Input onClick={handleSubmit} className="btn" type="submit" value="Register your interest"/>
       </form>
     </div>
+</div>
+</div>
   );
 }
