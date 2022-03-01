@@ -32,8 +32,17 @@ const register = async (event) =>
   }
    )
     .then(res => {
-  return res;
-  });
+	    if(res.status === 200) {
+	    setSubmitted(true);
+	    }else{
+	    setSubmitted(false);
+	    setError("Registration error");
+	    }
+  }).catch(response =>{
+    setError("Registration failed");
+	  setSubmitted('none')
+  }
+  );
  }
 
 // Handling the name change
@@ -70,7 +79,7 @@ const handleSubmit = (e) => {
           setError("Please make a longer password");
         }else{
 	register();
-	setSubmitted(true);
+		//setSubmitted(true);
 	setError(false);
 	}
 };
@@ -96,7 +105,7 @@ const errorMessage = () => {
 		style={{
 		display: error ? '' : 'none',
 		}}>
-		<h3>{error}</h3>
+		<p>{error}</p>
 	</div>
 	);
 };
