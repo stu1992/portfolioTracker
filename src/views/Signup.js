@@ -58,8 +58,17 @@ const handlePassword = (e) => {
 const handleSubmit = (e) => {
 	e.preventDefault();
 	if (name === '' || email === '' || password === '') {
-	setError(true);
-	} else {
+	setError("Please enter values");
+	} else if(!email.toLowerCase()
+        .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        ))
+	{
+        setError("enter valid email");
+	}else if (password.length <8)
+        {
+          setError("Please make a longer password");
+        }else{
 	register();
 	setSubmitted(true);
 	setError(false);
@@ -74,7 +83,7 @@ const handleSubmit = (e) => {
         style={{
           display: submitted ? '' : 'none',
         }}>
-        <h1>User {name} successfully registered!!</h1>
+        <p>Thanks, {name}. Hit me up to activate your account.</p>
       </div>
     );
   };
@@ -87,21 +96,23 @@ const errorMessage = () => {
 		style={{
 		display: error ? '' : 'none',
 		}}>
-		<h1>Please enter all the fields</h1>
+		<h3>{error}</h3>
 	</div>
 	);
 };
 
   return (
+    <div style={{ paddingTop: '100px' }}>
     <div className="form">
     <div className="container-xs">
-    <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
+    <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">
     Registration
-    </p>
+    </h1>
     <div className="container-xs">
     <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
     It's free if you know me.
     </p>
+	  
 
       {/* Calling to the methods */}
       <div className="messages">
@@ -122,8 +133,14 @@ const errorMessage = () => {
  
         <Input onClick={handleSubmit} className="btn" type="submit" value="Register your interest"/>
       </form>
+	      <div className="container-xs">
+    <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
+    Get access to exclusive investment insights, compare your results and be motivated by others.
+    </p>
+	  </div>
     </div>
 </div>
 </div>
+	  </div>
   );
 }

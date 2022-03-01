@@ -12,7 +12,7 @@ def MongoGetUsers():
     userList = []
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    userDict = list(db.users.find({}, {'email':1, '_id' : 0}))
+    userDict = list(db.users.find({'enabled' : "true"}, {'email':1, '_id' : 0}))
     for emailKey in userDict:
         userList.append(emailKey['email'])
     return userList

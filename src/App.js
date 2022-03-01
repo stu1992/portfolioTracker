@@ -11,6 +11,7 @@ import LayoutLoggedIn from './layouts/LayoutLoggedIn';
 // Views
 import Chart from './components/Chart';
 import Home from './views/Home';
+import Signup from './views/Signup';
 
 const App = () => {
 const history = useHistory();
@@ -68,7 +69,8 @@ if(userLoggedIn){
       children={() => (
         <Switch>
           <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutDefault} />
-        </Switch>
+          <AppRoute exact path="/Signup" component={() => <Signup loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutDefault} />
+	</Switch>
       )} />
   );
 }
