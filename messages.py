@@ -141,7 +141,7 @@ def persistOrder(body):
     scatterData["endValue"].append(allAssets)
     scatterData["date"].append(date)
     scatterData["volume"].append(price)
-    logging.info(scatterData["endvalue"][-1])
+    logging.info(scatterData["endValue"][-1])
     logging.info(scatterData["date"][-1])
     logging.info(scatterData["volume"][-1])
     try:
