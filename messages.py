@@ -149,7 +149,7 @@ def persistOrder(body):
         MongoPortfolio.MongoPersistScatter(scatterData, email)
         emailObj.sendOrder(emailTo=email, user=MongoPortfolio.MongoGetUserName(email), order=action, volume=volume, ticker=assetChoice, price=price)
         if email != 'stumay1992@gmail.com':
-            emailObj.sendOrder(emailTo='stumay1992@gmail.com', user="Stu", order=action, volume=volume, ticker=assetChoice, price=price)
+            emailObj.sendOrder(emailTo='stumay1992@gmail.com', user=MongoPortfolio.MongoGetUserName(email), order=action, volume=volume, ticker=assetChoice, price=price)
     except Exception as e:
         raise Exception("unable to persist order " + str(e))
 
