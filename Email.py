@@ -13,7 +13,7 @@ class Mail:
         self.subject = "Your portfolio has up update :)"
         self.mail_content = '''Hi {}!
 
-This is an automated message to let you know that you accout value has gone up by more than 5% in a day, Whoop Whoop!
+This is an automated message to let you know that you accout value has gone up by more than usual in a day, Whoop Whoop!
 You can log into the account at https://makingmymatesrich.com and check how things are going.
 If you're getting spammed, maybe stop investing in speculative assets like a dumbass or hit me up and I'll change the algorythm.
 
@@ -27,7 +27,7 @@ Stu
             self.subject = "Your portfolio has up update :("
             self.mail_content = '''Hi {}!
 
-This is an automated message to let you know that you accout value has gone down by more than 5% in a day, Yikes! :/
+This is an automated message to let you know that you accout value has gone down by more than usual in a day, Yikes! :/
 You can log into the account at https://makingmymatesrich.com and check how things are going.
 If you're getting spammed, maybe stop investing in speculative assets like a dumbass or hit me up and I'll change the algorythm.
 
