@@ -11,7 +11,7 @@ from AssetAPIFactory import AssetAPIFactory
 import os
 import random
 from Email import Mail
-
+import changes
 class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
@@ -52,15 +52,21 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
             asset.latest(localPrice)
         logging.info("previous account value " + str(userPreviousGrossValue))
         logging.info("new account value " + str(userGrossValue))
-        # check plus or minus 5% to tell user
-        plus5 = userPreviousGrossValue * 1.05
-        minus5 = userPreviousGrossValue * 0.95
-        if userGrossValue >= plus5:
-            logging.info("user up by >5%")
-            emailObj.sendHigh(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
-        elif userGrossValue <= minus5:
-            logging.info("user down by >5%")
-            emailObj.sendLow(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
+        if userPreviousGrossValue !=0 and userGrossValue !=0:
+          deviation, mean, samples = changes.checkDeviation(user)
+          logging.info("number of samples: " + str(samples))
+          if samples < 30:
+            logging.info("standart deviation: " + str(deviation) + " mean: " + str(mean))
+            logging.info("ceiling is "+ str(round(mean+deviation,2)) + "% floor is " + str(round(mean-deviation,2)) + "%")
+            # check plus or minus 5% to tell user
+            dailyChange = ((userGrossValue - userPreviousGrossValue) / userPreviousGrossValue) * 100
+            logging.info("daily percentage change: " + str(dailyChange))
+            if dailyChange >= (round(mean+deviation, 2)):
+                logging.info("user up by 95th percentile")
+                emailObj.sendHigh(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
+            elif dailyChange <= (round(mean-deviation,2)):
+                logging.info("user down by 95th percentile")
+                emailObj.sendLow(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
         serialisableAssets = []
         for asset in assets:
             serialisableAssets.append(asset.export())
