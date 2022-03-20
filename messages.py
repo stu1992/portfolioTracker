@@ -113,7 +113,7 @@ def persistOrder(body):
     action = payload['order']
     volume = round(float(payload['volume']),8)
     if str(volume)[-2:] == '.0': # if the volume is a integer, we won't persist trailing zeros.
-        logging.info("converting floag to int")
+        logging.info("converting float to int")
         volume = int(volume)
     newOwned = 0
     if action == "sell" and volume > ownedShares:
