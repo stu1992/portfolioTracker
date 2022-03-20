@@ -88,8 +88,8 @@ def genGraph(public=True, months=1):
 
 
     fig, ax = plt.subplots()
-    fig.set_size_inches(10,6,450)
-
+    fig.set_size_inches(10,6,550)
+    fig.set_dpi(200)
     fig.patch.set_facecolor('#25282c')
     ax.set_facecolor('#eceded')
     fmt_month_year = mdates.MonthLocator()
@@ -117,10 +117,10 @@ def genGraph(public=True, months=1):
         else:
             width = (0.00013 * x) * (20 * x ) * (0.05 * x)
         #print("width: " + str(width))
-        ax.plot(t[i:i+2], a[i:i+2], color='red', linewidth=width, alpha=1.0, antialiased=True)
-    ax.plot(t, a, color= 'red', alpha=1.0, linewidth=0.5, antialiased=True, label='7% per annum')
-    ax.plot(t, b, color='blue', linewidth=0.5, antialiased=True, label='Everything in S&P 500')
-    ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management', path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()])
+        ax.plot(t[i:i+2], a[i:i+2], color='red', linewidth=width, alpha=1.0, antialiased=True, solid_capstyle='round')
+    ax.plot(t, a, color= 'red', alpha=1.0, linewidth=0.5, antialiased=True, label='7% per annum', solid_capstyle='round')
+    ax.plot(t, b, color='blue', linewidth=0.5, antialiased=True, label='Everything in S&P 500', solid_capstyle='round')
+    ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management', path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()], solid_capstyle='round')
     if public == False:
         ax.scatter(scatter_x, scatter_y, s=200, antialiased=True, alpha=scatter_volume, c='green', label='Trade volume')
     plt.title('How we compare to market trends',fontsize = 25, color='#eceded')
