@@ -55,8 +55,8 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         if userPreviousGrossValue !=0 and userGrossValue !=0:
           deviation, mean, samples = changes.checkDeviation(user)
           logging.info("number of samples: " + str(samples))
-          if samples < 30:
-            logging.info("standart deviation: " + str(deviation) + " mean: " + str(mean))
+          if samples > 30:
+            logging.info("standart deviation: " + str(round(deviation,2)) + " mean: " + str(round(mean,2)))
             logging.info("ceiling is "+ str(round(mean+deviation,2)) + "% floor is " + str(round(mean-deviation,2)) + "%")
             # check plus or minus 5% to tell user
             dailyChange = ((userGrossValue - userPreviousGrossValue) / userPreviousGrossValue) * 100
