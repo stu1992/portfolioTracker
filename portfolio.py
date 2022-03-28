@@ -60,7 +60,7 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
             logging.info("ceiling is "+ str(round(mean+deviation,2)) + "% floor is " + str(round(mean-deviation,2)) + "%")
             # check plus or minus 5% to tell user
             dailyChange = ((userGrossValue - userPreviousGrossValue) / userPreviousGrossValue) * 100
-            logging.info("daily percentage change: " + str(dailyChange))
+            logging.info("daily percentage change: " + str(round(dailyChange,2)))
             if dailyChange >= (round(mean+deviation, 2)):
                 logging.info("user up by 95th percentile")
                 emailObj.sendHigh(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
