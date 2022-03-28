@@ -74,7 +74,8 @@ const options = {
   chart: {
     type: 'area',
       zoomType: 'x',
-      backgroundColor: '#151719'
+      backgroundColor: '#151719',
+      height: 600
     },
 	    rangeSelector: {
       buttons: [{
@@ -162,112 +163,6 @@ categories: dates,
     }
 }
 
-const newChart = {
-
-    series: stocks,
-    options: {
-      theme: {
-      palette: 'palette2',
-      },
-
-      tooltip: {
-          enabled: true,
-          enabledOnSeries: undefined,
-          shared: true,
-          followCursor: true,
-          intersect: false,
-          inverseOrder: false,
-          custom: undefined,
-          fillSeriesColor: false,
-          theme: false,
-          style: {
-            fontSize: '10px',
-            fontFamily: undefined
-          },
-          onDatasetHover: {
-              highlightDataSeries: false,
-          },
-          marker: {
-              show: true,
-          },
-          fixed: {
-              enabled: true,
-              position: 'bottomleft',
-              offsetX: 0,
-              offsetY: 0,
-          }
-      },
-
-       yaxis: {
-         show: true,
-         opposite: true,
-         decimalsInFloat: 2,
-         labels: {
-                  show: true,
-                  align: 'right',
-                  minWidth: 0,
-                  maxWidth: 160,
-                  style: {
-                      colors: [],
-                      fontSize: '14px',
-                      fontFamily: 'Helvetica, Arial, sans-serif',
-                      fontWeight: 400,
-                      cssClass: 'apexcharts-yaxis-label',
-       },
-     }
-   },
-
-      chart: {
-        type: 'area',
-        height: 600,
-        stacked: true,
-        events: {
-          selection: function (chart, e) {
-          }
-        },
-        toolbar: {
-          show: true,
-          offsetX: 0,
-          offsetY: 0,
-          tools: {
-            download: true,
-            selection: true,
-            zoom: true,
-            zoomin: true,
-            zoomout: true,
-            pan: true,
-            reset: true | '<img src="/static/icons/reset.png" width="20">',
-            customIcons: []
-          }
-        }
-      },
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        curve: 'smooth',
-        width : 0.1,
-      },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          opacityFrom: 1.0,
-          opacityTo: 1.0,
-        }
-      },
-      legend: {
-        position: 'bottom',
-        horizontalAlign: 'right'
-      },
-      xaxis: {
-        type: 'datetime',
-        categories: dates,
-        labels: {
-  format: 'dd/MMM',
-}
-      },
-    }
-}
 return (
 	<div style={{ paddingTop: '100px' }}>
     <HighchartsReact
