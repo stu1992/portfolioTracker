@@ -75,6 +75,11 @@ def MongoPersistUser(data, user = 'stumay1992@gmail.com'):
     confirmEntry = db.users.find_one({'email': user})
     client.close()
 
+def MongoUpdateHist(user, secret):
+  data = MongoGetUser(user)
+  data['histSecret'] = secret
+  MongoPersistUser(data, user)
+
 def MongoUpdateSecret(secret):
     users = MongoGetUsers()
     for user in users:

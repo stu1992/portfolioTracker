@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, Component } from 'react'
-const LandingPage = ({dailySecret}) => {
+const LandingPage = ({dailySecret, histSecret}) => {
 
   const [secret, setSecret] = React.useState(dailySecret);
   const [currentScope, setCurrentScope] = React.useState(1);
@@ -26,6 +26,8 @@ const LandingPage = ({dailySecret}) => {
     return (
       <div>
         <img style={{maxWidth:'100%', margin: "auto"}} onClick={changeScope} src={secret} alt="Market trends" />
+	    <div style={{margin: "20px"}} />
+	<img style={{maxWidth:'100%', margin: "auto"}} src={histSecret} alt="Compare yourself" />
      </div>
     )
 }

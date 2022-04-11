@@ -18,6 +18,7 @@ const history = useHistory();
   // persisting app state
    const [name, setName] = React.useState(null);
    const [dailySecret, setDailySecret] = React.useState("secret_undef");
+   const [histSecret, setHistSecret] = React.useState("hist_undef");
    const [userLoggedIn, setUserLoggedIn] = useState(false);
 
    const login = (value) => {
@@ -38,6 +39,7 @@ const history = useHistory();
     if (response.statusText === "OK"){
         setName(response.data['name']);
         setDailySecret(response.data['dailySecret']);
+	setHistSecret(response.data['histSecret']);
         setUserLoggedIn(true);
 	console.log("auto login success\n "+ name );
     }
@@ -58,7 +60,7 @@ if(userLoggedIn){
       children={() => (
         <Switch>
           <AppRoute exact path="/" component={() => <Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} loggedInCallBack={login} />} layout={LayoutLoggedIn} />
-          <AppRoute exact path="/portfolio" component={() => <Chart name={name} dailySecret={dailySecret} />} layout={LayoutLoggedIn} />
+          <AppRoute exact path="/portfolio" component={() => <Chart name={name} dailySecret={dailySecret} histSecret={histSecret}/>} layout={LayoutLoggedIn} />
         </Switch>
       )} />
   );

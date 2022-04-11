@@ -7,7 +7,7 @@ import ReactApexChart from "react-apexcharts";
 import Testimonial from './sections/Testimonial';
 import News from '../backend/model/News';
 
-const Chart = ({name, loggedIn, dailySecret}) => {
+const Chart = ({name, loggedIn, dailySecret, histSecret}) => {
 
 const [stocks, setStocks] = React.useState([
 ]);
@@ -171,7 +171,7 @@ return (
     options={options}
   />
 
-<LandingPage dailySecret={dailySecret}/>
+<LandingPage dailySecret={dailySecret} histSecret={histSecret}/>
 <Testimonial topDivider NewsList={news} loggedIn={true}/>
 </div>
   )
