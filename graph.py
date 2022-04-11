@@ -10,6 +10,10 @@ import string
 from numpy import array
 from dateutil.relativedelta import relativedelta
 import MongoPortfolio
+import logging
+import logging.handlers
+import time
+import os
 
 class Asset:
     def __init__(self, jsonObj):
@@ -136,6 +140,17 @@ def genGraph(public=True, months=1):
         ax.xaxis.set_minor_locator(plt.NullLocator())
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
         plt.savefig("/var/www/html/static/media/market.74a21c94.png")
+
+start = time.time()
+handler = logging.handlers.WatchedFileHandler(
+    os.environ.get("LOGFILE", "/home/ubuntu/log"))
+formatter = logging.Formatter(logging.BASIC_FORMAT)
+handler.setFormatter(formatter)
+root = logging.getLogger()
+root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
+logging.getLogger('matplotlib').setLevel(logging.ERROR)
+root.addHandler(handler)
+
 # generate both logged in and guest graph
 secret = ''.join(random.choice(string.ascii_letters) for i in range(12))
 genGraph(True,6)
@@ -143,3 +158,6 @@ genGraph(False,1)
 genGraph(False,3)
 genGraph(False,6)
 genGraph(False,0)
+end = time.time()
+logging.debug("Elapsed time for graph is " + str(round((end-start),4)) + " seconds")
+
