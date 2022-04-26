@@ -41,10 +41,8 @@ const history = useHistory();
         setDailySecret(response.data['dailySecret']);
 	setHistSecret(response.data['histSecret']);
         setUserLoggedIn(true);
-	console.log("auto login success\n "+ name );
     }
   }).catch(response =>{
-    console.log("auto login failed at " + window.location.pathname);
     if(window.location.pathname === "/portfolio"){
         history.push("/");
     }
