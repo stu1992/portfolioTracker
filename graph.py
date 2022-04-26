@@ -53,7 +53,6 @@ def genGraph(public=True, months=1):
 
     daysInScope = limitScope(newDates, months)
     vix_threshold = 20
-# array(aList)[myIndices]
     t = array(newDates)[daysInScope]
     vix = array(assets[0].History)[daysInScope]
     a = array(assets[1].History)[daysInScope]
@@ -68,15 +67,8 @@ def genGraph(public=True, months=1):
         scatter_data['date_unsorted'].extend(data['date'])
         scatter_data['volume'].extend(data['volume'])
         scatter_data['endValue'].extend(data['endValue'])
+        scatter_data['date'].extend(data['date'])
 
-    #check if there are any duplicates to perform superposition
-    for i in range(len(scatter_data['date_unsorted'])):
-        if scatter_data['date_unsorted'][i] not in scatter_data['date']:
-            scatter_data['date'].append(scatter_data['date_unsorted'][i])
-        else:
-            newIndex = scatter_data['date'].index(scatter_data['date_unsorted'][i])
-            scatter_data['volume'][newIndex] += scatter_data['volume'][i]*8
-            scatter_data['date'].append(scatter_data['date_unsorted'][i])
     scatter_x_tmp = []
     for i in scatter_data['date']: #convert to epoc objects for consumption by matplotlib
         scatter_x_tmp.append(datetime.datetime.strptime(i, '%Y/%m/%d'))
@@ -85,7 +77,7 @@ def genGraph(public=True, months=1):
 
     scatter_x = array(scatter_x_tmp)[scatter_daysInScope]
     scatter_y = array(scatter_data['endValue'])[scatter_daysInScope]
-    scatter_volume= array(scatter_data['volume'])[scatter_daysInScope]
+    scatter_volume = array(scatter_data['volume'])[scatter_daysInScope]
     max_volume = max(scatter_volume)
     scatter_volume = list(map(lambda x: 1 * (x/max_volume), scatter_volume))
 
@@ -160,4 +152,6 @@ genGraph(False,6)
 genGraph(False,0)
 end = time.time()
 logging.debug("Elapsed time for graph is " + str(round((end-start),4)) + " seconds")
-
+f = open('/home/ubuntu/graph','a')
+f.write(str(round((end-start),4)) + "\n")
+f.close()

@@ -12,6 +12,9 @@ import os
 import random
 from Email import Mail
 import changes
+
+import time
+
 class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
@@ -55,7 +58,7 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         if userPreviousGrossValue !=0 and userGrossValue !=0:
           deviation, mean, samples = changes.checkDeviation(user)
           logging.info("number of samples: " + str(samples))
-          if samples > 30:
+          if samples > 60:
             logging.info("standart deviation: " + str(round(deviation,2)) + " mean: " + str(round(mean,2)))
             logging.info("ceiling is "+ str(round(mean+deviation,2)) + "% floor is " + str(round(mean-deviation,2)) + "%")
             # check plus or minus 5% to tell user
@@ -189,10 +192,10 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
                 asset.latest(totalValue)
             elif asset.Name == 'Average':
                 latest = asset.History[-1]
-                logging.debug("yesterday was " + str(latest))
+                logging.debug("market yesterday was " + str(latest))
                 asset.latest(round(latest* 1.000185395, 6)) #the idea here is to get a 7% return in a year
                 latest = asset.History[-1]
-                logging.debug("today is " + str(latest))
+                logging.debug("market today is " + str(latest))
             elif  asset.Name == 'VIX':
                 vix = round(assetFactory.getPriceUSD('VIX'), 2)
                 asset.latest(vix)
@@ -236,4 +239,13 @@ emailObj = Mail(logging)
 date_object = date.today()
 
 global_exchange = assetFactory.getExchangeRate()
-updatePortfolio(assetFactory, date_object, emailObj)
+start = time.time()
+try:
+  updatePortfolio(assetFactory, date_object, emailObj)
+except Exception as e:
+  logging.error(str(e))
+end = time.time()
+logging.debug("Elapsed time for portfolioTracker is " + str(round((end-start),4)) + " seconds")
+f = open('/home/ubuntu/portfoliotracker','a')
+f.write(str(round((end-start),4)) + "\n")
+f.close()

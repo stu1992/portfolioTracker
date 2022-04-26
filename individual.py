@@ -72,10 +72,10 @@ for user in MongoPortfolio.MongoGetUsers():
       changes.append(round(change,6))
     if email == user:
       logging.debug(email + "turning green")
-      plt.hist(changes, 100, range=(-10,10), facecolor='green', alpha=0.9, label='You' )
+      plt.hist(changes, 100, range=(-5,5), facecolor='green', alpha=0.9, label='You' )
       plt.axvline(sum(changes) / len(changes), color='k', linestyle='dashed', linewidth=1.5)
     else:
-      plt.hist(changes, 100, range=(-10,10), facecolor='red', alpha=0.2)
+      plt.hist(changes, 100, range=(-5,5), facecolor='red', alpha=0.2)
       plt.axvline(sum(changes) / len(changes), color='k', linestyle='dashed', linewidth=0.2, alpha=0.8)
   plt.axvline(0, color='black', linestyle='solid', linewidth=1)
   secret_url = "/var/www/html/static/media/hist_" + secret + ".png"
@@ -86,3 +86,6 @@ for user in MongoPortfolio.MongoGetUsers():
 
 end = time.time()
 logging.debug("Elapsed time for histogram is " + str(round((end-start),4)) + " seconds")
+f = open('/home/ubuntu/histogram','a')
+f.write(str(round((end-start),4)) + "\n")
+f.close()
