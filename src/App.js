@@ -1,9 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Switch, useHistory } from 'react-router-dom';
+import { Routes ,Route, useNavigate } from 'react-router-dom';
 import AppRoute from './utils/AppRoute';
 import ScrollReveal from './utils/ScrollReveal';
 import  API from './Api';
-
 // Layouts
 import LayoutDefault from './layouts/LayoutDefault';
 import LayoutLoggedIn from './layouts/LayoutLoggedIn';
@@ -13,8 +12,9 @@ import Chart from './components/Chart';
 import Home from './views/Home';
 import Signup from './views/Signup';
 
+console.log("derp");
 const App = () => {
-const history = useHistory();
+const navigate = useNavigate();
   // persisting app state
    const [name, setName] = React.useState(null);
    const [dailySecret, setDailySecret] = React.useState("secret_undef");
@@ -24,7 +24,7 @@ const history = useHistory();
    const login = (value) => {
      setUserLoggedIn(value);
      if (value){
-         history.push("/portfolio");
+         navigate("/portfolio");
      }
    }
 
@@ -44,7 +44,7 @@ const history = useHistory();
     }
   }).catch(response =>{
     if(window.location.pathname === "/portfolio"){
-        history.push("/");
+        navigate("/");
     }
     setUserLoggedIn(false);
   }
@@ -56,10 +56,10 @@ if(userLoggedIn){
     <ScrollReveal
       ref={childRef}
       children={() => (
-        <Switch>
-          <AppRoute exact path="/" component={() => <Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} loggedInCallBack={login} />} layout={LayoutLoggedIn} />
-          <AppRoute exact path="/portfolio" component={() => <Chart name={name} dailySecret={dailySecret} histSecret={histSecret}/>} layout={LayoutLoggedIn} />
-        </Switch>
+        <Routes>
+          <Route exact path="/" component={() => <Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} loggedInCallBack={login} />} layout={LayoutLoggedIn} />
+          <Route exact path="/portfolio" component={() => <Chart name={name} dailySecret={dailySecret} histSecret={histSecret}/>} layout={LayoutLoggedIn} />
+        </Routes>
       )} />
   );
 }else{
@@ -67,10 +67,10 @@ if(userLoggedIn){
     <ScrollReveal
       ref={childRef}
       children={() => (
-        <Switch>
-          <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutDefault} />
-          <AppRoute exact path="/Signup" component={() => <Signup loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutDefault} />
-	</Switch>
+        <Routes>
+          <Route exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutDefault} />
+          <Route exact path="/Signup" component={() => <Signup loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutDefault} />
+	</Routes>
       )} />
   );
 }
