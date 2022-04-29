@@ -24,7 +24,7 @@ root.addHandler(handler)
 for user in MongoPortfolio.MongoGetUsers():
   secret = ''.join(random.choice(string.ascii_letters) for i in range(36))
   fig, ax = plt.subplots()
-  fig.set_size_inches(12,4.6)
+  fig.set_size_inches(12,4.7)
   fig.set_dpi(140)
   fmt = '%+.1f%%' # Format you want the ticks, e.g. '40%'
   xticks = mtick.FormatStrFormatter(fmt)
@@ -33,6 +33,7 @@ for user in MongoPortfolio.MongoGetUsers():
   ax.yaxis.set_major_locator(plt.NullLocator())
   ax.xaxis.label.set_color("#9ca9b3")
   ax.set_facecolor('#eceded')
+  ax.set_facecolor('#151719')
   ax.yaxis.label.set_color('#9ca9b3')
   ax.xaxis.label.set_color('#9ca9b3')
   fig.patch.set_facecolor('#25282c')
@@ -73,11 +74,11 @@ for user in MongoPortfolio.MongoGetUsers():
     if email == user:
       logging.debug(email + "turning green")
       plt.hist(changes, 100, range=(-5,5), facecolor='green', alpha=0.9, label='You' )
-      plt.axvline(sum(changes) / len(changes), color='k', linestyle='dashed', linewidth=1.5)
+      plt.axvline(sum(changes) / len(changes), color='#cccccc', linestyle='dashed', linewidth=1.5)
     else:
       plt.hist(changes, 100, range=(-5,5), facecolor='red', alpha=0.2)
-      plt.axvline(sum(changes) / len(changes), color='k', linestyle='dashed', linewidth=0.2, alpha=0.8)
-  plt.axvline(0, color='black', linestyle='solid', linewidth=1)
+      plt.axvline(sum(changes) / len(changes), color='#cccccc', linestyle='dashed', linewidth=0.2, alpha=0.8)
+  plt.axvline(0, color='gray', linestyle='solid', linewidth=1)
   secret_url = "/var/www/html/static/media/hist_" + secret + ".png"
   MongoPortfolio.MongoUpdateHist(user, "/static/media/hist_" + secret + ".png")
   logging.debug(secret_url)
