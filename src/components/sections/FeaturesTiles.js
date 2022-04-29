@@ -9,6 +9,7 @@ import richestman from './../../assets/images/richestman.jpg';
 import richdad from './../../assets/images/richdad.jpg';
 import booklet from './../../assets/images/booklet.jpg';
 import teach from './../../assets/images/teach.jpg';
+import winner from './../../assets/images/winner.jpg';
 const propTypes = {
   ...SectionTilesProps.types
 }
@@ -168,6 +169,28 @@ const FeaturesTiles = ({
                     </h4>
                   <p className="m-0 text-sm">
                     The index is amazing and the author goes into how to automate your finances. I don't follow the advice strictly but it's a building block of gamifying your investment.
+                    </p>
+                </div>
+              </div>
+            </div>
+
+	              <div className="tiles-item reveal-from-bottom" data-reveal-delay="200">
+              <div className="tiles-item-inner">
+                <div className="features-tiles-item-header">
+                  <div className="features-tiles-item-image mb-16">
+                    <Image
+                      src={winner}
+                      alt="Features tile icon 06"
+                      width={64}
+                      height={64} />
+                  </div>
+                </div>
+                <div className="features-tiles-item-content">
+                  <h4 className="mt-0 mb-8">
+                    The Winner Effect - Ian H Robertson
+                    </h4>
+                  <p className="m-0 text-sm">
+                    This book gets into aspects of gamification and illustrates the power of setting up small wins to achieve otherwise unlikely results.
                     </p>
                 </div>
               </div>
