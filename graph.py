@@ -87,10 +87,10 @@ def genGraph(public=True, months=1):
     fig.set_size_inches(10,6,550)
     fig.set_dpi(200)
     fig.patch.set_facecolor('#25282c')
-    ax.set_facecolor('#eceded')
+    #ax.set_facecolor('#eceded')
+    ax.set_facecolor('#151719')
     fmt_month_year = mdates.MonthLocator()
     fmt_day_year = mdates.DayLocator()
-    ax.xaxis.label.set_color("#9ca9b3")
 
     ax.spines['left'].set_color('#9ca9b3')
     ax.spines['right'].set_color('#9ca9b3')
@@ -112,16 +112,21 @@ def genGraph(public=True, months=1):
             width = (0.2 * x) - 3
         else:
             width = (0.00013 * x) * (20 * x ) * (0.05 * x)
-        #print("width: " + str(width))
         ax.plot(t[i:i+2], a[i:i+2], color='red', linewidth=width, alpha=1.0, antialiased=True, solid_capstyle='round')
     ax.plot(t, a, color= 'red', alpha=1.0, linewidth=0.5, antialiased=True, label='7% per annum', solid_capstyle='round')
+    ax.plot(t, b, color='#eeeeff', linewidth=1.5, antialiased=True, alpha=0.5, solid_capstyle='round')
     ax.plot(t, b, color='blue', linewidth=0.5, antialiased=True, label='Everything in S&P 500', solid_capstyle='round')
+    ax.plot(t, c, color='#aaaaaa', linewidth=3, alpha=0.8, antialiased=True, solid_capstyle='round')
     ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management', path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()], solid_capstyle='round')
     if public == False:
         ax.scatter(scatter_x, scatter_y, s=200, antialiased=True, alpha=scatter_volume, edgecolors='none', c='green', label='Trade volume')
     plt.title('How we compare to market trends',fontsize = 25, color='#eceded')
     plt.legend(title='Rebalanced with low volitility')
-    ax.xaxis.grid(True)
+    if months == 0:
+        ax.xaxis.grid(True, color='#202020')
+    else:
+        ax.xaxis.grid(True, color='#404040')
+
     if public == False:
         secret_url = "/var/www/html/static/media/market" + str(months) + "_" + secret + ".png"
         plt.savefig(secret_url)
