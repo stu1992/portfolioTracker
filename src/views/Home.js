@@ -3,9 +3,9 @@ import Hero from '../components/sections/Hero';
 import FeaturesTiles from '../components/sections/FeaturesTiles';
 import FeaturesSplit from '../components/sections/FeaturesSplit';
 import Testimonial from '../components/sections/Testimonial';
-
-
-const Home = ({loggedIn, loggedInCallBack, loggedOutCallBack}) => {
+import Header from '../components/layout/Header';
+import HeaderLoggedIn from '../components/layout/HeaderLoggedIn';
+const Home = ({loggedIn, loggedInCallBack, loggedOutCallBack, userLoggedIn}) => {
 
 
 const fetchAnonNews = async() => {
@@ -31,13 +31,16 @@ const [news, setNews] = React.useState([
   useEffect(() => {
     fetchNews()
   }, [])
-
-  return (
+return (
     <>
+    { loggedIn && <HeaderLoggedIn navPosition="right" className="reveal-from-bottom" /> }
+{ !loggedIn && <Header navPosition="right" className="reveal-from-bottom" /> }
+    <main className="site-content">
       <Hero className="illustration-section-01" loggedOutCallBack={loggedOutCallBack} loggedIn={loggedIn} loggedInCallBack={loggedInCallBack}/>
       <FeaturesSplit invertMobile topDivider imageFill className="illustration-section-02" />
       <FeaturesTiles />
       <Testimonial topDivider NewsList={news} loggedIn={loggedIn}/>
+</main>
     </>
   );
 }

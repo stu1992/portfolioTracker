@@ -3,10 +3,8 @@ import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import LandingPage from './LandingPage';
 import React, { useEffect, useState} from 'react';
-import ReactApexChart from "react-apexcharts";
 import Testimonial from './sections/Testimonial';
-import News from '../backend/model/News';
-
+import Header from '../components/layout/HeaderLoggedIn';
 const Chart = ({name, loggedIn, dailySecret, histSecret}) => {
 
 const [stocks, setStocks] = React.useState([
@@ -32,6 +30,7 @@ const fetchStocks = async() => {
   return data
 }
 // get news based on user tags which should come in body from user info
+
 const fetchUserNews = async() => {
   const res = await fetch (newsURI, {
     method: 'GET',
@@ -55,6 +54,7 @@ function fetchUser(){
   }
   getStocks()
 }
+
 // duplicate function to get news, this needs to move elsewhere but lets get a poc
 function fetchNews(){
   const getNews = async () => {
@@ -82,8 +82,6 @@ const options = {
         text: '+',
         events: {
           click() {
-            /* const xAxis = chart.xAxis[0];
-            xAxis.setExtremes(Date.UTC(2000, 11, 30), Date.UTC(2001, 11, 30)); */
             return false
           }
         }
@@ -164,6 +162,9 @@ categories: dates,
 }
 
 return (
+	<>
+	<Header navPosition="right" className="reveal-from-bottom" />
+	<main className="site-content">
 	<div style={{ paddingTop: '100px' }}>
     <HighchartsReact
       containerProps={{ style: { height: "100%" } }}
@@ -174,6 +175,9 @@ return (
 <LandingPage dailySecret={dailySecret} histSecret={histSecret}/>
 <Testimonial topDivider NewsList={news} loggedIn={true}/>
 </div>
+</main>
+	</>
   )
 }
+
 export default Chart

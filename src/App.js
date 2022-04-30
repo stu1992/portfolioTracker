@@ -1,8 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Routes ,Route, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
+import { Routes ,Route, BrowserRouter } from 'react-router-dom';
 import AppRoute from './utils/AppRoute';
 import ScrollReveal from './utils/ScrollReveal';
 import  API from './Api';
+import './assets/scss/style.scss';
 // Layouts
 import LayoutDefault from './layouts/LayoutDefault';
 import LayoutLoggedIn from './layouts/LayoutLoggedIn';
@@ -12,67 +14,71 @@ import Chart from './components/Chart';
 import Home from './views/Home';
 import Signup from './views/Signup';
 
-console.log("derp");
+import logo from './logo.svg';
+import './App.css';
+
 const App = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate(); //breaking
   // persisting app state
-   const [name, setName] = React.useState(null);
-   const [dailySecret, setDailySecret] = React.useState("secret_undef");
-   const [histSecret, setHistSecret] = React.useState("hist_undef");
-   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [name, setName] = React.useState(null);
+  const [dailySecret, setDailySecret] = React.useState("secret_undef");
+  const [histSecret, setHistSecret] = React.useState("hist_undef");
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
-   const login = (value) => {
-     setUserLoggedIn(value);
-     if (value){
-         navigate("/portfolio");
-     }
-   }
-
-  const childRef = useRef();
-
-  useEffect(() => {
-    API({
-    url: '/user/get'//,
-  //  attributes
+  const login = (value) => {
+    setUserLoggedIn(value);
+    if (value){
+      API({
+    url: '/user/get'
   })
   .then(response => {
     if (response.statusText === "OK"){
-        setName(response.data['name']);
-        setDailySecret(response.data['dailySecret']);
-	setHistSecret(response.data['histSecret']);
-        setUserLoggedIn(true);
+      setName(response.data['name']);
+      setDailySecret(response.data['dailySecret']);
+      setHistSecret(response.data['histSecret']);
+      navigate("/portfolio");
+    }
+  });
+  };
+  }
+  const childRef = useRef(); // what's this for
+
+  useEffect(() => {
+    API({
+    url: '/user/get'
+  })
+  .then(response => {
+    if (response.statusText === "OK"){
+      setName(response.data['name']);
+      setDailySecret(response.data['dailySecret']);
+      setHistSecret(response.data['histSecret']);
+      setUserLoggedIn(true);
+      //navigate("/portfolio");
     }
   }).catch(response =>{
     if(window.location.pathname === "/portfolio"){
-        navigate("/");
+      navigate("/");
     }
     setUserLoggedIn(false);
-  }
-  );
-
   });
+  });
+
+
 if(userLoggedIn){
   return (
-    <ScrollReveal
-      ref={childRef}
-      children={() => (
         <Routes>
-          <Route exact path="/" component={() => <Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} loggedInCallBack={login} />} layout={LayoutLoggedIn} />
-          <Route exact path="/portfolio" component={() => <Chart name={name} dailySecret={dailySecret} histSecret={histSecret}/>} layout={LayoutLoggedIn} />
+	      <Route exact path="/" element={<Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} loggedInCallBack={login} />}/>
+	      <Route exact path="/portfolio" element={<Chart name={name} dailySecret={dailySecret} histSecret={histSecret}/>} />
         </Routes>
-      )} />
-  );
+  )
 }else{
   return (
-    <ScrollReveal
-      ref={childRef}
-      children={() => (
         <Routes>
-          <Route exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutDefault} />
-          <Route exact path="/Signup" component={() => <Signup loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutDefault} />
-	</Routes>
-      )} />
-  );
+
+	      <Route exact path="/" element={<Home loggedInCallBack={login} loggedOutCallBack={login} userLoggedIn={userLoggedIn} />}/>
+	      <Route exact path="/signup" element={<Signup />} /> 
+        </Routes>
+	)
 }
 }
 
