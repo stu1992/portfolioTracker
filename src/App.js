@@ -13,6 +13,7 @@ import LayoutLoggedIn from './layouts/LayoutLoggedIn';
 import Chart from './components/Chart';
 import Home from './views/Home';
 import Signup from './views/Signup';
+import OrderForm from './views/OrderForm';
 
 import logo from './logo.svg';
 import './App.css';
@@ -21,6 +22,7 @@ const App = () => {
   const navigate = useNavigate(); //breaking
   // persisting app state
   const [name, setName] = React.useState(null);
+  const [email, setEmail] = React.useState(null);
   const [dailySecret, setDailySecret] = React.useState("secret_undef");
   const [histSecret, setHistSecret] = React.useState("hist_undef");
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -36,6 +38,7 @@ const App = () => {
       setName(response.data['name']);
       setDailySecret(response.data['dailySecret']);
       setHistSecret(response.data['histSecret']);
+      setEmail(response.data['email']);
       navigate("/portfolio");
     }
   });
@@ -53,6 +56,7 @@ const App = () => {
       setDailySecret(response.data['dailySecret']);
       setHistSecret(response.data['histSecret']);
       setUserLoggedIn(true);
+      setEmail(response.data['email']);
       //navigate("/portfolio");
     }
   }).catch(response =>{
@@ -69,6 +73,7 @@ if(userLoggedIn){
         <Routes>
 	      <Route exact path="/" element={<Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} loggedInCallBack={login} />}/>
 	      <Route exact path="/portfolio" element={<Chart name={name} dailySecret={dailySecret} histSecret={histSecret}/>} />
+	      <Route exact path="/order" element={<OrderForm email={email} />} />
         </Routes>
   )
 }else{
