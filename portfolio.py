@@ -103,15 +103,14 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         c = vix[-90:-60]
         d = vix[-120:-90]
         e = vix[-150:-120]
-        f = vix[-180:150]
-
-        avg6 = (sum(f) / len(f))
-        avg5 = (sum(e) / len(e))
-        avg4 = (sum(d) / len(d))
-        avg3 = (sum(c) / len(c))
-        avg2 = (sum(b) / len(b))
-        avg1 = (sum(a) / len(a))
-
+        f = vix[-180:-150]
+        avg6 = int((sum(f) / len(f)))
+        avg5 = int((sum(e) / len(e)))
+        avg4 = int((sum(d) / len(d)))
+        avg3 = int((sum(c) / len(c)))
+        avg2 = int((sum(b) / len(b)))
+        avg1 = int((sum(a) / len(a)))
+        logging.debug("vix last 6 months: "+str(avg1)+ " " + str(avg2) + " " + str(avg3) + " " + str(avg4) + " " + str(avg5) + " " + str(avg6))
         h6 = avg6 > 14
         h5 = avg5 > 14
         h4 = avg4 > 14
@@ -123,34 +122,34 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         logging.debug("monthly vix average is " + str(avg1))
         if h1:
             step += 2
+            logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
             if avg1 < step:
                 rebalance = True
-                logging.debug("raising by 2 to " + str(step))
             if h2:
                 step += 2
+                logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
                 if avg1 < step:
                     rebalance = True
-                    logging.debug("raising by 2 to " +  str(step))
                 if h3:
                     step += 2
+                    logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
                     if avg1 < step:
                         realance = True
-                        logging.debug("raising by 2 to " + str(step))
                     if h4:
                         step += 2
+                        logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
                         if avg1 < step:
                             rebalance = True
-                            logging.debug("raising by 2 to " + str(step))
                         if h5:
                             step += 2
+                            logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
                             if avg1 < step:
                                 rebalance = True
-                                logging.debug("raising by 2 to " + str(step))
                             if h6:
-                                step +=2
+                                step += 2
+                                logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
                                 if avg1 < step:
                                     rebalance = True
-                                    logging.debug("raising by 2 to " + str(step))
 
     if rebalance == True:
         logging.info("Rebalancing")
