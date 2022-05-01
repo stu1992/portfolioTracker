@@ -136,7 +136,7 @@ def genGraph(public=True, months=1):
         ax.xaxis.set_major_formatter(plt.NullFormatter())
         ax.xaxis.set_minor_locator(plt.NullLocator())
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
-        plt.savefig("/var/www/html/static/media/market.74a21c94.png")
+        plt.savefig("/var/www/html/static/media/market.74a21c94f6be0a4c31ad.png")
 
 start = time.time()
 handler = logging.handlers.WatchedFileHandler(
