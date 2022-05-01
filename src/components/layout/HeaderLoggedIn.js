@@ -130,7 +130,7 @@ const Header = ({
                     <li>
                       <Link to="/portfolio" onClick={closeMenu}>portfolio</Link>
                       <Link to="/" onClick={closeMenu}>Home</Link>
-
+                      <Link to="/order" onClick={closeMenu}>Order</Link>
                     </li>
                   </ul>
                   {!hideSignin && !userLoggedIn &&

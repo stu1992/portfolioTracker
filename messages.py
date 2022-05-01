@@ -124,6 +124,8 @@ def persistOrder(body):
     elif action == "buy":
         newOwned = ownedShares + volume
     price = round(float(payload['price']),2)
+    if price < 0 or volume < 0:
+        raise Exception("negative order values")
 
     user['portfolio'][assetChoice]=newOwned
     logging.info(user['portfolio'])
@@ -141,9 +143,11 @@ def persistOrder(body):
     scatterData["endValue"].append(allAssets)
     scatterData["date"].append(date)
     scatterData["volume"].append(price)
+    scatterData["order"].append(action)
     logging.info(scatterData["endValue"][-1])
     logging.info(scatterData["date"][-1])
     logging.info(scatterData["volume"][-1])
+    logging.info(scatterData["order"][-1])
     try:
         MongoPortfolio.MongoPersistDocument(user, email)
         MongoPortfolio.MongoPersistScatter(scatterData, email)

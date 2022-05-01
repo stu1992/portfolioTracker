@@ -2,7 +2,7 @@ import { useState } from 'react';
 import classNames from 'classnames';
 import Input from '../components/elements/Input';
 import Header from '../components/layout/HeaderLoggedIn';
-import Form from "@rjsf/core";
+import Form from "@rjsf/bootstrap-4";
 import JSONSchemaForm from 'react-jsonschema-form';
 const OrderForm = ({email}) => {
 
@@ -13,7 +13,34 @@ const OrderForm = ({email}) => {
 const [submitted, setSubmitted] = useState(false);
 const [error, setError] = useState(false);
 
-
+const order = async (payload) =>
+ {
+   fetch('/api/order', {
+    method: 'POST',
+    credentials: 'include',
+    mode: "cors",
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  }
+   )
+    .then(res => {
+            if(res.status === 200) {
+            setSubmitted(true);
+            successMessage("order Complete");
+            }else{
+            setSubmitted(false);
+            setError("order fauked");
+            }
+  }).catch(response =>{
+    setError("Order failed");
+          setSubmitted('none')
+  }
+  );
+ }
 const schema =
 {
   "type": "object",
@@ -30,7 +57,7 @@ const schema =
         "maxItems": 1,
   "items": {
     "type": "string",
-    "enum": ["VUG", "GME", "BRK-B", "AAPL"]
+    "enum": ["VUG", "GME", "BRK-B", "AAPL", "BTC", "ETH"]
   },
   
   "uniqueItems": true
@@ -54,8 +81,10 @@ const schema =
       "title": "Price"
     }
 }
-}
-;
+};
+
+const ui = {
+  };
   const successMessage = (payload) => {
 	  var message = payload;
     return (
@@ -64,7 +93,7 @@ const schema =
         style={{
           display: submitted ? '' : 'none',
         }}>
-	    <p>Order created. Visit rabbit and paste in payload box with persistent Delivery mode.</p>
+	    <p>Order created. You should receive a confirmation email shortly.</p>
       </div>
     );
   };
@@ -79,10 +108,7 @@ const handleSubmit = (e) => {
 "volume":e.formData['number']
 };
 console.log(payload);
-//submit(payload);
-navigator.clipboard.writeText(JSON.stringify(payload));
-	successMessage(payload);
-
+order(payload);
 };
 
 const handleError = (e) => {
@@ -96,30 +122,21 @@ const handleChange = (e) => {
   return (
 	  <>
               <Header navPosition="right" className="reveal-from-bottom" />
-    <main className="site-content">
-    <div style={{ paddingTop: '100px' }}>
-    <div className="form">
+<main className="site-content">
+  <div style={{ paddingTop: '100px' ,paddingRight: '100px' }}>
     <div className="container-xs">
-    <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">
-    Order Form (beta)
-    </h1>
-    <div className="container-xs">
-    <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
-On submission, your order will be copied to your clipboard.
-    </p>
+        <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">Order Form (beta)</h1>
+          This is an asyncronous service. Your order will be queued.
 	  <Form schema={schema} 
-onChange={handleChange}
-        onSubmit={handleSubmit}
-        onError={handleError}
+          onChange={handleChange}
+          onSubmit={handleSubmit}
+          onError={handleError}
+	  uiSchema={ui}
 	  />
-	          <div className="success">
-        {successMessage()}
-      </div>
+	<div className="success">{successMessage()}</div>
     </div>
-</div>
-</div>
-          </div>
-          </main>
+  </div>
+</main>
 </>
   );
 }
