@@ -22,6 +22,7 @@ credentials = pika.PlainCredentials('messenger', 'messengerPassword')
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost', port=5672, virtual_host='/', credentials=credentials ))
 channel = connection.channel()
 
+known_tickers = ["AAPL", "VUG", "GME", "VOO", "BTC", "ETH", "BRK-B"] 
 def sanitizeNews(body):
     payload = json.loads(body)
     logging.info(payload)
@@ -53,7 +54,7 @@ def sanitizeOrder(body):
     if payload['order'] not in ['buy', 'sell'] :
         print('order failed')
         raise Exception("unable to parse order type")
-    if payload['ticker'] not in ["AAPL", "VUG", "GME", "VOO", "BTC", "ETH", "BRK-B"]:
+    if payload['ticker'] not in known_tickers:
         print('ticker failed')
         raise Exception("unable to parse ticker")
     if type(payload['price']) != float and type(payload['price']) !=  int or payload['price'] <= 0:
@@ -152,8 +153,6 @@ def persistOrder(body):
         MongoPortfolio.MongoPersistDocument(user, email)
         MongoPortfolio.MongoPersistScatter(scatterData, email)
         emailObj.sendOrder(emailTo=email, user=MongoPortfolio.MongoGetUserName(email), order=action, volume=volume, ticker=assetChoice, price=price)
-        if email != 'stumay1992@gmail.com':
-            emailObj.sendOrder(emailTo='stumay1992@gmail.com', user=MongoPortfolio.MongoGetUserName(email), order=action, volume=volume, ticker=assetChoice, price=price)
     except Exception as e:
         raise Exception("unable to persist order " + str(e))
 
