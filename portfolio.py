@@ -29,7 +29,7 @@ class Asset:
         return dict
 
 def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
-    logging.debug("\n\nGood mornging!\ndate: {}".format(date_object))
+    logging.info("\n\nGood mornging!\ndate: {}".format(date_object))
     userList = MongoPortfolio.MongoGetUsers()
     totalValue = 0
     for user in userList:
@@ -51,19 +51,19 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
             localPrice = round(assetFactory.getPriceUSD(asset.Name) * myPortfolio[asset.Name] * exchange, 2)
             userGrossValue += localPrice
             totalValue = totalValue + localPrice
-            logging.info(asset.Name + " " + str(localPrice))
+            logging.debug(asset.Name + " " + str(localPrice))
             asset.latest(localPrice)
-        logging.info("previous account value " + str(userPreviousGrossValue))
-        logging.info("new account value " + str(userGrossValue))
+        logging.debug("previous account value " + str(userPreviousGrossValue))
+        logging.debug("new account value " + str(userGrossValue))
         if userPreviousGrossValue !=0 and userGrossValue !=0:
           deviation, mean, samples = changes.checkDeviation(user)
-          logging.info("number of samples: " + str(samples))
+          logging.debug("number of samples: " + str(samples))
           if samples > 60:
-            logging.info("standart deviation: " + str(round(deviation,2)) + " mean: " + str(round(mean,2)))
-            logging.info("ceiling is "+ str(round(mean+deviation,2)) + "% floor is " + str(round(mean-deviation,2)) + "%")
+            logging.debug("standart deviation: " + str(round(deviation,2)) + " mean: " + str(round(mean,2)))
+            logging.debug("ceiling is "+ str(round(mean+deviation,2)) + "% floor is " + str(round(mean-deviation,2)) + "%")
             # check plus or minus 5% to tell user
             dailyChange = ((userGrossValue - userPreviousGrossValue) / userPreviousGrossValue) * 100
-            logging.info("daily percentage change: " + str(round(dailyChange,2)))
+            logging.debug("daily percentage change: " + str(round(dailyChange,2)))
             if dailyChange >= (round(mean+deviation, 2)):
                 logging.info("user up by 95th percentile")
                 emailObj.sendHigh(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
@@ -110,7 +110,7 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         avg3 = int((sum(c) / len(c)))
         avg2 = int((sum(b) / len(b)))
         avg1 = int((sum(a) / len(a)))
-        logging.debug("vix last 6 months: "+str(avg1)+ " " + str(avg2) + " " + str(avg3) + " " + str(avg4) + " " + str(avg5) + " " + str(avg6))
+        logging.info("vix last 6 months: "+str(avg1)+ " " + str(avg2) + " " + str(avg3) + " " + str(avg4) + " " + str(avg5) + " " + str(avg6))
         h6 = avg6 > 14
         h5 = avg5 > 14
         h4 = avg4 > 14
@@ -119,53 +119,61 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         h1 =  avg1 > 14
 
         step = 14
-        logging.debug("monthly vix average is " + str(avg1))
+        logging.info("monthly vix average is " + str(avg1))
         if h1:
             step += 2
-            logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
+            logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
             if avg1 < step:
                 rebalance = True
-            if h2:
+                logging.info("rebalancing")
+            if h2 and rebalancing == False:
                 step += 2
-                logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
+                logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
                 if avg1 < step:
                     rebalance = True
-                if h3:
+                    logging.info("rebalancing")
+                if h3 and rebalancing == False:
                     step += 2
-                    logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
+                    logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
                     if avg1 < step:
                         realance = True
-                    if h4:
+                        logging.info("rebalancing")
+                    if h4 and rebalancing == False:
                         step += 2
-                        logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
+                        logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
                         if avg1 < step:
                             rebalance = True
-                        if h5:
+                            logging.info("rebalancing")
+                        if h5 and rebalancing == False:
                             step += 2
-                            logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
+                            logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
                             if avg1 < step:
                                 rebalance = True
-                            if h6:
+                                logging.info("rebalancing")
+                            if h6 and rebalancing == False:
                                 step += 2
-                                logging.debug("raising by 2 to " + str(step) + " against "+ str(avg1))
+                                logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
                                 if avg1 < step:
                                     rebalance = True
+                                    logging.info("rebalancing")
+                                else:
+                                    logging.info("will not rebalance")
 
     if rebalance == True:
         logging.info("Rebalancing")
         # my 'Market' portfolio is going to just buy all the S&P shares I could afford
         exchange = assetFactory.getExchangeRate()
         localPrice = round(assetFactory.getPriceUSD('VOO') * exchange , 2)
-        logging.debug("VOO price: " + str(localPrice))
+        logging.info("VOO price: " + str(localPrice))
         shares = int(totalValue / localPrice)
-        logging.debug("\'buying\' " + str(shares) + " VOO shares")
+        logging.info("\'buying\' " + str(shares) + " VOO shares")
         myPortfolio['VOO'] = shares
         # buy the shares
         for asset in assets:
             if asset.Name == 'VOO':
                 localPrice = round(assetFactory.getPriceUSD('VOO') * exchange , 2)
                 asset.latest(localPrice * myPortfolio['VOO'])
-        logging.debug("s&p rebalanced")
+        logging.info("s&p rebalanced")
         # I'm going to 'create' an asset that perfectly grows by long term market average
         for asset in assets:
             if asset.Name == 'Average':
@@ -173,7 +181,7 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         # update my 'total assets under management' price
         for asset in assets:
             if asset.Name == 'Managed Assets':
-                logging.debug("total managed assets are " + str(totalValue))
+                logging.info("total managed assets are " + str(totalValue))
                 asset.latest(totalValue)
         for asset in assets:
             if asset.Name == 'VIX':
@@ -223,7 +231,7 @@ handler = logging.handlers.WatchedFileHandler(
 formatter = logging.Formatter(logging.BASIC_FORMAT)
 handler.setFormatter(formatter)
 root = logging.getLogger()
-root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
+root.setLevel(os.environ.get("LOGLEVEL", "INFO"))
 logging.getLogger('requests').setLevel(logging.ERROR)
 logging.getLogger('urllib3').setLevel(logging.ERROR)
 root.addHandler(handler)
