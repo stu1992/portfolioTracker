@@ -7,7 +7,7 @@ import matplotlib.ticker as mtick
 import logging
 import logging.handlers
 import os
-
+from datetime import timedelta, datetime
 import time
 
 start = time.time()
@@ -64,20 +64,52 @@ for user in MongoPortfolio.MongoGetUsers():
         ha='center', va='center') 
       continue
     changes = []
+    purchases = MongoPortfolio.MongoGetScatter(email)
     for i in range(len(values)-1):
       userGrossValue = values[i+1]
       userPreviousGrossValue = values[i]
       if userPreviousGrossValue == 0 or userGrossValue == 0:
         continue
+      # check if this is a day with a purchase and remove that purchase from percentage calculation
+      #date = datetime.strptime(purchases['date'][i], "%Y/%m/%d")
+      if portfolio['dates'][i] in purchases['date']:
+          # iterate through dates in purchases and find index
+          index = purchases['date'].index(portfolio['dates'][i])
+          # find buy or sell and get volume
+          order = purchases['order'][index]
+          volume = purchases['volume'][index]
+          # add or subtract
+          if order == 'buy':
+              userGrossValue -= volume
+          else:
+              userGrossValue += volume
       change = ((userGrossValue - userPreviousGrossValue) / userPreviousGrossValue) * 100
       changes.append(round(change,6))
     if email == user:
       logging.debug(email + "turning green")
-      plt.hist(changes, 100, range=(-5,5), facecolor='green', alpha=0.9, label='You' )
+      plt.hist(changes, 60, range=(-3,3), facecolor='green', alpha=0.9, label='You' )
       plt.axvline(sum(changes) / len(changes), color='#cccccc', linestyle='dashed', linewidth=1.5)
     else:
-      plt.hist(changes, 100, range=(-5,5), facecolor='red', alpha=0.2)
-      plt.axvline(sum(changes) / len(changes), color='#cccccc', linestyle='dashed', linewidth=0.2, alpha=0.8)
+      plt.hist(changes, 60, range=(-3,3), facecolor='red', alpha=0.2)
+      plt.axvline(sum(changes) / len(changes), color='#cccccc', linestyle='dashed', linewidth=0.6, alpha=0.8)
+  portfolio = MongoPortfolio.MongoGetDocument('Market')
+  dataset = portfolio['seriesdataset']
+  dates = portfolio['dates']
+  values = []
+  for asset in dataset:
+    if asset['name'] == 'VOO':
+       values = asset['data'] 
+  # add market line
+  changes = []
+  for i in range(len(values)-1):
+    userGrossValue = values[i+1]
+    userPreviousGrossValue = values[i]
+    change = ((userGrossValue - userPreviousGrossValue) / userPreviousGrossValue) * 100
+    if (datetime.strptime(dates[i], "%Y/%m/%d")+ timedelta(days=1)).day != 1:
+      changes.append(round(change,6))
+    else:
+      logging.debug(dates[i] + " first of the month, ignore " + str(round(change,6)))
+  plt.axvline(sum(changes) / len(changes), color='#6666ff', linestyle='solid', linewidth=1.0, alpha=0.8)
   plt.axvline(0, color='gray', linestyle='solid', linewidth=1)
   secret_url = "/var/www/html/static/media/hist_" + secret + ".png"
   MongoPortfolio.MongoUpdateHist(user, "/static/media/hist_" + secret + ".png")
