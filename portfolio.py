@@ -12,7 +12,7 @@ import os
 import random
 from Email import Mail
 import changes
-
+import SystemStatus
 import time
 
 class Asset:
@@ -27,12 +27,28 @@ class Asset:
         dict['name'] = self.Name
         dict['data'] = self.History
         return dict
+class state:
+  def __init__(self, user):
+    self.user = user
+    self.message = "none"
+  def getUser(self):
+    return self.user
+  def message(self, message):
+    self.message = message
+  def getMessage(self):
+    return self.message
+  def mongoData(self, mongoData):
+    self.mongoData = mongoData
+  def getMongoData(self):
+    return self.mongoData
 
+serverState = []
 def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
     logging.info("\n\nGood mornging!\ndate: {}".format(date_object))
     userList = MongoPortfolio.MongoGetUsers()
     totalValue = 0
     for user in userList:
+        preparedState = state(user)
         userPreviousGrossValue = 0
         userGrossValue = 0 # this is a test feature to see if the users assets went up a certain amount
         logging.info("updating for "+ user)
@@ -67,10 +83,12 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
             logging.debug("daily percentage change: " + str(round(dailyChange,2)))
             if dailyChange >= (round(mean+deviation, 2)):
                 logging.info("user up by 95th percentile")
-                emailObj.sendHigh(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
+                preparedState.message("up")
+                #emailObj.sendHigh(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
             elif dailyChange <= (round(mean-deviation,2)):
                 logging.info("user down by 95th percentile")
-                emailObj.sendLow(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
+                preparedState.message("down")
+                #emailObj.sendLow(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
         serialisableAssets = []
         for asset in assets:
             serialisableAssets.append(asset.export())
@@ -80,11 +98,14 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         'seriesdataset' : serialisableAssets,
         'dates' : dates
         }
-        MongoPortfolio.MongoPersistDocument(replacementObj, user)
+        preparedState.mongoData(replacementObj)
+        #MongoPortfolio.MongoPersistDocument(replacementObj, user)
+        serverState.append(preparedState)
     # poplulate market object
 
     logging.debug("comparing to the \'Market\'")
     obj = MongoPortfolio.MongoGetDocument('Market')
+    preparedState = state("Market")
     assets = []
     for struct in obj['seriesdataset']:
         assets.append(Asset(struct))
@@ -219,14 +240,12 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
     'dates' : dates
     }
     assetFactory.clear()
-    MongoPortfolio.MongoPersistDocument(replacementObj, 'Market')
+    preparedState.mongoData(replacementObj)
+    serverState.append(preparedState)
+    #MongoPortfolio.MongoPersistDocument(replacementObj, 'Market')
 
-def daterange():
-    for n in range(int ((date(2021, 6, 1) - date(2016, 6, 1)).days)):
-        yield date(2016, 6, 1) + timedelta(n)
 
-dateGen = daterange()
-
+system_status = SystemStatus.SystemStatus()
 handler = logging.handlers.WatchedFileHandler(
     os.environ.get("LOGFILE", "./log"))
 formatter = logging.Formatter(logging.BASIC_FORMAT)
@@ -247,10 +266,22 @@ emailObj = Mail(logging)
 date_object = date.today()
 
 global_exchange = assetFactory.getExchangeRate()
+# while mutex != True
+# try except wait
 start = time.time()
 try:
-  updatePortfolio(assetFactory, date_object, emailObj)
+  updatePortfolio(assetFactory, date_object, emailObj) # this should throw exceptions. Once it's passed we assume the data is safe
+  for user in serverState:
+    if user.getMessage() == "up":
+      logging.info(user.getUser() + " up")
+      emailObj.sendHigh(emailTo=user.getUser(), user=MongoPortfolio.MongoGetUserName(user.getUser()))
+    if user.getMessage() == "down":
+      logging.info(user.getUser() + " down")
+      emailObj.sendLow(emailTo=user.getUser(), user=MongoPortfolio.MongoGetUserName(user.getUser()))
+    MongoPortfolio.MongoPersistDocument(user.getMongoData(), user.getUser())
+  system_status.status_success()
 except Exception as e:
+  system_status.status_failure()
   logging.error("something crashed - rolling back because of + " +str(e))
   os.system("/usr/bin/mongorestore --drop --dir=`date --date=\"yesterday\"  '+/home/ubuntu/portfolioTracker/db_backup/%-e/portfolioTracker/portfolios.bson'` -d portfolioTracker -c portfolios")
 end = time.time()
