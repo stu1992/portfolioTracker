@@ -121,7 +121,7 @@ def genGraph(public=True, months=1):
     if public == False:
         ax.scatter(scatter_x, scatter_y, s=200, antialiased=True, alpha=scatter_volume, edgecolors='none', c='green', label='Trade volume')
     plt.title('How we compare to market trends',fontsize = 25, color='#eceded')
-    plt.legend(title='Rebalanced with low volitility')
+    plt.legend(title='Rebalanced with low volitility', framealpha=0.6)
     if months == 0:
         ax.xaxis.grid(True, color='#202020')
     else:
@@ -151,9 +151,9 @@ root.addHandler(handler)
 # generate both logged in and guest graph
 secret = ''.join(random.choice(string.ascii_letters) for i in range(12))
 genGraph(True,6)
-genGraph(False,1)
 genGraph(False,3)
 genGraph(False,6)
+genGraph(False,12)
 genGraph(False,0)
 end = time.time()
 logging.debug("Elapsed time for graph is " + str(round((end-start),4)) + " seconds")

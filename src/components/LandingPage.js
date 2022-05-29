@@ -4,7 +4,7 @@ const LandingPage = ({dailySecret, histSecret}) => {
   const [secret, setSecret] = React.useState(dailySecret);
   const [currentScope, setCurrentScope] = React.useState(1);
 
-  const scope = ["0", "6", "3", "1"];
+  const scope = ["0", "12", "6", "3"];
   function changeScope(){
     var currentStr = scope[currentScope];
     var newStr = "";
