@@ -17,6 +17,17 @@ def MongoGetUsers():
         userList.append(emailKey['email'])
     return userList
 
+def MongoGetOrders():
+    orderList = []
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    return list(db.orders.find({},{'_id' : 0, '__v':0}))
+
+def MongoDeleteOrders():
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    return db.orders.remove()
+
 def MongoGetUser(email):
     client=MongoClient("localhost")
     db=client.portfolioTracker

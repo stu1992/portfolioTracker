@@ -24,7 +24,6 @@ const defaultProps = {
 
 const Header = ({
   userLoggedIn,
-  loggedInCallBack,
   className,
   navPosition,
   hideNav,
@@ -45,9 +44,9 @@ const Header = ({
       url: '/user/logout'//,
     })
     .then(response => {
-    loggedInCallBack(false);
+    window.location.reload(false);
     }).catch(response =>{
-    loggedInCallBack(false);
+    window.location.reload(false);
   }
   );
     }
@@ -131,7 +130,7 @@ const Header = ({
                     <li>
                       <Link to="/portfolio" onClick={closeMenu}>portfolio</Link>
                       <Link to="/" onClick={closeMenu}>Home</Link>
-
+                      <Link to="/order" onClick={closeMenu}>Order</Link>
                     </li>
                   </ul>
                   {!hideSignin && !userLoggedIn &&

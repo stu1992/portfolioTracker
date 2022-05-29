@@ -32,7 +32,7 @@ const Hero = ({
 
  const userDetails = async (event) =>
   {
-    fetch('/api/user/get', {
+    await fetch('/api/user/get', {
      method: 'GET',
      credentials: 'include',
      mode: "cors",
@@ -60,7 +60,7 @@ const Hero = ({
   })
   .then(res => {
     if (res.status === 200) {
-      const response = userDetails();
+      //const response = userDetails();
       loggedInCallBack(true);
     } else {
       //TODO incorrect password modal

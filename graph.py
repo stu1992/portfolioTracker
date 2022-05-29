@@ -53,7 +53,6 @@ def genGraph(public=True, months=1):
 
     daysInScope = limitScope(newDates, months)
     vix_threshold = 20
-# array(aList)[myIndices]
     t = array(newDates)[daysInScope]
     vix = array(assets[0].History)[daysInScope]
     a = array(assets[1].History)[daysInScope]
@@ -68,15 +67,8 @@ def genGraph(public=True, months=1):
         scatter_data['date_unsorted'].extend(data['date'])
         scatter_data['volume'].extend(data['volume'])
         scatter_data['endValue'].extend(data['endValue'])
+        scatter_data['date'].extend(data['date'])
 
-    #check if there are any duplicates to perform superposition
-    for i in range(len(scatter_data['date_unsorted'])):
-        if scatter_data['date_unsorted'][i] not in scatter_data['date']:
-            scatter_data['date'].append(scatter_data['date_unsorted'][i])
-        else:
-            newIndex = scatter_data['date'].index(scatter_data['date_unsorted'][i])
-            scatter_data['volume'][newIndex] += scatter_data['volume'][i]*8
-            scatter_data['date'].append(scatter_data['date_unsorted'][i])
     scatter_x_tmp = []
     for i in scatter_data['date']: #convert to epoc objects for consumption by matplotlib
         scatter_x_tmp.append(datetime.datetime.strptime(i, '%Y/%m/%d'))
@@ -85,7 +77,7 @@ def genGraph(public=True, months=1):
 
     scatter_x = array(scatter_x_tmp)[scatter_daysInScope]
     scatter_y = array(scatter_data['endValue'])[scatter_daysInScope]
-    scatter_volume= array(scatter_data['volume'])[scatter_daysInScope]
+    scatter_volume = array(scatter_data['volume'])[scatter_daysInScope]
     max_volume = max(scatter_volume)
     scatter_volume = list(map(lambda x: 1 * (x/max_volume), scatter_volume))
 
@@ -95,10 +87,10 @@ def genGraph(public=True, months=1):
     fig.set_size_inches(10,6,550)
     fig.set_dpi(200)
     fig.patch.set_facecolor('#25282c')
-    ax.set_facecolor('#eceded')
+    #ax.set_facecolor('#eceded')
+    ax.set_facecolor('#151719')
     fmt_month_year = mdates.MonthLocator()
     fmt_day_year = mdates.DayLocator()
-    ax.xaxis.label.set_color("#9ca9b3")
 
     ax.spines['left'].set_color('#9ca9b3')
     ax.spines['right'].set_color('#9ca9b3')
@@ -120,16 +112,21 @@ def genGraph(public=True, months=1):
             width = (0.2 * x) - 3
         else:
             width = (0.00013 * x) * (20 * x ) * (0.05 * x)
-        #print("width: " + str(width))
         ax.plot(t[i:i+2], a[i:i+2], color='red', linewidth=width, alpha=1.0, antialiased=True, solid_capstyle='round')
     ax.plot(t, a, color= 'red', alpha=1.0, linewidth=0.5, antialiased=True, label='7% per annum', solid_capstyle='round')
+    ax.plot(t, b, color='#eeeeff', linewidth=1.5, antialiased=True, alpha=0.5, solid_capstyle='round')
     ax.plot(t, b, color='blue', linewidth=0.5, antialiased=True, label='Everything in S&P 500', solid_capstyle='round')
+    ax.plot(t, c, color='#aaaaaa', linewidth=3, alpha=0.8, antialiased=True, solid_capstyle='round')
     ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management', path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()], solid_capstyle='round')
     if public == False:
-        ax.scatter(scatter_x, scatter_y, s=200, antialiased=True, alpha=scatter_volume, c='green', label='Trade volume')
+        ax.scatter(scatter_x, scatter_y, s=200, antialiased=True, alpha=scatter_volume, edgecolors='none', c='green', label='Trade volume')
     plt.title('How we compare to market trends',fontsize = 25, color='#eceded')
-    plt.legend(title='Rebalanced with low volitility')
-    ax.xaxis.grid(True)
+    plt.legend(title='Rebalanced with low volitility', framealpha=0.6)
+    if months == 0:
+        ax.xaxis.grid(True, color='#202020')
+    else:
+        ax.xaxis.grid(True, color='#404040')
+
     if public == False:
         secret_url = "/var/www/html/static/media/market" + str(months) + "_" + secret + ".png"
         plt.savefig(secret_url)
@@ -139,7 +136,7 @@ def genGraph(public=True, months=1):
         ax.xaxis.set_major_formatter(plt.NullFormatter())
         ax.xaxis.set_minor_locator(plt.NullLocator())
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
-        plt.savefig("/var/www/html/static/media/market.74a21c94.png")
+        plt.savefig("/var/www/html/static/media/market.74a21c94f6be0a4c31ad.png")
 
 start = time.time()
 handler = logging.handlers.WatchedFileHandler(
@@ -154,10 +151,12 @@ root.addHandler(handler)
 # generate both logged in and guest graph
 secret = ''.join(random.choice(string.ascii_letters) for i in range(12))
 genGraph(True,6)
-genGraph(False,1)
 genGraph(False,3)
 genGraph(False,6)
+genGraph(False,12)
 genGraph(False,0)
 end = time.time()
 logging.debug("Elapsed time for graph is " + str(round((end-start),4)) + " seconds")
-
+f = open('/home/ubuntu/graph','a')
+f.write(str(round((end-start),4)) + "\n")
+f.close()

@@ -22,6 +22,7 @@ credentials = pika.PlainCredentials('messenger', 'messengerPassword')
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost', port=5672, virtual_host='/', credentials=credentials ))
 channel = connection.channel()
 
+known_tickers = ["AAPL", "VUG", "GME", "VOO", "BTC", "ETH", "BRK-B", "VAS"] 
 def sanitizeNews(body):
     payload = json.loads(body)
     logging.info(payload)
@@ -53,7 +54,7 @@ def sanitizeOrder(body):
     if payload['order'] not in ['buy', 'sell'] :
         print('order failed')
         raise Exception("unable to parse order type")
-    if payload['ticker'] not in ["AAPL", "VUG", "GME", "VOO", "BTC", "ETH", "BRK-B"]:
+    if payload['ticker'] not in known_tickers:
         print('ticker failed')
         raise Exception("unable to parse ticker")
     if type(payload['price']) != float and type(payload['price']) !=  int or payload['price'] <= 0:
@@ -124,6 +125,8 @@ def persistOrder(body):
     elif action == "buy":
         newOwned = ownedShares + volume
     price = round(float(payload['price']),2)
+    if price < 0 or volume < 0:
+        raise Exception("negative order values")
 
     user['portfolio'][assetChoice]=newOwned
     logging.info(user['portfolio'])
@@ -141,15 +144,15 @@ def persistOrder(body):
     scatterData["endValue"].append(allAssets)
     scatterData["date"].append(date)
     scatterData["volume"].append(price)
+    scatterData["order"].append(action)
     logging.info(scatterData["endValue"][-1])
     logging.info(scatterData["date"][-1])
     logging.info(scatterData["volume"][-1])
+    logging.info(scatterData["order"][-1])
     try:
         MongoPortfolio.MongoPersistDocument(user, email)
         MongoPortfolio.MongoPersistScatter(scatterData, email)
         emailObj.sendOrder(emailTo=email, user=MongoPortfolio.MongoGetUserName(email), order=action, volume=volume, ticker=assetChoice, price=price)
-        if email != 'stumay1992@gmail.com':
-            emailObj.sendOrder(emailTo='stumay1992@gmail.com', user=MongoPortfolio.MongoGetUserName(email), order=action, volume=volume, ticker=assetChoice, price=price)
     except Exception as e:
         raise Exception("unable to persist order " + str(e))
 

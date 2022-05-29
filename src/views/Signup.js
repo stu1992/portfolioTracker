@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import classNames from 'classnames';
 import Input from '../components/elements/Input';
+import Header from '../components/layout/Header';
 export default function Form() {
 
 // States for registration
@@ -111,6 +112,9 @@ const errorMessage = () => {
 };
 
   return (
+	  <>
+	      <Header navPosition="right" className="reveal-from-bottom" />
+    <main className="site-content">
     <div style={{ paddingTop: '100px' }}>
     <div className="form">
     <div className="container-xs">
@@ -151,5 +155,7 @@ const errorMessage = () => {
 </div>
 </div>
 	  </div>
+	  </main>
+</>
   );
 }

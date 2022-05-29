@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Switch, useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
+import { Routes ,Route, BrowserRouter } from 'react-router-dom';
 import AppRoute from './utils/AppRoute';
 import ScrollReveal from './utils/ScrollReveal';
 import  API from './Api';
-
+import './assets/scss/style.scss';
 // Layouts
 import LayoutDefault from './layouts/LayoutDefault';
 import LayoutLoggedIn from './layouts/LayoutLoggedIn';
@@ -12,69 +13,77 @@ import LayoutLoggedIn from './layouts/LayoutLoggedIn';
 import Chart from './components/Chart';
 import Home from './views/Home';
 import Signup from './views/Signup';
+import OrderForm from './views/OrderForm';
+
+import logo from './logo.svg';
+import './App.css';
 
 const App = () => {
-const history = useHistory();
+  const navigate = useNavigate(); //breaking
   // persisting app state
-   const [name, setName] = React.useState(null);
-   const [dailySecret, setDailySecret] = React.useState("secret_undef");
-   const [histSecret, setHistSecret] = React.useState("hist_undef");
-   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [name, setName] = React.useState(null);
+  const [email, setEmail] = React.useState(null);
+  const [dailySecret, setDailySecret] = React.useState("secret_undef");
+  const [histSecret, setHistSecret] = React.useState("hist_undef");
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
-   const login = (value) => {
-     setUserLoggedIn(value);
-     if (value){
-         history.push("/portfolio");
-     }
-   }
-
-  const childRef = useRef();
-
-  useEffect(() => {
-    API({
-    url: '/user/get'//,
-  //  attributes
+  const login = (value) => {
+    setUserLoggedIn(value);
+    if (value){
+      API({
+    url: '/user/get'
   })
   .then(response => {
     if (response.statusText === "OK"){
-        setName(response.data['name']);
-        setDailySecret(response.data['dailySecret']);
-	setHistSecret(response.data['histSecret']);
-        setUserLoggedIn(true);
-	console.log("auto login success\n "+ name );
+      setName(response.data['name']);
+      setDailySecret(response.data['dailySecret']);
+      setHistSecret(response.data['histSecret']);
+      setEmail(response.data['email']);
+      navigate("/portfolio");
+    }
+  });
+  };
+  }
+  const childRef = useRef(); // what's this for
+
+  useEffect(() => {
+    API({
+    url: '/user/get'
+  })
+  .then(response => {
+    if (response.statusText === "OK"){
+      setName(response.data['name']);
+      setDailySecret(response.data['dailySecret']);
+      setHistSecret(response.data['histSecret']);
+      setUserLoggedIn(true);
+      setEmail(response.data['email']);
+      //navigate("/portfolio");
     }
   }).catch(response =>{
-    console.log("auto login failed at " + window.location.pathname);
     if(window.location.pathname === "/portfolio"){
-        history.push("/");
+      navigate("/");
     }
     setUserLoggedIn(false);
-  }
-  );
-
   });
+  });
+
+
 if(userLoggedIn){
   return (
-    <ScrollReveal
-      ref={childRef}
-      children={() => (
-        <Switch>
-          <AppRoute exact path="/" component={() => <Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} loggedInCallBack={login} />} layout={LayoutLoggedIn} />
-          <AppRoute exact path="/portfolio" component={() => <Chart name={name} dailySecret={dailySecret} histSecret={histSecret}/>} layout={LayoutLoggedIn} />
-        </Switch>
-      )} />
-  );
+        <Routes>
+	      <Route exact path="/" element={<Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} loggedInCallBack={login} />}/>
+	      <Route exact path="/portfolio" element={<Chart name={name} dailySecret={dailySecret} histSecret={histSecret}/>} />
+	      <Route exact path="/order" element={<OrderForm email={email} />} />
+        </Routes>
+  )
 }else{
   return (
-    <ScrollReveal
-      ref={childRef}
-      children={() => (
-        <Switch>
-          <AppRoute exact path="/" component={() => <Home loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutDefault} />
-          <AppRoute exact path="/Signup" component={() => <Signup loggedInCallBack={login} loggedOutCallBack={login} />} layout={LayoutDefault} />
-	</Switch>
-      )} />
-  );
+        <Routes>
+
+	      <Route exact path="/" element={<Home loggedInCallBack={login} loggedOutCallBack={login} userLoggedIn={userLoggedIn} />}/>
+	      <Route exact path="/signup" element={<Signup />} /> 
+        </Routes>
+	)
 }
 }
 
