@@ -22,7 +22,7 @@ credentials = pika.PlainCredentials('messenger', 'messengerPassword')
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost', port=5672, virtual_host='/', credentials=credentials ))
 channel = connection.channel()
 
-known_tickers = ["AAPL", "VUG", "GME", "VOO", "BTC", "ETH", "BRK-B"] 
+known_tickers = ["AAPL", "VUG", "GME", "VOO", "BTC", "ETH", "BRK-B", "VAS"] 
 def sanitizeNews(body):
     payload = json.loads(body)
     logging.info(payload)

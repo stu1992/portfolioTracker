@@ -40,6 +40,10 @@ const tickers = [
     value: 'BRK-B',
     label: 'BRK-B',
   },
+  {
+    value: 'VAS',
+    label: 'VAS',
+  },
 ];
 const orderTypes = [
   {

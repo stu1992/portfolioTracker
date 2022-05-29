@@ -15,6 +15,9 @@ class AssetAPIFactory:
             yahoo_financials = YahooFinancials(ticker)
             self.cachedPrices[ticker] = YahooFinancials([ticker]).get_current_price()[ticker]
             return self.cachedPrices[ticker]
+        elif ticker == "VAS":
+             self.cachedPrices[ticker] = YahooFinancials([ticker+ ".AX"]).get_current_price()[ticker+ ".AX"]
+             return self.cachedPrices[ticker]
         elif ticker == "VIX":
             self.cachedPrices[ticker] = YahooFinancials(['^VIX']).get_current_price()['^VIX']
             return self.cachedPrices[ticker]
@@ -26,9 +29,9 @@ class AssetAPIFactory:
             return self.cachedPrices[ticker]
 
     def USCurrency(self, ticker):
-        #if ticker in [""]:
-         #   return False
-        #else:
+        if ticker in ["VAS"]:
+            return False
+        else:
             return True
 
     def getExchangeRate(self):
