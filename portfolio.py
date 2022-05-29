@@ -44,18 +44,19 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         dates = obj['dates']
 
         for asset in assets:
-            userPreviousGrossValue += asset.History[-1]
+            if len(asset.History) > 0:
+              userPreviousGrossValue += asset.History[-1]
             exchange = 1.0
             if assetFactory.USCurrency(asset.Name):
                 exchange = global_exchange
             localPrice = round(assetFactory.getPriceUSD(asset.Name) * myPortfolio[asset.Name] * exchange, 2)
             userGrossValue += localPrice
             totalValue = totalValue + localPrice
-            logging.debug(asset.Name + " " + str(localPrice))
+            logging.info(asset.Name + " " + str(localPrice))
             asset.latest(localPrice)
         logging.debug("previous account value " + str(userPreviousGrossValue))
         logging.debug("new account value " + str(userGrossValue))
-        if userPreviousGrossValue !=0 and userGrossValue !=0:
+        if userPreviousGrossValue !=0 and userGrossValue !=0 and len(dates) > 60: # samples should just be one catch for the above stuff too
           deviation, mean, samples = changes.checkDeviation(user)
           logging.debug("number of samples: " + str(samples))
           if samples > 60:
@@ -250,9 +251,10 @@ start = time.time()
 try:
   updatePortfolio(assetFactory, date_object, emailObj)
 except Exception as e:
-  logging.error(str(e))
+  logging.error("something crashed - rolling back because of + " +str(e))
+  os.system("/usr/bin/mongorestore --drop --dir=`date --date=\"yesterday\"  '+/home/ubuntu/portfolioTracker/db_backup/%-e/portfolioTracker/portfolios.bson'` -d portfolioTracker -c portfolios")
 end = time.time()
-logging.debug("Elapsed time for portfolioTracker is " + str(round((end-start),4)) + " seconds")
+logging.info("Elapsed time for portfolioTracker is " + str(round((end-start),4)) + " seconds")
 f = open('/home/ubuntu/portfoliotracker','a')
 f.write(str(round((end-start),4)) + "\n")
 f.close()
