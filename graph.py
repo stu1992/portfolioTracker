@@ -14,7 +14,7 @@ import logging
 import logging.handlers
 import time
 import os
-
+import SystemStatus
 class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
@@ -61,13 +61,14 @@ def genGraph(public=True, months=1):
 
     userList = MongoPortfolio.MongoGetUsers()
     userList.append('all') # backwards compadibility
-    scatter_data = {'date_unsorted': [], 'date' : [], 'volume' : [], 'endValue': []}
+    scatter_data = {'date_unsorted': [], 'date' : [], 'volume' : [], 'endValue': [], 'order' :[]}
     for user in userList:
         data = MongoPortfolio.MongoGetScatter(user)
         scatter_data['date_unsorted'].extend(data['date'])
         scatter_data['volume'].extend(data['volume'])
         scatter_data['endValue'].extend(data['endValue'])
         scatter_data['date'].extend(data['date'])
+        scatter_data['order'].extend(data['order'])
 
     scatter_x_tmp = []
     for i in scatter_data['date']: #convert to epoc objects for consumption by matplotlib
@@ -77,6 +78,14 @@ def genGraph(public=True, months=1):
 
     scatter_x = array(scatter_x_tmp)[scatter_daysInScope]
     scatter_y = array(scatter_data['endValue'])[scatter_daysInScope]
+    scatter_colour = []
+    orders =  array(scatter_data['order'])[scatter_daysInScope]
+    for order in orders:
+      if order == "buy":
+        scatter_colour.append("green")
+      else:
+        scatter_colour.append("yellow")
+
     scatter_volume = array(scatter_data['volume'])[scatter_daysInScope]
     max_volume = max(scatter_volume)
     scatter_volume = list(map(lambda x: 1 * (x/max_volume), scatter_volume))
@@ -119,7 +128,7 @@ def genGraph(public=True, months=1):
     ax.plot(t, c, color='#aaaaaa', linewidth=3, alpha=0.8, antialiased=True, solid_capstyle='round')
     ax.plot(t, c, color='black', linewidth=1.5, antialiased=True, label='Assets under management', path_effects=[path_effects.SimpleLineShadow((1.5,-1.5)),path_effects.Normal()], solid_capstyle='round')
     if public == False:
-        ax.scatter(scatter_x, scatter_y, s=200, antialiased=True, alpha=scatter_volume, edgecolors='none', c='green', label='Trade volume')
+        ax.scatter(scatter_x, scatter_y, s=200, antialiased=True, alpha=scatter_volume, edgecolors='none', c=scatter_colour, label='Trade volume')
     plt.title('How we compare to market trends',fontsize = 25, color='#eceded')
     plt.legend(title='Rebalanced with low volitility', framealpha=0.6)
     if months == 0:
@@ -138,7 +147,6 @@ def genGraph(public=True, months=1):
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
         plt.savefig("/var/www/html/static/media/market.74a21c94f6be0a4c31ad.png")
 
-start = time.time()
 handler = logging.handlers.WatchedFileHandler(
     os.environ.get("LOGFILE", "/home/ubuntu/log"))
 formatter = logging.Formatter(logging.BASIC_FORMAT)
@@ -147,6 +155,18 @@ root = logging.getLogger()
 root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
 root.addHandler(handler)
+
+system_status = SystemStatus.SystemStatus()
+retries = 12 * 12
+retry = 0
+while system_status.get_mutex() == False:
+  retry += 1
+  logging.error("Portfolio not updated " + str(retry))
+  if retry > retries:
+    logging.error("ERROR: unable to recover")
+    break
+  time.sleep(60*5)
+start = time.time()
 
 # generate both logged in and guest graph
 secret = ''.join(random.choice(string.ascii_letters) for i in range(12))

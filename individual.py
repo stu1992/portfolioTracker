@@ -9,8 +9,7 @@ import logging.handlers
 import os
 from datetime import timedelta, datetime
 import time
-
-start = time.time()
+import SystemStatus
 
 handler = logging.handlers.WatchedFileHandler(
     os.environ.get("LOGFILE", "/home/ubuntu/log"))
@@ -20,6 +19,19 @@ root = logging.getLogger()
 root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
 root.addHandler(handler)
+
+system_status = SystemStatus.SystemStatus()
+retries = 12 * 12
+retry = 0
+while system_status.get_mutex() == False:
+  retry += 1
+  logging.error("Portfolio not updated " + str(retry))
+  if retry > retries:
+    logging.error("ERROR: unable to recover")
+    break
+  time.sleep(60*5)
+
+start = time.time()
 
 for user in MongoPortfolio.MongoGetUsers():
   secret = ''.join(random.choice(string.ascii_letters) for i in range(36))
@@ -107,8 +119,6 @@ for user in MongoPortfolio.MongoGetUsers():
     change = ((userGrossValue - userPreviousGrossValue) / userPreviousGrossValue) * 100
     if (datetime.strptime(dates[i], "%Y/%m/%d")+ timedelta(days=1)).day != 1:
       changes.append(round(change,6))
-    else:
-      logging.debug(dates[i] + " first of the month, ignore " + str(round(change,6)))
   plt.axvline(sum(changes) / len(changes), color='#6666ff', linestyle='solid', linewidth=1.0, alpha=0.8)
   plt.axvline(0, color='gray', linestyle='solid', linewidth=1)
   secret_url = "/var/www/html/static/media/hist_" + secret + ".png"

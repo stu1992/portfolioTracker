@@ -1,50 +1,19 @@
 import * as React from 'react';
+import  API from '../Api';
 import Header from '../components/layout/HeaderLoggedIn';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import Button from '@mui/material/Button';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
   },
 });
 
-const tickers = [
-  {
-    value: 'AAPL',
-    label: 'AAPL',
-  },
-  {
-    value: 'VUG',
-    label: 'VUG',
-  },
-  {
-    value: 'BTC',
-    label: 'BTC',
-  },
-  {
-    value: 'ETH',
-    label: 'ETH',
-  },
-  {
-    value: 'GME',
-    label: 'GME',
-  },
-  {
-    value: 'BRK-B',
-    label: 'BRK-B',
-  },
-  {
-    value: 'VAS',
-    label: 'VAS',
-  },
-];
 const orderTypes = [
   {
     value: 'buy',
@@ -56,8 +25,10 @@ const orderTypes = [
   },
 ];
 
+
 const OrderForm = ({email}) => {
   const [ticker, setTicker] = React.useState('AAPL');
+  const [tickersState, setTickersState] = React.useState('');
   const [orderType, setOrderType] = React.useState('buy');
   const [number, setNumber] = React.useState('');
   const [price, setPrice] = React.useState('');
@@ -65,9 +36,34 @@ const OrderForm = ({email}) => {
   const [error, setError] = React.useState(false);
   const [priceError, setPriceError] = React.useState(false);
   const [disableButton, setDisableButton] = React.useState(true);
+  const [isLoading, setLoading] = React.useState(true);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTicker(event.target.value);
   };
+React.useEffect(() => {
+  if(isLoading === false)
+	return;
+    API({
+    url: '/ticker'
+  })
+  .then(response => {
+    if (response.statusText === "OK"){
+    var options = "";
+    
+    for(const ticker of response.data){
+	if(ticker === "VIX")
+	    continue;
+        options += '{"value": "' + ticker+ '" ,"label" : "' + ticker + '"},';
+    }
+    options = "[" + options.slice(0, -1)+ "]";
+    console.log("received tickers");
+    setTickersState(JSON.parse(options));
+    setLoading(false);
+    }
+  }).catch(response =>{
+  });
+  });
+
 
   const handleOrderType = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOrderType(event.target.value);
@@ -111,7 +107,6 @@ const order = async (payload) =>
     credentials: 'include',
     mode: "cors",
     headers: {
-      'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json'
     },
@@ -152,8 +147,7 @@ const handleSubmit = () => {
   }
 };
 
-  const successMessage = (payload) => {
-         var message = payload;
+  const successMessage = () => {
     return (
       <div
         className="success"
@@ -177,6 +171,10 @@ const errorMessage = () => {
         );
 };
 
+if (isLoading) {
+            return <div className="App">Loading...</div>;
+          }
+else{
   return (
 
 <>
@@ -206,7 +204,7 @@ const errorMessage = () => {
             native: true,
           }}
         >
-          {tickers.map((option) => (
+          { tickersState.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
@@ -227,13 +225,13 @@ const errorMessage = () => {
           {orderTypes.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
-            </option>
-          ))}
+            </option> 
+	  ))}
         </TextField>
-        <InputLabel htmlFor="outlined-adornment-amount">Price</InputLabel>
+	  <InputLabel htmlFor="outlined-adornment-amount">Total price for all shares</InputLabel>
         <OutlinedInput
           id="outlined-adornment-amount"
-	  label="Price"
+	  label="Total price for all shares"
           value={price}
           onChange={handlePrice}
           startAdornment={<InputAdornment position="start">$</InputAdornment>}
@@ -267,5 +265,6 @@ const errorMessage = () => {
 </>
 
   );
+}
 }
 export default OrderForm;

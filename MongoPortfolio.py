@@ -17,6 +17,15 @@ def MongoGetUsers():
         userList.append(emailKey['email'])
     return userList
 
+def MongoGetNewUsers():
+    userList = []
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    userDict = list(db.users.find({'enabled' : "false"}, {'email':1, '_id' : 0}))
+    for emailKey in userDict:
+        userList.append(emailKey['email'])
+    return userList
+
 def MongoGetOrders():
     orderList = []
     client = MongoClient("localhost")
@@ -50,6 +59,18 @@ def MongoMarketScatter(data):
     client.close()
 
 
+def MongoGetTicker(ticker):
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    return db.tickers.find_one({'internalTicker': ticker})
+    client.close()
+
+def MongoGetTickers():
+    client = MongoClient("localhost")
+    db = client.portfolioTracker
+    return db.tickers.distinct("internalTicker")
+    client.close()
+
 def MongoGetScatter(email):
     client = MongoClient("localhost")
     db = client.portfolioTracker
@@ -60,7 +81,7 @@ def MongoPersistScatter(data, user):
     key = {'_id': user}
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    if db.volume.find_one({}) == None:
+    if db.volume.find_one({'_id': user}) == None:
         db.volume.insert_one(data)
     else:
         result=db.volume.replace_one(key, data)
@@ -71,7 +92,7 @@ def MongoPersistDocument(data, user = 'Stu'):
     key = {'_id': user}
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    if db.portfolios.find_one({}) == None:
+    if db.portfolios.find_one({'_id': user}) == None:
         db.portfolios.insert_one(data)
     else:
         result=db.portfolios.replace_one(key, data)

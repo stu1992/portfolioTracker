@@ -33,7 +33,7 @@ class state:
     self.message = "none"
   def getUser(self):
     return self.user
-  def message(self, message):
+  def setMessage(self, message):
     self.message = message
   def getMessage(self):
     return self.message
@@ -68,7 +68,7 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
             localPrice = round(assetFactory.getPriceUSD(asset.Name) * myPortfolio[asset.Name] * exchange, 2)
             userGrossValue += localPrice
             totalValue = totalValue + localPrice
-            logging.info(asset.Name + " " + str(localPrice))
+            logging.debug(asset.Name + " " + str(localPrice))
             asset.latest(localPrice)
         logging.debug("previous account value " + str(userPreviousGrossValue))
         logging.debug("new account value " + str(userGrossValue))
@@ -83,11 +83,11 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
             logging.debug("daily percentage change: " + str(round(dailyChange,2)))
             if dailyChange >= (round(mean+deviation, 2)):
                 logging.info("user up by 95th percentile")
-                preparedState.message("up")
+                preparedState.setMessage("up")
                 #emailObj.sendHigh(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
             elif dailyChange <= (round(mean-deviation,2)):
                 logging.info("user down by 95th percentile")
-                preparedState.message("down")
+                preparedState.setMessage("down")
                 #emailObj.sendLow(emailTo=user, user=MongoPortfolio.MongoGetUserName(user))
         serialisableAssets = []
         for asset in assets:
@@ -148,31 +148,31 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
             if avg1 < step:
                 rebalance = True
                 logging.info("rebalancing")
-            if h2 and rebalancing == False:
+            if h2 and rebalance == False:
                 step += 2
                 logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
                 if avg1 < step:
                     rebalance = True
                     logging.info("rebalancing")
-                if h3 and rebalancing == False:
+                if h3 and rebalance == False:
                     step += 2
                     logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
                     if avg1 < step:
                         realance = True
                         logging.info("rebalancing")
-                    if h4 and rebalancing == False:
+                    if h4 and rebalance == False:
                         step += 2
                         logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
                         if avg1 < step:
                             rebalance = True
                             logging.info("rebalancing")
-                        if h5 and rebalancing == False:
+                        if h5 and rebalance == False:
                             step += 2
                             logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
                             if avg1 < step:
                                 rebalance = True
                                 logging.info("rebalancing")
-                            if h6 and rebalancing == False:
+                            if h6 and rebalance == False:
                                 step += 2
                                 logging.info("raising by 2 to " + str(step) + " against "+ str(avg1))
                                 if avg1 < step:
@@ -261,31 +261,40 @@ assetFactory = None
 date_object = None
 
 
-assetFactory = AssetAPIFactory(logging)
+assetFactory = AssetAPIFactory()
 emailObj = Mail(logging)
 date_object = date.today()
 
 global_exchange = assetFactory.getExchangeRate()
 # while mutex != True
 # try except wait
-start = time.time()
-try:
-  updatePortfolio(assetFactory, date_object, emailObj) # this should throw exceptions. Once it's passed we assume the data is safe
-  for user in serverState:
-    if user.getMessage() == "up":
-      logging.info(user.getUser() + " up")
-      emailObj.sendHigh(emailTo=user.getUser(), user=MongoPortfolio.MongoGetUserName(user.getUser()))
-    if user.getMessage() == "down":
-      logging.info(user.getUser() + " down")
-      emailObj.sendLow(emailTo=user.getUser(), user=MongoPortfolio.MongoGetUserName(user.getUser()))
-    MongoPortfolio.MongoPersistDocument(user.getMongoData(), user.getUser())
-  system_status.status_success()
-except Exception as e:
-  system_status.status_failure()
-  logging.error("something crashed - rolling back because of + " +str(e))
-  os.system("/usr/bin/mongorestore --drop --dir=`date --date=\"yesterday\"  '+/home/ubuntu/portfolioTracker/db_backup/%-e/portfolioTracker/portfolios.bson'` -d portfolioTracker -c portfolios")
-end = time.time()
-logging.info("Elapsed time for portfolioTracker is " + str(round((end-start),4)) + " seconds")
-f = open('/home/ubuntu/portfoliotracker','a')
-f.write(str(round((end-start),4)) + "\n")
-f.close()
+retries = 3 * 12
+retry = 0
+while system_status.get_mutex() == False:
+  start = time.time()
+  try:
+    updatePortfolio(assetFactory, date_object, emailObj) # this should throw exceptions. Once it's passed we assume the data is safe
+    for user in serverState:
+      if user.getMessage() == "up":
+        logging.info(user.getUser() + " up")
+        emailObj.sendHigh(emailTo=user.getUser(), user=MongoPortfolio.MongoGetUserName(user.getUser()))
+      if user.getMessage() == "down":
+        logging.info(user.getUser() + " down")
+        emailObj.sendLow(emailTo=user.getUser(), user=MongoPortfolio.MongoGetUserName(user.getUser()))
+      MongoPortfolio.MongoPersistDocument(user.getMongoData(), user.getUser())
+    system_status.status_success()
+    end = time.time()
+    logging.info("Elapsed time for portfolioTracker is " + str(round((end-start),4)) + " seconds")
+    f = open('/home/ubuntu/portfoliotracker','a')
+    f.write(str(round((end-start),4)) + "\n")
+    f.close()
+    break
+  except Exception as e:
+    system_status.status_failure()
+    logging.error("something crashed-" +str(e))
+    retry += 1
+    logging.error("Retry " + str(retry))
+    if retry > retries:
+      logging.error("ERROR: unable to recover")
+      break
+    time.sleep(60*20)

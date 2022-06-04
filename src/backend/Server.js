@@ -24,6 +24,8 @@ const newsRouter = require('./routes/News');
 app.use('/api/news', newsRouter);
 const orderRouter = require('./routes/Orders');
 app.use('/api/order', orderRouter);
+const tickerRouter = require('./routes/Tickers');
+app.use('/api/ticker', tickerRouter);
 app.listen(port, () => {
   console.log(`server running on port ${port}`);
 });

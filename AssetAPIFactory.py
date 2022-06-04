@@ -1,38 +1,29 @@
 import requests
 from yahoofinancials import YahooFinancials
-
+import MongoPortfolio
 class AssetAPIFactory:
     cachedPrices = {}
-    def __init__(self, logging):
-        self.logging = logging
-
+    def __init__(self):
+        pass
     def getPriceUSD(self, ticker):
+        asset = MongoPortfolio.MongoGetTicker(ticker)
         if ticker in self.cachedPrices:
-            self.logging.debug("using cache for " + ticker)
             return self.cachedPrices[ticker]
-
-        elif ticker == "AAPL" or ticker == "VUG" or ticker == "GME" or ticker == "VOO" or ticker == "BRK-B":
-            yahoo_financials = YahooFinancials(ticker)
-            self.cachedPrices[ticker] = YahooFinancials([ticker]).get_current_price()[ticker]
-            return self.cachedPrices[ticker]
-        elif ticker == "VAS":
-             self.cachedPrices[ticker] = YahooFinancials([ticker+ ".AX"]).get_current_price()[ticker+ ".AX"]
-             return self.cachedPrices[ticker]
-        elif ticker == "VIX":
-            self.cachedPrices[ticker] = YahooFinancials(['^VIX']).get_current_price()['^VIX']
-            return self.cachedPrices[ticker]
-        elif ticker == "BTC" or  ticker == "ETH":
-            TICKER_API_URL = 'https://www.bitstamp.net/api/v2/ticker/' + ticker.lower() + "usd/"
-            response = requests.get(TICKER_API_URL)
-            response_json = response.json()
-            self.cachedPrices[ticker] = float(response_json['last'])
-            return self.cachedPrices[ticker]
-
-    def USCurrency(self, ticker):
-        if ticker in ["VAS"]:
-            return False
         else:
+            if asset['service'] == "yahoo":
+                self.cachedPrices[ticker] = YahooFinancials([asset['mappedTicker']]).get_current_price()[asset['mappedTicker']]
+                return self.cachedPrices[ticker]
+            elif asset['service'] == "bitstamp":
+                response = requests.get('https://www.bitstamp.net/api/v2/ticker/' + asset['mappedTicker'])
+                response_json = response.json()
+                self.cachedPrices[ticker] = float(response_json['last'])
+                return self.cachedPrices[ticker]
+    def USCurrency(self, ticker):
+        asset = MongoPortfolio.MongoGetTicker(ticker)
+        if asset['usCurrency'] == "true":
             return True
+        else:
+            return False
 
     def getExchangeRate(self):
         if not hasattr(self, 'exchangeRate'):

@@ -8,7 +8,6 @@ const secret = 'passwordKey';
 
 router.route('/login').post((req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
     User.findOne({ email }, function(err, user) {
       if (err) {
         console.error(err);
