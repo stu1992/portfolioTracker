@@ -37,9 +37,27 @@ const OrderForm = ({email}) => {
   const [priceError, setPriceError] = React.useState(false);
   const [disableButton, setDisableButton] = React.useState(true);
   const [isLoading, setLoading] = React.useState(true);
+  const [assets, setAssets] = React.useState('');
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTicker(event.target.value);
   };
+
+
+const getPortfolio = () => {
+API({
+    url: '/portfolio'
+  })
+  .then(response => {
+    if (response.statusText === "OK"){
+    let values = "<h5>Your current Assets</h5><p>";
+    let dict = response.data['portfolio'];
+    for(var key in dict){
+      values+= key + " : " + dict[key] + "<br>";
+    }
+    values+= "</p>";
+    setAssets(values);
+    }
+  });}
 React.useEffect(() => {
   if(isLoading === false)
 	return;
@@ -58,6 +76,7 @@ React.useEffect(() => {
     options = "[" + options.slice(0, -1)+ "]";
     console.log("received tickers");
     setTickersState(JSON.parse(options));
+    getPortfolio();
     setLoading(false);
     }
   }).catch(response =>{
@@ -185,6 +204,7 @@ else{
     <div className="container-xs">
         <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">Order Form</h1>
           This is an asyncronous service. Your order will be queued.
+	  <div dangerouslySetInnerHTML={{ __html: assets }}></div>
     <Box
       component="form"
       sx={{
