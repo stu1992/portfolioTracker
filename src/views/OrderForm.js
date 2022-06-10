@@ -83,6 +83,30 @@ React.useEffect(() => {
   });
   });
 
+const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  console.log(event.target.value);
+  if(event.target.value === ""){
+    return;
+  }
+  API({
+    url: '/ticker/suggest/' +event.target.value
+  })
+  .then(response => {
+    if (response.statusText === "OK"){
+    var options = "";
+
+    for(const ticker of response.data){
+        if(ticker['internalTicker'] === "VIX")
+            continue;
+        options += '{"value": "' + ticker['internalTicker'] + '" ,"label" : "' + ticker['internalTicker'] + '"},';
+    }
+    options = "[" + options.slice(0, -1)+ "]";
+    console.log(JSON.parse(options));
+    setTickersState(JSON.parse(options));
+    setLoading(false);
+    }
+  })
+};
 
   const handleOrderType = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOrderType(event.target.value);
@@ -215,6 +239,12 @@ else{
     >
       <div>
         <TextField
+        id="standard-basic"
+        label="Search Ticker"
+        variant="standard"
+        onChange={handleSearch}
+      />
+        <TextField
           id="outlined-select-currency-native"
           select
           label="Asset"
@@ -232,6 +262,7 @@ else{
         </TextField>
         <div>
           </div>
+	  <div>
         <TextField
           id="outlined-select-currency-native"
           select
@@ -248,24 +279,9 @@ else{
             </option> 
 	  ))}
         </TextField>
-	  <InputLabel htmlFor="outlined-adornment-amount">Total price for all shares</InputLabel>
-        <OutlinedInput
-          id="outlined-adornment-amount"
-	  label="Total price for all shares"
-          value={price}
-          onChange={handlePrice}
-          startAdornment={<InputAdornment position="start">$</InputAdornment>}
-        />
-	<InputLabel htmlFor="outlined-adornment-amount">
-          Number of Shares
-        </InputLabel>
-        <OutlinedInput
-          id="outlined-adornment-amount"
-	  label="Number of Shares"
-          value={number}
-          onChange={handleNumber}
-          startAdornment={<InputAdornment position="start"></InputAdornment>}
-        />
+	  </div>
+	  <TextField id="outlined-basic" label="Total price of all shares $AUD" variant="outlined" value={price} onChange={handlePrice} />
+	  <TextField id="outlined-basic" label="Number of shares" variant="outlined" value={number} onChange={handleNumber} />
       </div>
       <div></div>
       <Button disabled={disableButton}
