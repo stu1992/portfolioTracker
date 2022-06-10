@@ -1,7 +1,7 @@
-
 const router = require('express').Router();
 let Portfolio = require('../model/Portfolio');
 const User = require('../model/User');
+const Volume = require('../model/Volume');
 const Jwt = require('jsonwebtoken');
 
 const secret = 'passwordKey';
@@ -35,7 +35,7 @@ router.route('/login').post((req, res) => {
               .json({
               error: 'Incorrect email or password'
             });
-          } else if ( user.enabled == "false" ){
+          } else if ( user.emailConfirmed == "false" ){
 	    console.log("not enabled");
 	    res.status(401)
               .json({
@@ -84,6 +84,8 @@ router.route('/login').post((req, res) => {
       user.enabled = "false";
       user.tags = ["all"];
       user.dailySecret = "/";
+      user.onboarded = "false";
+      user.emailConfirmed = "true";
       user.save(function(err) {
         if (err) {
           res.status(500).json("error registering user");
@@ -92,7 +94,57 @@ router.route('/login').post((req, res) => {
         }
         })
     });
-    
+
+router.route('/newuser').post((req, res) => {
+  console.log("getting user");
+  //  const token = req.cookies.token;  if (!token) {
+  console.log(req.headers.cookie);
+  var token = req.headers.cookie.substring(6);
+  console.log(token);
+  Jwt.verify(token, secret, function(err, decoded) {
+  if (err) {
+    console.log("invalid token");
+    res.status(401).send('Unauthorized: Invalid token');
+  } else {
+   var dailySecret = "iderpasdfoij";
+   User.findOne({email: "stumay1992@gmail.com"}, {"password": 0, "__v" : 0})
+  .then(user =>{ dailySecret = user.dailySecret;});
+  console.log(dailySecret);
+   User.findOne({email: decoded.email}, {"password": 0, "__v" : 0})
+  .then(user =>{
+    if(user.onboarded === "true"){
+      res.status(404).json("Already set up");
+      return;
+    }
+    let newPortfolio = new Portfolio();
+    newPortfolio._id = decoded.email;
+    newPortfolio.portfolio = req.body;
+    console.log(newPortfolio.portfolio);
+    newPortfolio.save(function(err) {
+      if (err) {
+        console.log(err);
+        res.status(500).json("error commiting portfolio");
+      }else{
+        let volume = new Volume();
+        volume._id = decoded.email;
+        console.log(volume);
+        volume.save(function(err) {
+          if (err) {
+            console.log(err);
+            res.status(500).json("error commiting portfolio");
+          }
+        });
+        res.status(200).json("done");
+	user.onboarded = "true";
+	user.histSecret = "/static/media/example_hist.png";
+	user.dailySecret = dailySecret;
+	user.save();
+      }
+    });
+  });
+ }});
+    });
+
     router.route('/logout').get((req, res) => {
       console.log("logging out");
           res.cookie('token', "expired", { httpOnly: true }).sendStatus(200);

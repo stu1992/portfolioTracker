@@ -6,9 +6,6 @@ const portfolioSchema = new Schema({
       "type": "String"
     },
     "portfolio": {
-      "BTC": {
-        "type": "Number"
-      }
     },
     "seriesdataset": {
       "type": [

@@ -14,6 +14,7 @@ import Chart from './components/Chart';
 import Home from './views/Home';
 import Signup from './views/Signup';
 import OrderForm from './views/OrderForm';
+import New from './views/New';
 
 import logo from './logo.svg';
 import './App.css';
@@ -26,7 +27,11 @@ const App = () => {
   const [dailySecret, setDailySecret] = React.useState("secret_undef");
   const [histSecret, setHistSecret] = React.useState("hist_undef");
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [userOnboarded, setUserOnboarded] = useState(false);
 
+const onboard = () =>{
+  setUserOnboarded(true);
+}
   const login = (value) => {
     setUserLoggedIn(value);
     if (value){
@@ -39,7 +44,14 @@ const App = () => {
       setDailySecret(response.data['dailySecret']);
       setHistSecret(response.data['histSecret']);
       setEmail(response.data['email']);
-      navigate("/portfolio");
+      if(response.data['onboarded'] === "false")
+      {
+        navigate("/new");
+      }
+      else{
+	setUserOnboarded(true);
+        navigate("/portfolio");
+      }
     }
   });
   };
@@ -57,6 +69,9 @@ const App = () => {
       setHistSecret(response.data['histSecret']);
       setUserLoggedIn(true);
       setEmail(response.data['email']);
+      if(response.data['onboarded'] === "true"){
+        setUserOnboarded(true);
+      }
       //navigate("/portfolio");
     }
   }).catch(response =>{
@@ -68,12 +83,21 @@ const App = () => {
   });
 
 
-if(userLoggedIn){
+if(userLoggedIn && userOnboarded){
   return (
         <Routes>
-	      <Route exact path="/" element={<Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} loggedInCallBack={login} />}/>
+	      <Route exact path="/" element={<Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} onboarded={true} loggedInCallBack={login} />}/>
 	      <Route exact path="/portfolio" element={<Chart name={name} dailySecret={dailySecret} histSecret={histSecret}/>} />
 	      <Route exact path="/order" element={<OrderForm email={email} />} />
+        </Routes>
+  )
+}else if(userLoggedIn && !userOnboarded){
+  return (
+        <Routes>
+              <Route exact path="/" element={<Home setUserLoggedIn={setUserLoggedIn} loggedIn={true} onboarded={false} loggedInCallBack={login} />}/>
+              <Route exact path="/portfolio" element={<Chart name={name} dailySecret={dailySecret} histSecret={histSecret}/>} />
+              <Route exact path="/order" element={<OrderForm email={email} />} />
+          <Route exact path="/new" element={<New onboarded={onboard} />} />
         </Routes>
   )
 }else{

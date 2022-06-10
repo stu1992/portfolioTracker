@@ -55,7 +55,7 @@ def MongoGetUserName(email):
 def MongoMarketScatter(data):
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    return db.volume.replace_one({'_id': 'all'}, data)
+    return db.volumes.replace_one({'_id': 'all'}, data)
     client.close()
 
 
@@ -74,18 +74,18 @@ def MongoGetTickers():
 def MongoGetScatter(email):
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    return db.volume.find_one({'_id': email})
+    return db.volumes.find_one({'_id': email})
     client.close()
 
 def MongoPersistScatter(data, user):
     key = {'_id': user}
     client = MongoClient("localhost")
     db = client.portfolioTracker
-    if db.volume.find_one({'_id': user}) == None:
-        db.volume.insert_one(data)
+    if db.volumes.find_one({'_id': user}) == None:
+        db.volumes.insert_one(data)
     else:
-        result=db.volume.replace_one(key, data)
-    confirmEntry = db.volume.find_one(key)
+        result=db.volumes.replace_one(key, data)
+    confirmEntry = db.volumes.find_one(key)
     client.close()
 
 def MongoPersistDocument(data, user = 'Stu'):

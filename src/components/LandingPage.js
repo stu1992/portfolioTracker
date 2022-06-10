@@ -2,7 +2,7 @@ import React, { useRef, useEffect, Component } from 'react'
 const LandingPage = ({dailySecret, histSecret}) => {
 
   const [secret, setSecret] = React.useState(dailySecret);
-  const [currentScope, setCurrentScope] = React.useState(1);
+  const [currentScope, setCurrentScope] = React.useState(2);
 
   const scope = ["0", "12", "6", "3"];
   function changeScope(){
