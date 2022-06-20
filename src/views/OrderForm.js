@@ -3,9 +3,6 @@ import  API from '../Api';
 import Header from '../components/layout/HeaderLoggedIn';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
 import Button from '@mui/material/Button';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 const darkTheme = createTheme({
@@ -291,11 +288,19 @@ else{
       >
         Submit Order
       </Button>
+      <Button
+        onClick={
+        () => window.location = 'mailto:makingmymatesrich@gmail.com?subject=help with my order'}
+
+      >
+        Ask for help
+      </Button>
     </Box>
        <div className="success">{successMessage()}</div>
       <div className="error">{errorMessage()}</div>
     </div>
   </div>
+<div style={{ paddingTop: '100px' ,paddingRight: '100px' }}></div>
 </main>
 	  </ThemeProvider>
 </>

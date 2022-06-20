@@ -17,7 +17,6 @@ This is an automated message to let you know that you accout value has gone up b
 You can log into the account at https://makingmymatesrich.com and check how things are going.
 If you're getting spammed, maybe stop investing in speculative assets like a dumbass or hit me up and I'll change the algorythm.
 
-This email account isn't being actively monitored but you know how to find me.
 Kindest of regards,
 Stu
         '''.format(user)
@@ -31,7 +30,6 @@ This is an automated message to let you know that you accout value has gone down
 You can log into the account at https://makingmymatesrich.com and check how things are going.
 If you're getting spammed, maybe stop investing in speculative assets like a dumbass or hit me up and I'll change the algorythm.
 
-This email account isn't being actively monitored but you know how to find me.
 Kindest of regards,
 Stu
             '''.format(user)
@@ -43,7 +41,6 @@ Stu
 
 This is an automated message to advise you that your order to {} {} units of {} for AUD${} has been executed on https://makingmymatesrich.com
 
-This email account isn't being actively monitored but you know how to find me.
 Kindest of regards,
 Stu
         '''.format( user, order,  str(volume), str(ticker), str(price))
@@ -55,7 +52,6 @@ Stu
         self.mail_content = '''Hi Stu!
 
 {}
-This email account isn't being actively monitored but you know how to find me.
 Kindest of regards,
 Stu
         '''.format(title)

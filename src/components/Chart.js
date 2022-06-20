@@ -160,7 +160,15 @@ categories: dates,
         }
     }
 }
-
+function Mailto({ email, subject, body, ...props }) {
+  return (
+    <div style={{ paddingTop: '100px', fontSize: '35px', textAlign: "center"}}>
+	  <a href={`mailto:${email}?subject=${subject || ""}&body=${body || ""}`}>
+      {props.children}
+    </a>
+	  </div>
+  );
+}
 return (
 	<>
 	<Header navPosition="right" className="reveal-from-bottom" />
@@ -171,8 +179,10 @@ return (
     highcharts={Highcharts}
     options={options}
   />
-
 <LandingPage dailySecret={dailySecret} histSecret={histSecret}/>
+  <Mailto email="makingmymatesrich@gmail.com" subject="portfolio query" body="">
+    Ask for help :)
+  </Mailto>
 <Testimonial topDivider NewsList={news} loggedIn={true}/>
 </div>
 </main>

@@ -118,7 +118,8 @@ router.route('/newuser').post((req, res) => {
     }
     let newPortfolio = new Portfolio();
     newPortfolio._id = decoded.email;
-    newPortfolio.portfolio = req.body;
+    newPortfolio.portfolio = req.body['portfolio'];
+    newPortfolio.seriesdataset = req.body['seriesdataset'];
     console.log(newPortfolio.portfolio);
     newPortfolio.save(function(err) {
       if (err) {

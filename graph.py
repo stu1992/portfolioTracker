@@ -137,6 +137,8 @@ def genGraph(public=True, months=1):
         ax.xaxis.grid(True, color='#404040')
 
     if public == False:
+        if months == 0:
+          ax.xaxis.set_major_formatter(plt.NullFormatter())
         secret_url = "/var/www/html/static/media/market" + str(months) + "_" + secret + ".png"
         plt.savefig(secret_url)
         MongoPortfolio.MongoUpdateSecret("/static/media/market6_" + secret + ".png")

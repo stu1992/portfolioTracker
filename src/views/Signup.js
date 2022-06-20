@@ -2,6 +2,11 @@ import { useState } from 'react';
 import classNames from 'classnames';
 import Input from '../components/elements/Input';
 import Header from '../components/layout/Header';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
 export default function Form() {
 
 // States for registration
@@ -13,6 +18,19 @@ const [password, setPassword] = useState('');
 const [submitted, setSubmitted] = useState(false);
 const [error, setError] = useState(false);
 
+function Mailto({ email, subject, body, ...props }) {
+  return (
+    <a href={`mailto:${email}?subject=${subject || ""}&body=${body || ""}`}>
+      {props.children}
+    </a>
+  );
+}
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 const register = async (event) =>
  {
@@ -113,6 +131,7 @@ const errorMessage = () => {
 
   return (
 	  <>
+          <ThemeProvider theme={darkTheme}>
 	      <Header navPosition="right" className="reveal-from-bottom" />
     <main className="site-content">
     <div style={{ paddingTop: '100px' }}>
@@ -122,9 +141,6 @@ const errorMessage = () => {
     Registration
     </h1>
     <div className="container-xs">
-    <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
-    It's free if you know me.
-    </p>
 	  
 
       {/* Calling to the methods */}
@@ -133,21 +149,29 @@ const errorMessage = () => {
         {successMessage()}
       </div>
  
-      <form>
-        {/* Labels and inputs for form data */}
-        <Input onChange={handleName} placeholder="User name" className="input"
-          value={name} type="text" />
- 
-        <Input onChange={handleEmail} placeholder="Email" className="input"
-          value={email} type="email" />
- 
-        <Input onChange={handlePassword} placeholder="Password" className="input"
-          value={password} type="password" />
- 
-        <Input onClick={handleSubmit} className="btn" type="submit" value="Register your interest"/>
-      </form>
+<Box
+      component="form"
+      sx={{
+        '& .MuiTextField-root': { m: 1, width: '25ch' },
+      }}
+      noValidate
+      autoComplete="off"
+    >
+<TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={handleName} />
+<TextField id="outlined-basic" label="Email" variant="outlined" value={email} onChange={handleEmail} />
+<TextField id="outlined-basic" label="Password" type="password" variant="outlined" value={password} onChange={handlePassword} />
+<br/>
+<Button
+onClick={handleSubmit}
+>
+Register Account
+</Button>
+<Button onClick={() => window.location = 'mailto:makingmymatesrich@gmail.com?subject=help with my sign up'}>
+Ask for help
+</Button>
+</Box>
 	      <div className="container-xs">
-    <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
+	<p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
     Get access to exclusive investment insights, compare your results and be motivated by others.
     </p>
 	  </div>
@@ -156,6 +180,7 @@ const errorMessage = () => {
 </div>
 	  </div>
 	  </main>
+</ThemeProvider>
 </>
   );
 }

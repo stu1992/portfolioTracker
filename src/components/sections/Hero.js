@@ -3,6 +3,10 @@ import classNames from 'classnames';
 import { SectionProps } from '../../utils/SectionProps';
 import Image from '../elements/Image';
 import Input from '../elements/Input';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import marketImg from './../../market.png';
 const propTypes = {
   ...SectionProps.types
@@ -11,6 +15,12 @@ const propTypes = {
 const defaultProps = {
   ...SectionProps.defaults
 }
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 const Hero = ({
   name,
@@ -112,24 +122,27 @@ const innerClasses = classNames(
                 </p>
               <div className="reveal-from-bottom" data-reveal-delay="600">
                 { !loggedIn &&
-                <form onSubmit={onSubmit}>
-                  <h2>Login Below</h2>
-                  <Input
-                    type="email"
-                    name="email"
-                    placeholder="Enter email"
-                    onChange={emailHandler}
-                    required
-                  />
-                <Input
-                    type="password"
-                    name="password"
-                    placeholder="Enter password"
-                    onChange={passwordHandler}
-                    required
-                  />
-                <Input type="submit" value="Submit"/>
-                </form>
+<ThemeProvider theme={darkTheme}>
+<Box
+      component="form"
+      sx={{
+        '& .MuiTextField-root': { m: 1, width: '25ch' },
+      }}
+      noValidate
+      autoComplete="off"
+>
+    
+<TextField id="outlined-basic" label="Email" variant="outlined" value={userEmail} onChange={emailHandler} />
+<TextField id="outlined-basic" label="Password" type="password" variant="outlined" value={userPassword} onChange={passwordHandler} />
+<br/>
+<Button
+onClick={onSubmit}
+>
+Log In
+</Button>
+
+</Box>
+</ThemeProvider>
               }
               </div>
             </div>
