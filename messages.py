@@ -145,10 +145,12 @@ def persistOrder(body):
     scatterData["date"].append(date)
     scatterData["volume"].append(price)
     scatterData["order"].append(action)
+    scatterData["ticker"].append(assetChoice)
     logging.info(scatterData["endValue"][-1])
     logging.info(scatterData["date"][-1])
     logging.info(scatterData["volume"][-1])
     logging.info(scatterData["order"][-1])
+    logging.info(scatterData["ticker"][-1])
     try:
         MongoPortfolio.MongoPersistDocument(user, email)
         MongoPortfolio.MongoPersistScatter(scatterData, email)

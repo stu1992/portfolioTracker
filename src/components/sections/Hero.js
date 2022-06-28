@@ -56,7 +56,7 @@ const Hero = ({
    });
   }
 
-  const onSubmit = (event) => {
+  const Submit = (event) => {
   event.preventDefault();
   fetch('/api/user/login', {
     method: 'POST',
@@ -125,22 +125,21 @@ const innerClasses = classNames(
 <ThemeProvider theme={darkTheme}>
 <Box
       component="form"
+      onSubmit={Submit}
       sx={{
         '& .MuiTextField-root': { m: 1, width: '25ch' },
       }}
       noValidate
-      autoComplete="off"
+      autoComplete="on"
 >
-    
 <TextField id="outlined-basic" label="Email" variant="outlined" value={userEmail} onChange={emailHandler} />
 <TextField id="outlined-basic" label="Password" type="password" variant="outlined" value={userPassword} onChange={passwordHandler} />
 <br/>
-<Button
-onClick={onSubmit}
+<Button type="submit"
+onClick={Submit}
 >
 Log In
 </Button>
-
 </Box>
 </ThemeProvider>
               }

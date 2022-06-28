@@ -9,6 +9,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 export default function Form() {
 
+const [disableButton, setDisableButton] = useState(false);
 // States for registration
 const [name, setName] = useState('');
 const [email, setEmail] = useState('');
@@ -53,6 +54,7 @@ const register = async (event) =>
     .then(res => {
 	    if(res.status === 200) {
 	    setSubmitted(true);
+	    setDisableButton(true);
 	    }else{
 	    setSubmitted(false);
 	    setError("Registration error");
@@ -111,7 +113,7 @@ const handleSubmit = (e) => {
         style={{
           display: submitted ? '' : 'none',
         }}>
-        <p>Thanks, {name}. Hit me up to activate your account.</p>
+        <p>Thanks, {name}. You will recieve an email shortly to activate your account.</p>
       </div>
     );
   };
@@ -162,6 +164,7 @@ const errorMessage = () => {
 <TextField id="outlined-basic" label="Password" type="password" variant="outlined" value={password} onChange={handlePassword} />
 <br/>
 <Button
+disabled={disableButton}
 onClick={handleSubmit}
 >
 Register Account

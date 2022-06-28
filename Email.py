@@ -46,6 +46,24 @@ Stu
         '''.format( user, order,  str(volume), str(ticker), str(price))
         self.send()
 
+    def sendEmailConfirmation(self, emailTo, user, secret):
+        self.receiver_address = emailTo
+        self.subject = "Confirm your email"
+        self.mail_content = '''Hi {}!
+Welcome to the start of your exciting investment journey!
+follow the link to confirm your email and get started
+https://makingmymatesrich.com/api/user/confirm/{}
+        '''.format( user, secret)
+        self.send()
+
+    def sendNewUser(self, emailTo, user):
+        self.receiver_address = emailTo
+        self.subject = "New user at making my mates rich!"
+        self.mail_content = '''Hi Stu!
+Heads up, a new user account, {}, has been created. Whoop whoop!
+        '''.format( user)
+        self.send()
+
     def sendNews(self, title):
         self.receiver_address = "stumay1992@gmail.com"
         self.subject = "news updated"

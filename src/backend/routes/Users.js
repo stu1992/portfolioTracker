@@ -3,6 +3,7 @@ let Portfolio = require('../model/Portfolio');
 const User = require('../model/User');
 const Volume = require('../model/Volume');
 const Jwt = require('jsonwebtoken');
+var crypto = require("crypto");
 
 const secret = 'passwordKey';
 
@@ -85,7 +86,8 @@ router.route('/login').post((req, res) => {
       user.tags = ["all"];
       user.dailySecret = "/";
       user.onboarded = "false";
-      user.emailConfirmed = "true";
+      user.emailSent = "false";
+      user.emailConfirmed =  crypto.randomBytes(40).toString('hex');
       user.save(function(err) {
         if (err) {
           res.status(500).json("error registering user");
@@ -94,6 +96,25 @@ router.route('/login').post((req, res) => {
         }
         })
     });
+
+router.route('/confirm/:query').get((req, res) => {
+  var query = req.params['query'];
+
+      User.findOne({"emailConfirmed" : query}, function(err, user) {
+       if (!user) {
+        console.log("no user");
+        res.status(404)
+          .json({
+          error: 'nope'
+        });
+      } else {
+	user.emailConfirmed = "true";
+	user.save();
+        res.status(200).send('<h1>Email confirmed</h1>You can now <a href="https://makingmymatesrich.com">Log In to makingmymatesrich.com</a>');
+      }
+      });
+      });
+
 
 router.route('/newuser').post((req, res) => {
   console.log("getting user");

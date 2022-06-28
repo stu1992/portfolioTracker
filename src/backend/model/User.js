@@ -12,7 +12,8 @@ const bcrypt = require('bcrypt');const saltRounds = 10;const UserSchema = new mo
   dailySecret: { type: String, required: false },
   histSecret: { type: String, required: false },
   onboarded: {type: String},
-  emailConfirmed: {type: String}
+  emailConfirmed: {type: String},
+  emailSent: {type: String}
 });UserSchema.pre('save', function(next) {
   // Check if document is new or a new password has been set
   if (this.isNew || this.isModified('password')) {

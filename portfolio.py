@@ -133,14 +133,14 @@ def updatePortfolio(assetAdapter, dateAdapter, emailAdapter):
         avg2 = int((sum(b) / len(b)))
         avg1 = int((sum(a) / len(a)))
         logging.info("vix last 6 months: "+str(avg1)+ " " + str(avg2) + " " + str(avg3) + " " + str(avg4) + " " + str(avg5) + " " + str(avg6))
-        h6 = avg6 > 14
-        h5 = avg5 > 14
-        h4 = avg4 > 14
-        h3 = avg3 > 14
-        h2 = avg2 > 14
-        h1 =  avg1 > 14
+        h6 = avg6 > 15
+        h5 = avg5 > 15
+        h4 = avg4 > 15
+        h3 = avg3 > 15
+        h2 = avg2 > 15
+        h1 =  avg1 > 15
 
-        step = 14
+        step = 15
         logging.info("monthly vix average is " + str(avg1))
         if h1:
             step += 2
