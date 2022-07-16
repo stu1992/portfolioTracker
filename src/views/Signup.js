@@ -46,7 +46,7 @@ const register = async (event) =>
     },
     body: JSON.stringify({
        'name' : name,
-       'email' : email,
+       'email' : email.toLowerCase(),
        'password' : password,
     })
   }

@@ -83,7 +83,7 @@ const Hero = ({
 
 const emailHandler = (event) =>{
 	 event.preventDefault();
-   setEmail(event.target.value);
+   setEmail(event.target.value.toLowerCase());
  }
 
 const passwordHandler = (event) =>{

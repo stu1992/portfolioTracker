@@ -171,7 +171,7 @@ while system_status.get_mutex() == False:
 start = time.time()
 
 # generate both logged in and guest graph
-secret = ''.join(random.choice(string.ascii_letters) for i in range(12))
+secret = ''.join(random.choice(string.ascii_letters) for i in range(20))
 genGraph(True,6)
 genGraph(False,3)
 genGraph(False,6)

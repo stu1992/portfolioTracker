@@ -1,9 +1,11 @@
 const router = require('express').Router();
 let Portfolio = require('../model/Portfolio');
+let Command = require('../model/Command');
 const User = require('../model/User');
 const Volume = require('../model/Volume');
 const Jwt = require('jsonwebtoken');
 var crypto = require("crypto");
+var amqp = require('amqplib/callback_api');
 
 const secret = 'passwordKey';
 
@@ -79,10 +81,9 @@ router.route('/login').post((req, res) => {
 
     router.route('/register').post((req, res) => {
       const { email, password, name} = req.body;
-      console.log(req.body)
       const user = new User(req.body);
       //adding default variables
-      user.enabled = "false";
+      user.enabled = crypto.randomBytes(40).toString('hex');
       user.tags = ["all"];
       user.dailySecret = "/";
       user.onboarded = "false";
@@ -93,9 +94,29 @@ router.route('/login').post((req, res) => {
           res.status(500).json("error registering user");
         }else{
           res.status(200).json("done");
-        }
-        })
+amqp.connect('amqp://messenger:MessengerPassword@localhost:5672', function(error0, connection) {
+  if (error0) {
+    throw error0;
+  }
+  connection.createChannel(function(error1, channel) {
+    if (error1) {
+      throw error1;
+    }
+    var queue = 'onboarding';
+    var msg = '{ "command" : "confirm_email", "email" : "'+email+'", "secret" : "'+user.emailConfirmed+'", "user" : "'+name+'"}';
+
+    //channel.assertQueue(queue, {
+    //  durable: true
+    //});
+
+    channel.sendToQueue(queue, Buffer.from(msg));
+    console.log(" [x] Sent %s", msg);
+  });
+});
+
+      }
     });
+});
 
 router.route('/confirm/:query').get((req, res) => {
   var query = req.params['query'];
@@ -111,6 +132,24 @@ router.route('/confirm/:query').get((req, res) => {
 	user.emailConfirmed = "true";
 	user.save();
         res.status(200).send('<h1>Email confirmed</h1>You can now <a href="https://makingmymatesrich.com">Log In to makingmymatesrich.com</a>');
+      }
+      });
+      });
+
+router.route('/confirmadmin/:query').get((req, res) => {
+  var query = req.params['query'];
+
+      User.findOne({"enabled" : query}, function(err, user) {
+       if (!user) {
+        console.log("no user");
+        res.status(404)
+          .json({
+          error: 'nope'
+        });
+      } else {
+        user.enabled = "true";
+        user.save();
+        res.status(200).send('<h1>User Enabled</h1>');
       }
       });
       });
@@ -161,6 +200,25 @@ router.route('/newuser').post((req, res) => {
 	user.histSecret = "/static/media/example_hist.png";
 	user.dailySecret = dailySecret;
 	user.save();
+amqp.connect('amqp://messenger:MessengerPassword@localhost:5672', function(error0, connection) {
+  if (error0) {
+    throw error0;
+  }
+  connection.createChannel(function(error1, channel) {
+    if (error1) {
+      throw error1;
+    }
+    var queue = 'onboarding';
+    var msg = '{ "command" : "confirm_onboarded", "portfolio" : '+JSON.stringify(newPortfolio)+', "volume" : '+JSON.stringify(volume)+', "enabled" : "'+ user.enabled+'" }';
+
+    //channel.assertQueue(queue, {
+    //  durable: false
+    //});
+
+    channel.sendToQueue(queue, Buffer.from(msg));
+    console.log(" [x] Sent %s", msg);
+  });
+});
       }
     });
   });

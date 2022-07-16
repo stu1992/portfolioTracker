@@ -224,7 +224,6 @@ else{
   <div style={{ paddingTop: '100px' ,paddingRight: '100px' }}>
     <div className="container-xs">
         <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">Order Form</h1>
-          This is an asyncronous service. Your order will be queued.
 	  <div dangerouslySetInnerHTML={{ __html: assets }}></div>
     <Box
       component="form"

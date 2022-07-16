@@ -36,7 +36,7 @@ start = time.time()
 for user in MongoPortfolio.MongoGetUsers():
   secret = ''.join(random.choice(string.ascii_letters) for i in range(36))
   fig, ax = plt.subplots()
-  fig.set_size_inches(12,4.7)
+  fig.set_size_inches(12,5)
   fig.set_dpi(140)
   fmt = '%+.1f%%' # Format you want the ticks, e.g. '40%'
   xticks = mtick.FormatStrFormatter(fmt)
@@ -59,7 +59,8 @@ for user in MongoPortfolio.MongoGetUsers():
   ax.spines['top'].set_color('#9ca9b3')
 
   ax.yaxis.label.set_color("#9ca9b3")
-  for email in MongoPortfolio.MongoGetUsers():
+  users = MongoPortfolio.MongoGetUsers()
+  for email in users:
     portfolio = MongoPortfolio.MongoGetDocument(email)
 
     data = portfolio['seriesdataset']
@@ -71,6 +72,7 @@ for user in MongoPortfolio.MongoGetUsers():
       values.append(price)
     if len(values) < 60:
       if user == email:
+        logging.debug(email + " not sampled (" + str(len(values)) + ")")
         plt.text(0,30,'Coming Soon',size=35,
         bbox={'facecolor':'white','alpha':0.8,'edgecolor':'none','pad':1},
         ha='center', va='center') 
@@ -98,11 +100,11 @@ for user in MongoPortfolio.MongoGetUsers():
       change = ((userGrossValue - userPreviousGrossValue) / userPreviousGrossValue) * 100
       changes.append(round(change,6))
     if email == user:
-      logging.debug(email + "turning green")
+      logging.debug(email + " histogram rendering")
       plt.hist(changes, 60, range=(-3,3), facecolor='green', alpha=0.9, label='You' )
       plt.axvline(sum(changes) / len(changes), color='#cccccc', linestyle='dashed', linewidth=1.5)
     else:
-      plt.hist(changes, 60, range=(-3,3), facecolor='red', alpha=0.2)
+      plt.hist(changes, 60, range=(-3,3), facecolor='red', alpha=1/len(users))
       plt.axvline(sum(changes) / len(changes), color='#cccccc', linestyle='dashed', linewidth=0.6, alpha=0.8)
   portfolio = MongoPortfolio.MongoGetDocument('Market')
   dataset = portfolio['seriesdataset']

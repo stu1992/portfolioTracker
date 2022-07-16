@@ -7,7 +7,7 @@ import logging
 import logging.handlers
 from Email import Mail
 import MongoPortfolio
-
+import time
 handler = logging.handlers.WatchedFileHandler(
     os.environ.get("LOGFILE", "./log"))
 formatter = logging.Formatter(logging.BASIC_FORMAT)
@@ -18,9 +18,6 @@ logging.getLogger('pika').setLevel(logging.ERROR)
 root.addHandler(handler)
 emailObj = Mail(logging)
 
-credentials = pika.PlainCredentials('messenger', 'messengerPassword')
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost', port=5672, virtual_host='/', credentials=credentials ))
-channel = connection.channel()
 
 known_tickers = MongoPortfolio.MongoGetTickers() 
 def sanitizeNews(body):
@@ -159,38 +156,92 @@ def persistOrder(body):
         raise Exception("unable to persist order " + str(e))
 
 
-newsQueuePending = True
-while newsQueuePending:
-    method_frame, header_frame, body = channel.basic_get(queue = 'news')
-    if method_frame is None:
-        newsQueuePending = False
-        break
-    else:
-        logging.info("we have news")
-        try:
-            sanitizeNews(body)
-            persistNews(body)
-            logging.info("done")
-            channel.basic_ack(delivery_tag=method_frame.delivery_tag)
-        except Exception as e:
-            print("failed to handle message " + str(e))
-            channel.basic_reject(delivery_tag=method_frame.delivery_tag, requeue=False)
+from pymongo import MongoClient
+from Email import Mail
+import time
 
-orderQueuePending = True
-while orderQueuePending:
-    method_frame, header_frame, body = channel.basic_get(queue = 'order')
-    if method_frame is None:
-        orderQueuePending = False
-        break
-    else:
-        logging.info("we have orders")
-        try:
-            sanitizeOrder(body)
-            persistOrder(body)
-            logging.info("done")
-            channel.basic_ack(delivery_tag=method_frame.delivery_tag)
-        except Exception as e:
-            print("failed to handle message " + str(e))
-            channel.basic_reject(delivery_tag=method_frame.delivery_tag, requeue=False)
+handler = logging.handlers.WatchedFileHandler(
+    os.environ.get("LOGFILE", "/home/ubuntu/log"))
+formatter = logging.Formatter(logging.BASIC_FORMAT)
+handler.setFormatter(formatter)
+root = logging.getLogger()
+root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
+root.addHandler(handler)
+
+def handleEnableAccount(payload):
+  portfolio = payload['portfolio']
+  print(portfolio)
+  volume = payload['volume']
+  print(volume)
+  enabled = payload['enabled']
+  emailObj = Mail(logging)
+  emailObj.sendOnboarded(portfolio, volume, enabled)
+
+def handleEmailConfirmation(payload):
+  print(payload)
+  email = payload['email']
+  secret = str(payload['secret'])
+  user = str(payload['user'])
+  emailObj = Mail(logging)
+  emailObj.sendEmailConfirmation(email, user, secret)
+  emailObj.sendNewUser("stumay1992@gmail.com", email)
+
+# Access the CLODUAMQP_URL environment variable and parse it (fallback to localhost)
+url = os.environ.get('localhost', 'amqp://messenger:messengerPassword@localhost:5672/%2f')
+params = pika.URLParameters(url)
+connection = pika.BlockingConnection(params)
+channel = connection.channel() # start a channel
 
 
+# create a function which is called on incoming messages
+def ordercallback(ch, method, properties, body):
+  logging.info("we have orders")
+  try:
+    sanitizeOrder(body)
+    persistOrder(body)
+    logging.info("done")
+    channel.basic_ack(delivery_tag=method.delivery_tag)
+  except Exception as e:
+    print("failed to handle message " + str(e))
+    channel.basic_reject(delivery_tag=method.delivery_tag, requeue=False)
+
+def onboardingcallback(ch, method, properties, body):
+  logging.info("we have a new user action")
+  try:
+    print(body)
+    body = json.loads(body)
+    if body['command'] == "confirm_email":
+      handleEmailConfirmation(body)
+      logging.info("done")
+      channel.basic_ack(delivery_tag=method.delivery_tag)
+    if body['command'] == "confirm_onboarded":
+      handleEnableAccount(body)
+      logging.info("done")
+      channel.basic_ack(delivery_tag=method.delivery_tag)
+  except Exception as e:
+    print("failed to handle message " + str(e))
+    channel.basic_reject(delivery_tag=method.delivery_tag, requeue=False)
+def newscallback(ch, method, properties, body):
+  logging.info("we have news")
+  try:
+    sanitizeNews(body)
+    persistNews(body)
+    logging.info("done")
+    channel.basic_ack(delivery_tag=methode.delivery_tag)
+  except Exception as e:
+    print("failed to handle message " + str(e))
+    channel.basic_reject(delivery_tag=method.delivery_tag, requeue=False)
+
+# set up subscription on the queue
+channel.basic_consume('order',
+  ordercallback,
+  auto_ack=False)
+channel.basic_consume('onboarding',
+  onboardingcallback,
+  auto_ack=False)
+channel.basic_consume('news',
+  newscallback,
+  auto_ack=False)
+# start consuming (blocks)
+channel.start_consuming()
+connection.close()

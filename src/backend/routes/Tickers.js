@@ -32,7 +32,18 @@ router.route('/').get((req, res) => {
       res.status(401).send('Unauthorized: Invalid token');
     } else {
       tickers.distinct("internalTicker")
-      .then(tickers => res.json(tickers))
+      .then(tickers => res.json([
+    "AAPL",
+    "AMZN",
+    "BRK-B",
+    "BTC",
+    "ETH",
+    "GOOGL",
+    "MSFT",
+    "VAS",
+    "VOO",
+    "VUG",
+]))
     }
   });
 });
