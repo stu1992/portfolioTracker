@@ -15,6 +15,8 @@ import logging.handlers
 import time
 import os
 import SystemStatus
+from PIL import Image
+
 class Asset:
     def __init__(self, jsonObj):
         self.Name = jsonObj['name']
@@ -93,8 +95,8 @@ def genGraph(public=True, months=1):
 
 
     fig, ax = plt.subplots()
-    fig.set_size_inches(10,6,550)
-    fig.set_dpi(200)
+    fig.set_size_inches(11,6)
+    fig.set_dpi(300)
     fig.patch.set_facecolor('#25282c')
     #ax.set_facecolor('#eceded')
     ax.set_facecolor('#151719')
@@ -141,6 +143,10 @@ def genGraph(public=True, months=1):
           ax.xaxis.set_major_formatter(plt.NullFormatter())
         secret_url = "/var/www/html/static/media/market" + str(months) + "_" + secret + ".png"
         plt.savefig(secret_url)
+        im = Image.open(secret_url)
+        width, height = im.size
+        im1 = im.crop((280, 80, width-80, height-200))
+        im1.save(secret_url)
         MongoPortfolio.MongoUpdateSecret("/static/media/market6_" + secret + ".png")
     if public == True:
         ax.yaxis.set_major_locator(plt.NullLocator())
@@ -148,6 +154,10 @@ def genGraph(public=True, months=1):
         ax.xaxis.set_minor_locator(plt.NullLocator())
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
         plt.savefig("/var/www/html/static/media/market.74a21c94f6be0a4c31ad.png")
+        im = Image.open("/var/www/html/static/media/market.74a21c94f6be0a4c31ad.png")
+        width, height = im.size
+        im1 = im.crop((280, 80, width-200, height-250))
+        im1.save("/var/www/html/static/media/market.74a21c94f6be0a4c31ad.png")
 
 handler = logging.handlers.WatchedFileHandler(
     os.environ.get("LOGFILE", "/home/ubuntu/log"))
@@ -156,6 +166,7 @@ handler.setFormatter(formatter)
 root = logging.getLogger()
 root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
+logging.getLogger('PIL').setLevel(logging.ERROR)
 root.addHandler(handler)
 
 system_status = SystemStatus.SystemStatus()

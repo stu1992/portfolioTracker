@@ -70,6 +70,9 @@ useEffect(() =>{
 }, [])
 
 const options = {
+  credits: {
+        enabled: false
+    },
   series: stocks,
   chart: {
     type: 'area',

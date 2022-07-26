@@ -76,12 +76,12 @@ Stu</p></body></html>
         self.mail_content = '''Hi {}!
 Welcome to the start of your exciting investment journey!
 follow the link to confirm your email and get started
-http://makingmymatesrich.com/api/user/confirm/{}
+https//makingmymatesrich.com/api/user/confirm/{}
         '''.format( user, secret)
         self.mail_content_html = '''<html><head></head><body><p>Hi {}!<br>
 Welcome to the start of your exciting investment journey!<br>
 follow the link to confirm your email and get started<br>
-<a href="http://makingmymatesrich.com/api/user/confirm/{}">http://makingmymatesrich.com/api/user/confirm/{}</a></p></body></html>'''.format( user, secret, secret)
+<a href="https://makingmymatesrich.com/api/user/confirm/{}">https://makingmymatesrich.com/api/user/confirm/{}</a></p></body></html>'''.format( user, secret, secret)
         self.send()
 
     def sendNewUser(self, emailTo, user):
@@ -103,7 +103,7 @@ Heads up, A new user has been onboarded with these details {} {}. Whoop whoop!
         self.mail_content_html = '''<html><head></head><body><p>Hi Stu!<br>
 Heads up, A new user has been onboarded with these details <br>{}<br>{}<br>. Whoop whoop!<br>
 follow the link to enable the account<br>
-<a href="http://makingmymatesrich.com/api/user/confirmadmin/{}">http://makingmymatesrich.com/api/user/confirmadmin/{}</a></p></body></html>
+<a href="https://makingmymatesrich.com/api/user/confirmadmin/{}">https://makingmymatesrich.com/api/user/confirmadmin/{}</a></p></body></html>
         '''.format(portfolio, volume, enabled, enabled)
         self.send()
 

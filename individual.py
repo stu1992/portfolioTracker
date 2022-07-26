@@ -10,6 +10,7 @@ import os
 from datetime import timedelta, datetime
 import time
 import SystemStatus
+from PIL import Image
 
 handler = logging.handlers.WatchedFileHandler(
     os.environ.get("LOGFILE", "/home/ubuntu/log"))
@@ -18,6 +19,7 @@ handler.setFormatter(formatter)
 root = logging.getLogger()
 root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
+logging.getLogger('PIL').setLevel(logging.ERROR)
 root.addHandler(handler)
 
 system_status = SystemStatus.SystemStatus()
@@ -36,8 +38,8 @@ start = time.time()
 for user in MongoPortfolio.MongoGetUsers():
   secret = ''.join(random.choice(string.ascii_letters) for i in range(36))
   fig, ax = plt.subplots()
-  fig.set_size_inches(12,5)
-  fig.set_dpi(140)
+  fig.set_size_inches(13,5)
+  fig.set_dpi(300)
   fmt = '%+.1f%%' # Format you want the ticks, e.g. '40%'
   xticks = mtick.FormatStrFormatter(fmt)
   ax.xaxis.set_major_formatter(xticks)
@@ -127,6 +129,10 @@ for user in MongoPortfolio.MongoGetUsers():
   MongoPortfolio.MongoUpdateHist(user, "/static/media/hist_" + secret + ".png")
   logging.debug(secret_url)
   plt.savefig(secret_url)
+  im = Image.open(secret_url)
+  width, height = im.size
+  im1 = im.crop((400, 50, width-300, height))
+  im1.save(secret_url)
   plt.clf()
 
 end = time.time()
